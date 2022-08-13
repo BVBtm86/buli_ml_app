@@ -4,7 +4,7 @@ from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised 
     class_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
 from python_scripts.algo_page.algo_scripts.supervised_algo.classification_algo import classification_all_models, \
     linear_class_application, svm_class_application, knn_class_application, naive_class_application, \
-    dt_class_application, rf_class_application
+    dt_class_application, rf_class_application, xgb_class_application
 
 
 def classification_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -591,7 +591,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 with feature_col:
                     download_plot_tree = plot_downloader(rf_plot)
                     st.download_button(
-                        label='📥 Download DT Plot',
+                        label='📥 Download RF Plot',
                         data=download_plot_tree,
                         file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot RF.html",
                         mime='text/html')
@@ -658,6 +658,73 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                         options=["multi:softprob",
                                                  "multi:softmax"])
                 final_params = [xgb_n_estimators, xgb_booster, xgb_lr, xgb_max_depth, xgb_colsample, xgb_loss]
+                st.sidebar.subheader("Prediction Options")
+
+                # ##### Classification XgBoost Model
+                if game_prediction != "Game Result":
+                    game_prediction += " Result"
+                xgb_plot, xgb_metrics, xgb_matrix, xgb_pred_plot, xgb_teams = \
+                    xgb_class_application(data=data,
+                                          data_type=type_data,
+                                          team_map=data_map,
+                                          hyperparams=final_params,
+                                          features=analysis_stats,
+                                          predictor="Result",
+                                          predictor_map=data_map,
+                                          train_sample=train_size,
+                                          plot_name=sample_filter,
+                                          prediction_type=game_prediction)
+
+                with result_col:
+                    st.plotly_chart(xgb_plot,
+                                    config=config,
+                                    use_container_width=True)
+                with feature_col:
+                    download_plot_tree = plot_downloader(xgb_plot)
+                    st.download_button(
+                        label='📥 Download XgB Plot',
+                        data=download_plot_tree,
+                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot XgB.html",
+                        mime='text/html')
+
+            # ##### Classification Results
+            st.subheader("XgBoosting Prediction Results")
+            metrics_col, pred_col = st.columns([4.5, 5.5])
+            with metrics_col:
+                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(xgb_metrics.style.format(formatter="{:.2%}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+                st.markdown(f"<b><font color=#6600cc>{xgb_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(
+                    xgb_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+            with pred_col:
+                st.plotly_chart(xgb_pred_plot,
+                                config=config,
+                                use_container_width=True)
+            with metrics_col:
+                download_plot_prediction = plot_downloader(xgb_pred_plot)
+                st.download_button(
+                    label='📥 Download Prediction Plot',
+                    data=download_plot_prediction,
+                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                    mime='text/html')
 
         st.sidebar.markdown("")
     else:

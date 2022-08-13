@@ -130,6 +130,8 @@ def home_away_data(data, features, type_game):
             final_df[col] = final_df[f"Away {col}"] - final_df[f"Home {col}"]
             features_remove.append(f"Home {col}")
             features_remove.append(f"Away {col}")
+    else:
+        features_remove = []
 
     final_df.drop(columns=features_remove, inplace=True)
 
@@ -233,7 +235,6 @@ def filter_model_team_reg(data, data_filter):
 
 # ##### Model Metrics
 def classification_metrics(y_train, y_train_pred, y_test, y_test_pred):
-
     metric_average = "weighted"
 
     # ##### Train Metrics
@@ -317,7 +318,6 @@ def regression_metrics(y_train, y_train_pred, y_test, y_test_pred):
 
 
 def plot_y_reg(data, y, y_pred, plot_title, pred_label, filter_team, filter_name, prediction_type, plot_features=False):
-
     # ##### Add Prediction to Data
     data_plot = data.copy()
     data_plot[f"Observed {pred_label}"] = y
@@ -353,13 +353,12 @@ def plot_y_reg(data, y, y_pred, plot_title, pred_label, filter_team, filter_name
 
 def plot_y_class(data, feature_x, feature_y, pred_var, plot_title, pred_label, filter_team, filter_name,
                  prediction_type, plot_features=False):
-
     # ##### Add Prediction to Data
     data_plot = data.copy()
     data_plot['Prediction Result'] = pred_var
     data_plot['Prediction Result'] = data_plot['Prediction Result'].map({0: "Defeat", 1: "Draw", 2: "Win"})
     data_plot['Result'] = data_plot['Result'].map({0: "Defeat", 1: "Draw", 2: "Win"})
-    data_plot.rename(columns={'Result':"Actual Result"}, inplace=True)
+    data_plot.rename(columns={'Result': "Actual Result"}, inplace=True)
 
     # ##### Filter if needed
     if filter_team != "All Teams":

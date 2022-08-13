@@ -3,7 +3,8 @@ import streamlit as st
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import reg_algo_options, \
     reg_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
 from python_scripts.algo_page.algo_scripts.supervised_algo.regression_algo import regression_all_models, \
-    linear_reg_application, svm_reg_application, knn_reg_application, tree_reg_application, rf_reg_application
+    linear_reg_application, svm_reg_application, knn_reg_application, tree_reg_application, rf_reg_application, \
+    xgb_reg_application
 
 
 def regression_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -440,7 +441,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                         file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot RF.html",
                         mime='text/html')
 
-                # ##### Decision Tree Results
+            # ##### Random Forest Results
             st.subheader("Random Forest Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
@@ -492,6 +493,58 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                                  "reg:squaredlogerror"])
                 final_params = [xgb_n_estimators, xgb_booster, xgb_lr, xgb_max_depth, xgb_colsample, xgb_loss]
                 st.sidebar.subheader("Prediction Options")
+
+                # ##### Regression XgBoosting Model
+                xgb_plot, xgb_metrics, xgb_pred_plot = \
+                    xgb_reg_application(data=data,
+                                        data_type=type_data,
+                                        team_map=data_map,
+                                        hyperparams=final_params,
+                                        features=analysis_stats,
+                                        predictor=dep_var,
+                                        train_sample=train_size,
+                                        plot_name=sample_filter,
+                                        prediction_type=game_prediction)
+
+                with result_col:
+                    st.plotly_chart(xgb_plot,
+                                    config=config,
+                                    use_container_width=True)
+                with feature_col:
+                    download_plot_linear = plot_downloader(xgb_plot)
+                    st.download_button(
+                        label='📥 Download XgB Plot',
+                        data=download_plot_linear,
+                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot XgB.html",
+                        mime='text/html')
+
+                # ##### Random Forest Results
+            st.subheader("XgBoosting Prediction Results")
+            metrics_col, pred_col = st.columns([4, 6])
+            with metrics_col:
+                st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> Prediction Metrics by <b>"
+                            f"<font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(xgb_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                    subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+            with pred_col:
+                st.plotly_chart(xgb_pred_plot,
+                                config=config,
+                                use_container_width=True)
+
+            with metrics_col:
+                download_plot_prediction = plot_downloader(xgb_pred_plot)
+                st.download_button(
+                    label='📥 Download Prediction Plot',
+                    data=download_plot_prediction,
+                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                    mime='text/html')
 
         st.sidebar.markdown("")
     else:

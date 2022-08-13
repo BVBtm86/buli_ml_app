@@ -13,6 +13,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import warnings
+
 warnings.simplefilter("ignore", FutureWarning)
 
 
@@ -162,7 +163,7 @@ def linear_reg_application(data, data_type, team_map, hyperparams, features, pre
 
 
 def svm_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, standardize_data,
-                           plot_name, prediction_type):
+                        plot_name, prediction_type):
     # ##### Create X, y Feature
     x = data[features].values
     y = data[predictor].values
@@ -313,6 +314,7 @@ def tree_reg_application(data, data_type, team_map, hyperparams, features, predi
     final_coef_df = pd.DataFrame(model.feature_importances_, index=features)
     final_coef_df.reset_index(inplace=True)
     final_coef_df.columns = ['Features', 'Importance']
+    final_coef_df = final_coef_df.sort_values(by="Importance")
 
     # ##### Plot Coefficients
     tree_reg_plot = px.bar(final_coef_df,
@@ -363,7 +365,7 @@ def tree_reg_application(data, data_type, team_map, hyperparams, features, predi
 
 
 def rf_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
-                         prediction_type):
+                       prediction_type):
     # ##### Create X, y Feature
     x = data[features].values
     y = data[predictor].values
@@ -384,6 +386,7 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
     final_coef_df = pd.DataFrame(model.feature_importances_, index=features)
     final_coef_df.reset_index(inplace=True)
     final_coef_df.columns = ['Features', 'Importance']
+    final_coef_df = final_coef_df.sort_values(by="Importance")
 
     # ##### Plot Coefficients
     tree_reg_plot = px.bar(final_coef_df,
@@ -432,3 +435,78 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
 
     return tree_reg_plot, final_reg_metrics, plot_prediction
 
+
+def xgb_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
+                        prediction_type):
+    # ##### Create X, y Feature
+    x = data[features].values
+    y = data[predictor].values
+    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=train_sample, random_state=1909)
+
+    # ##### Data Model
+    model = XGBRegressor(n_estimators=hyperparams[0],
+                         booster=hyperparams[1],
+                         learning_rate=hyperparams[2],
+                         max_depth=hyperparams[3],
+                         colsample_bytree=hyperparams[4],
+                         objective=hyperparams[5],
+                         random_state=1909)
+    model.fit(x_train, y_train)
+
+    if hyperparams[1] == "gblinear":
+        feature_importance = np.abs(model.feature_importances_) / np.sum(np.abs(model.feature_importances_))
+    else:
+        feature_importance = model.feature_importances_
+
+    # ##### Create Final Data
+    final_coef_df = pd.DataFrame(feature_importance, index=features)
+    final_coef_df.reset_index(inplace=True)
+    final_coef_df.columns = ['Features', 'Importance']
+    final_coef_df = final_coef_df.sort_values(by="Importance")
+
+    # ##### Plot Coefficients
+    xgb_reg_plot = px.bar(final_coef_df,
+                          x="Importance",
+                          y="Features",
+                          orientation='h')
+
+    if data_type == "Original Data":
+        plot_height = 750
+    else:
+        plot_height = 500
+    xgb_reg_plot.update_layout(
+        title=f"<b>{plot_name}</b> Games - XgBoosting Feature Importance by <b>{predictor}</b> by "
+              f"<b>{prediction_type}</b>",
+        plot_bgcolor='rgba(0,0,0,0)',
+        yaxis=dict(tickformat='.2f',
+                   hoverformat=".3f"),
+        height=plot_height)
+    xgb_reg_plot.update_traces(marker_color="#6612cc")
+
+    # ##### Prediction Team Filter
+    team_filter, team_names = filter_model_team_reg(data=data,
+                                                    data_filter=team_map)
+
+    # ##### Prediction Metrics
+    y_train_pred = model.predict(x_train)
+    y_test_pred = model.predict(x_test)
+
+    # ##### Regression Metrics
+    final_reg_metrics = regression_metrics(y_train=y_train,
+                                           y_train_pred=y_train_pred,
+                                           y_test=y_test,
+                                           y_test_pred=y_test_pred)
+
+    # ##### Plot Observed vs Predicted
+    y_pred = model.predict(x)
+
+    plot_prediction = plot_y_reg(data=data,
+                                 y=y,
+                                 y_pred=y_pred,
+                                 plot_title=plot_name,
+                                 pred_label=predictor,
+                                 filter_team=team_filter,
+                                 filter_name=team_names,
+                                 prediction_type=prediction_type)
+
+    return xgb_reg_plot, final_reg_metrics, plot_prediction
