@@ -3,7 +3,7 @@ import numpy as np
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import class_algo_options, \
     class_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
 from python_scripts.algo_page.algo_scripts.supervised_algo.classification_algo import classification_all_models, \
-    linear_class_application, svm_class_application, knn_class_application
+    linear_class_application, svm_class_application, knn_class_application, naive_class_application
 
 
 def classification_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -311,11 +311,72 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
         elif classification_algo == "Naive Bayes":
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size = hyperparameters_linear(model_type=type_data)
+                train_size, std_data = hyperparameters_linear(model_type=type_data)
                 nb_smoothing = st.select_slider(label='Smoothing',
                                                 options=np.logspace(0, -9, num=10),
                                                 value=1.e-09)
             final_params = [nb_smoothing]
+
+            # ##### Classification SVM Model
+            st.sidebar.subheader("Prediction Options")
+            if game_prediction != "Game Result":
+                game_prediction += " Result"
+
+            with result_col:
+                with st.spinner("Running Model..."):
+                    nb_metrics, nb_matrix, nb_pred_plot, nb_teams = \
+                        naive_class_application(data=data,
+                                                data_type=type_data,
+                                                team_map=data_map,
+                                                hyperparams=final_params,
+                                                features=analysis_stats,
+                                                predictor="Result",
+                                                predictor_map=data_map,
+                                                train_sample=train_size,
+                                                standardize_data=std_data,
+                                                plot_name=sample_filter,
+                                                prediction_type=game_prediction)
+
+            # ##### Classification Results
+            st.subheader("Naive Bayes Prediction Results")
+            metrics_col, pred_col = st.columns([4.5, 5.5])
+            with metrics_col:
+                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(nb_metrics.style.format(formatter="{:.2%}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+            with pred_col:
+                st.markdown(f"<b><font color=#6600cc>{nb_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(
+                    nb_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+            with result_col:
+                st.info(f"{classification_algo} Classifier does not have Feature Coefficients.")
+                st.plotly_chart(nb_pred_plot,
+                                config=config,
+                                use_container_width=True)
+            with metrics_col:
+                download_plot_prediction = plot_downloader(nb_pred_plot)
+                st.download_button(
+                    label='📥 Download Prediction Plot',
+                    data=download_plot_prediction,
+                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                    mime='text/html')
 
         # ##### ''' K-Nearest Neighbors '''
         elif classification_algo == "K-Nearest Neighbors":
@@ -330,6 +391,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 knn_metric = st.selectbox("Distance Metric",
                                           ["minkowski", "euclidean", "manhattan"])
                 final_params = [knn_neighbors, knn_weights, knn_algorithm, knn_metric]
+
                 # ##### Classification SVM Model
                 st.sidebar.subheader("Prediction Options")
                 if game_prediction != "Game Result":

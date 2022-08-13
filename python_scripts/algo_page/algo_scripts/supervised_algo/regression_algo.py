@@ -148,7 +148,6 @@ def linear_reg_application(data, data_type, team_map, hyperparams, features, pre
     # ##### Plot Observed vs Predicted
     y_pred = model.predict(x)
 
-    # print(x)
     plot_prediction = plot_y_reg(data=data,
                                  y=y,
                                  y_pred=y_pred,
@@ -229,7 +228,6 @@ def svm_reg_application(data, data_type, team_map, hyperparams, features, predic
     # ##### Plot Observed vs Predicted
     y_pred = model.predict(x)
 
-    # print(x)
     plot_prediction = plot_y_reg(data=data,
                                  y=y,
                                  y_pred=y_pred,
@@ -242,4 +240,52 @@ def svm_reg_application(data, data_type, team_map, hyperparams, features, predic
 
     return svm_reg_plot, final_reg_metrics, plot_prediction
 
+
+def knn_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, standardize_data,
+                        plot_name, prediction_type):
+    # ##### Create X, y Feature
+    x = data[features].values
+    y = data[predictor].values
+    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=train_sample, random_state=1909)
+
+    if (data_type == "Original Data") and (standardize_data == "Yes"):
+        sc = StandardScaler()
+        sc.fit(x_train)
+        x_train = sc.transform(x_train)
+        x_test = sc.transform(x_test)
+        x = sc.transform(x)
+
+    # ##### Data Model
+    model = KNeighborsRegressor(n_neighbors=hyperparams[0], weights=hyperparams[1],
+                                algorithm=hyperparams[2], metric=hyperparams[3])
+    model.fit(x_train, y_train)
+
+    # ##### Prediction Team Filter
+    team_filter, team_names = filter_model_team_reg(data=data,
+                                                    data_filter=team_map)
+
+    # ##### Prediction Metrics
+    y_train_pred = model.predict(x_train)
+    y_test_pred = model.predict(x_test)
+
+    # ##### Regression Metrics
+    final_reg_metrics = regression_metrics(y_train=y_train,
+                                           y_train_pred=y_train_pred,
+                                           y_test=y_test,
+                                           y_test_pred=y_test_pred)
+
+    # ##### Plot Observed vs Predicted
+    y_pred = model.predict(x)
+
+    plot_prediction = plot_y_reg(data=data,
+                                 y=y,
+                                 y_pred=y_pred,
+                                 plot_title=plot_name,
+                                 pred_label=predictor,
+                                 filter_team=team_filter,
+                                 filter_name=team_names,
+                                 prediction_type=prediction_type,
+                                 plot_features=None)
+
+    return final_reg_metrics, plot_prediction
 

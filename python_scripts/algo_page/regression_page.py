@@ -3,7 +3,7 @@ import streamlit as st
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import reg_algo_options, \
     reg_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
 from python_scripts.algo_page.algo_scripts.supervised_algo.regression_algo import regression_all_models, \
-    linear_reg_application, svm_reg_application
+    linear_reg_application, svm_reg_application, knn_reg_application
 
 
 def regression_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -252,16 +252,61 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
         # ##### ''' K-Nearest Neighbors '''
         elif regression_algo == "K-Nearest Neighbors":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size, std_data = hyperparameters_linear(model_type=type_data)
-                knn_neighbors = st.slider("Neighbors", min_value=1, max_value=30, value=5)
+                knn_neighbors = st.slider("Neighbors", min_value=1, max_value=50, value=5)
                 knn_weights = st.selectbox(label="Weight", options=["uniform", "distance"])
                 knn_algorithm = st.selectbox(label="Algorithm",
                                              options=["auto", "ball_tree", "kd_tree", "brute"])
                 knn_metric = st.selectbox("Distance Metric",
                                           ["minkowski", "euclidean", "manhattan"])
-                final_params = [knn_neighbors, knn_algorithm, knn_metric]
+                final_params = [knn_neighbors, knn_weights, knn_algorithm, knn_metric]
+
+                # ##### Regression KNN Model
+                with result_col:
+                    knn_metrics, knn_pred_plot = \
+                        knn_reg_application(data=data,
+                                            data_type=type_data,
+                                            team_map=data_map,
+                                            hyperparams=final_params,
+                                            features=analysis_stats,
+                                            predictor=dep_var,
+                                            train_sample=train_size,
+                                            standardize_data=std_data,
+                                            plot_name=sample_filter,
+                                            prediction_type=game_prediction)
+
+            # ##### KNN Results
+            st.subheader("KNN Prediction Results")
+            metrics_col, pred_col = st.columns([4, 6])
+            with metrics_col:
+                st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> Prediction Metrics by <b>"
+                            f"<font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(knn_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                    subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+            with result_col:
+                st.info(f"{regression_algo} Regression does not have Feature Coefficients.")
+                st.plotly_chart(knn_pred_plot,
+                                config=config,
+                                use_container_width=True)
+
+            with metrics_col:
+                download_plot_prediction = plot_downloader(knn_pred_plot)
+                st.download_button(
+                    label='📥 Download Prediction Plot',
+                    data=download_plot_prediction,
+                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                    mime='text/html')
 
         # ##### ''' Decision Tree '''
         elif regression_algo == "Decision Tree":
@@ -285,6 +330,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                               options=[None, "log2", "sqrt"])
                 final_params = [df_criterion, dt_max_depth, dt_min_sample_split,
                                 dt_min_samples_leaf, dt_max_leaf, dt_max_feature]
+
 
         # ##### ''' Random Forest '''
         elif regression_algo == "Random Forest":
