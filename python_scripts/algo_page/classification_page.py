@@ -3,7 +3,8 @@ import numpy as np
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import class_algo_options, \
     class_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
 from python_scripts.algo_page.algo_scripts.supervised_algo.classification_algo import classification_all_models, \
-    linear_class_application, svm_class_application, knn_class_application, naive_class_application
+    linear_class_application, svm_class_application, knn_class_application, naive_class_application, \
+    dt_class_application
 
 
 def classification_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -311,13 +312,13 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
         elif classification_algo == "Naive Bayes":
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size, std_data = hyperparameters_linear(model_type=type_data)
+                train_size = hyperparameters_nonlinear()
                 nb_smoothing = st.select_slider(label='Smoothing',
                                                 options=np.logspace(0, -9, num=10),
                                                 value=1.e-09)
             final_params = [nb_smoothing]
 
-            # ##### Classification SVM Model
+            # ##### Classification Naive Bayes Model
             st.sidebar.subheader("Prediction Options")
             if game_prediction != "Game Result":
                 game_prediction += " Result"
@@ -326,14 +327,12 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 with st.spinner("Running Model..."):
                     nb_metrics, nb_matrix, nb_pred_plot, nb_teams = \
                         naive_class_application(data=data,
-                                                data_type=type_data,
                                                 team_map=data_map,
                                                 hyperparams=final_params,
                                                 features=analysis_stats,
                                                 predictor="Result",
                                                 predictor_map=data_map,
                                                 train_sample=train_size,
-                                                standardize_data=std_data,
                                                 plot_name=sample_filter,
                                                 prediction_type=game_prediction)
 
@@ -392,7 +391,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                           ["minkowski", "euclidean", "manhattan"])
                 final_params = [knn_neighbors, knn_weights, knn_algorithm, knn_metric]
 
-                # ##### Classification SVM Model
+                # ##### Classification KNN Model
                 st.sidebar.subheader("Prediction Options")
                 if game_prediction != "Game Result":
                     game_prediction += " Result"
@@ -464,17 +463,84 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                                     options=np.linspace(2, 10, 9),
                                                     value=5))
                 dt_min_sample_split = int(st.select_slider(label="Min Sample Split",
-                                                           options=np.linspace(2, 20, 10),
+                                                           options=np.linspace(2, 40, 20),
                                                            value=2))
                 dt_min_samples_leaf = int(st.select_slider(label="Min Sample Leaf",
-                                                           options=np.linspace(1, 10, 10),
+                                                           options=np.linspace(1, 30, 30),
                                                            value=1))
                 dt_max_leaf = st.select_slider(label="Max Leaf Nodes",
-                                               options=[None, 5, 10, 15, 20, 25])
+                                               options=[None, 5, 10, 15, 20])
                 dt_max_feature = st.selectbox(label="Max Features",
                                               options=[None, "log2", "sqrt"])
                 final_params = [df_criterion, dt_max_depth, dt_min_sample_split,
                                 dt_min_samples_leaf, dt_max_leaf, dt_max_feature]
+
+                # ##### Classification Decision Tree Model
+                st.sidebar.subheader("Prediction Options")
+                if game_prediction != "Game Result":
+                    game_prediction += " Result"
+                tree_plot, tree_metrics, tree_matrix, tree_pred_plot, tree_teams = \
+                    dt_class_application(data=data,
+                                         data_type=type_data,
+                                         team_map=data_map,
+                                         hyperparams=final_params,
+                                         features=analysis_stats,
+                                         predictor="Result",
+                                         predictor_map=data_map,
+                                         train_sample=train_size,
+                                         plot_name=sample_filter,
+                                         prediction_type=game_prediction)
+
+                with result_col:
+                    st.plotly_chart(tree_plot,
+                                    config=config,
+                                    use_container_width=True)
+                with feature_col:
+                    download_plot_tree = plot_downloader(tree_plot)
+                    st.download_button(
+                        label='📥 Download DT Plot',
+                        data=download_plot_tree,
+                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot LR.html",
+                        mime='text/html')
+
+            # ##### Classification Results
+            st.subheader("Decision Tree Prediction Results")
+            metrics_col, pred_col = st.columns([4.5, 5.5])
+            with metrics_col:
+                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(tree_metrics.style.format(formatter="{:.2%}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+                st.markdown(f"<b><font color=#6600cc>{tree_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(
+                    tree_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+            with pred_col:
+                st.plotly_chart(tree_pred_plot,
+                                config=config,
+                                use_container_width=True)
+            with metrics_col:
+                download_plot_prediction = plot_downloader(tree_pred_plot)
+                st.download_button(
+                    label='📥 Download Prediction Plot',
+                    data=download_plot_prediction,
+                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                    mime='text/html')
 
         # ##### ''' Random Forest '''
         elif classification_algo == "Random Forest":

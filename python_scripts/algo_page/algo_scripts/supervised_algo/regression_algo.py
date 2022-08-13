@@ -22,8 +22,9 @@ def regression_all_models(data, data_type, features, predictor, progress, all_al
     y = data[predictor].values
 
     reg_models = [("LR", LinearRegression()), ("SVM", SVR()), ("KNN", KNeighborsRegressor()),
-                  ("DT", DecisionTreeRegressor()), ("RF", RandomForestRegressor()),
-                  ("XgB", XGBRegressor(silent=True, verbosity=0))]
+                  ("DT", DecisionTreeRegressor(max_depth=5, random_state=1909)),
+                  ("RF", RandomForestRegressor(max_depth=5, random_state=1909)),
+                  ("XgB", XGBRegressor(silent=True, verbosity=0, random_state=1909))]
 
     no_cv = 10
     # ##### Run Cross Val Score
@@ -289,3 +290,73 @@ def knn_reg_application(data, data_type, team_map, hyperparams, features, predic
 
     return final_reg_metrics, plot_prediction
 
+
+def tree_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
+                         prediction_type):
+    # ##### Create X, y Feature
+    x = data[features].values
+    y = data[predictor].values
+    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=train_sample, random_state=1909)
+
+    # ##### Data Model
+    model = DecisionTreeRegressor(criterion=hyperparams[0],
+                                  max_depth=hyperparams[1],
+                                  min_samples_split=hyperparams[2],
+                                  min_samples_leaf=hyperparams[3],
+                                  max_leaf_nodes=hyperparams[4],
+                                  max_features=hyperparams[5],
+                                  random_state=1909)
+
+    model.fit(x_train, y_train)
+
+    # ##### Create Final Data
+    final_coef_df = pd.DataFrame(model.feature_importances_, index=features)
+    final_coef_df.reset_index(inplace=True)
+    final_coef_df.columns = ['Features', 'Importance']
+
+    # ##### Plot Coefficients
+    tree_reg_plot = px.bar(final_coef_df,
+                             x="Importance",
+                             y="Features",
+                             orientation='h')
+
+    if data_type == "Original Data":
+        plot_height = 750
+    else:
+        plot_height = 500
+    tree_reg_plot.update_layout(
+        title=f"<b>{plot_name}</b> Games - Decision Tree Feature Importance by <b>{predictor}</b> by "
+              f"<b>{prediction_type}</b>",
+        plot_bgcolor='rgba(0,0,0,0)',
+        yaxis=dict(tickformat='.2f',
+                   hoverformat=".3f"),
+        height=plot_height)
+    tree_reg_plot.update_traces(marker_color="#6612cc")
+
+    # ##### Prediction Team Filter
+    team_filter, team_names = filter_model_team_reg(data=data,
+                                                    data_filter=team_map)
+
+    # ##### Prediction Metrics
+    y_train_pred = model.predict(x_train)
+    y_test_pred = model.predict(x_test)
+
+    # ##### Regression Metrics
+    final_reg_metrics = regression_metrics(y_train=y_train,
+                                           y_train_pred=y_train_pred,
+                                           y_test=y_test,
+                                           y_test_pred=y_test_pred)
+
+    # ##### Plot Observed vs Predicted
+    y_pred = model.predict(x)
+
+    plot_prediction = plot_y_reg(data=data,
+                                 y=y,
+                                 y_pred=y_pred,
+                                 plot_title=plot_name,
+                                 pred_label=predictor,
+                                 filter_team=team_filter,
+                                 filter_name=team_names,
+                                 prediction_type=prediction_type)
+
+    return tree_reg_plot, final_reg_metrics, plot_prediction

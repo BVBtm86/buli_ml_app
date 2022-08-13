@@ -23,8 +23,9 @@ def classification_all_models(data, data_type, features, predictor, progress, al
     y = data[predictor].values
 
     class_models = [("LR", LogisticRegression()), ("SVM", SVC(random_state=1909)), ("NB", GaussianNB()),
-                    ("KNN", KNeighborsClassifier()), ("DT", DecisionTreeClassifier()), ("RF", RandomForestClassifier()),
-                    ("XgB", XGBClassifier(silent=True, verbosity=0))]
+                    ("KNN", KNeighborsClassifier()), ("DT", DecisionTreeClassifier(max_depth=5, random_state=1909)),
+                    ("RF", RandomForestClassifier(max_depth=5, random_state=1909)),
+                    ("XgB", XGBClassifier(silent=True, verbosity=0, random_state=1909))]
 
     no_cv = 10
     # ##### Run Cross Val Score
@@ -275,19 +276,12 @@ def svm_class_application(data, data_type, team_map, hyperparams, features, pred
     return svm_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter
 
 
-def naive_class_application(data, data_type, team_map, hyperparams, features, predictor, predictor_map,
-                            train_sample, standardize_data, plot_name, prediction_type):
+def naive_class_application(data, team_map, hyperparams, features, predictor, predictor_map,
+                            train_sample, plot_name, prediction_type):
     # ##### Create X, y Feature
     x = data[features]
     y = data[predictor]
     x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=train_sample, random_state=1909, stratify=y)
-
-    if (data_type == "Original Data") and (standardize_data == "Yes"):
-        sc_transform = StandardScaler()
-        sc_transform.fit(x_train)
-        x_train = sc_transform.transform(x_train)
-        x_test = sc_transform.transform(x_test)
-        x = sc_transform.transform(x)
 
     # ##### Data Model
     model = GaussianNB(var_smoothing=hyperparams[0])
@@ -392,8 +386,84 @@ def knn_class_application(data, data_type, team_map, hyperparams, features, pred
     return final_class_metrics, final_class_matrix, predict_class_plot, team_filter
 
 
-def dt_class_application(data):
-    pass
+def dt_class_application(data, data_type, team_map, hyperparams, features, predictor, predictor_map,
+                         train_sample, plot_name, prediction_type):
+    # ##### Create X, y Feature
+    x = data[features]
+    y = data[predictor]
+    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=train_sample, random_state=1909, stratify=y)
+
+    # ##### Data Model
+    model = DecisionTreeClassifier(criterion=hyperparams[0],
+                                   max_depth=hyperparams[1],
+                                   min_samples_split=hyperparams[2],
+                                   min_samples_leaf=hyperparams[3],
+                                   max_leaf_nodes=hyperparams[4],
+                                   max_features=hyperparams[5],
+                                   random_state=1909)
+    model.fit(x_train, y_train)
+
+    # ##### Create Final Data
+    class_labels = predictor_map[predictor_map['Statistics'] == predictor]['Label'].values
+    final_coef_df = pd.DataFrame(model.feature_importances_, index=features)
+    final_coef_df.reset_index(inplace=True)
+    final_coef_df.columns = ['Features', 'Importance']
+
+    # ##### Plot Coefficients
+    dt_class_plot = px.bar(final_coef_df,
+                           x="Importance",
+                           y="Features",
+                           orientation='h')
+
+    if data_type == "Original Data":
+        plot_height = 750
+    else:
+        plot_height = 500
+
+    dt_class_plot.update_layout(
+        title=f"<b>{plot_name}</b> Games - Decision Tree Feature Importance by <b>{prediction_type}</b>",
+        plot_bgcolor='rgba(0,0,0,0)',
+        yaxis=dict(tickformat='.2f',
+                   hoverformat=".3f"),
+        height=plot_height)
+    dt_class_plot.update_traces(marker_color="#6612cc")
+
+    # ##### Prediction Team Filter
+    team_filter, team_names, feature_x_var, feature_y_var = filter_model_team_class(data=data,
+                                                                                    data_filter=team_map,
+                                                                                    stats=features)
+
+    # ##### Prediction Metrics
+    y_train_pred = model.predict(x_train)
+    y_test_pred = model.predict(x_test)
+
+    # ##### Classification Metrics
+    final_class_metrics = classification_metrics(y_train=y_train,
+                                                 y_train_pred=y_train_pred,
+                                                 y_test=y_test,
+                                                 y_test_pred=y_test_pred)
+
+    # ##### Confusion Matrix
+    y_pred = model.predict(x)
+    final_class_matrix = conf_matrix(data=data,
+                                     y=y,
+                                     y_pred=y_pred,
+                                     pred_labels=class_labels,
+                                     filter_team=team_filter,
+                                     filter_name=team_names)
+
+    # ##### Plot prediction
+    predict_class_plot = plot_y_class(data=data,
+                                      feature_x=feature_x_var,
+                                      feature_y=feature_y_var,
+                                      pred_var=y_pred,
+                                      plot_title=plot_name,
+                                      pred_label=class_labels,
+                                      filter_team=team_filter,
+                                      filter_name=team_names,
+                                      prediction_type=prediction_type)
+
+    return dt_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter
 
 
 def rf_class_application(data):

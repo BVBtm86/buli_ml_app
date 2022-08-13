@@ -3,7 +3,7 @@ import streamlit as st
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import reg_algo_options, \
     reg_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
 from python_scripts.algo_page.algo_scripts.supervised_algo.regression_algo import regression_all_models, \
-    linear_reg_application, svm_reg_application, knn_reg_application
+    linear_reg_application, svm_reg_application, knn_reg_application, tree_reg_application
 
 
 def regression_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -96,6 +96,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     alpha_param = None
 
                 final_params = [model_type, solver_param, alpha_param]
+                st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Linear Model
                 linear_plot, linear_metrics, linear_pred_plot = \
@@ -152,6 +153,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
         # ##### ''' Support Vector Machine '''
         elif regression_algo == "Support Vector Machine":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size, std_data = hyperparameters_linear(model_type=type_data)
@@ -184,6 +186,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     svm_degree = None
                     svm_gamma = None
                 final_params = [svm_kernel, svm_gamma, svm_degree, svm_c]
+                st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression SVM Model
                 with result_col:
@@ -263,6 +266,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 knn_metric = st.selectbox("Distance Metric",
                                           ["minkowski", "euclidean", "manhattan"])
                 final_params = [knn_neighbors, knn_weights, knn_algorithm, knn_metric]
+                st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression KNN Model
                 with result_col:
@@ -314,23 +318,75 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size = hyperparameters_nonlinear()
                 df_criterion = st.selectbox(label="Criterion",
-                                            options=["gini", "entropy", "log_loss"])
+                                            options=["squared_error", "friedman_mse", "absolute_error", "poisson"])
                 dt_max_depth = int(st.select_slider(label="Max Depth",
                                                     options=np.linspace(2, 10, 9),
                                                     value=5))
                 dt_min_sample_split = int(st.select_slider(label="Min Sample Split",
-                                                           options=np.linspace(2, 20, 10),
+                                                           options=np.linspace(2, 40, 20),
                                                            value=2))
                 dt_min_samples_leaf = int(st.select_slider(label="Min Sample Leaf",
-                                                           options=np.linspace(1, 10, 10),
+                                                           options=np.linspace(1, 30, 30),
                                                            value=1))
                 dt_max_leaf = st.select_slider(label="Max Leaf Nodes",
-                                               options=[None, 5, 10, 15, 20, 25])
+                                               options=[None, 5, 10, 15, 20])
                 dt_max_feature = st.selectbox(label="Max Features",
                                               options=[None, "log2", "sqrt"])
                 final_params = [df_criterion, dt_max_depth, dt_min_sample_split,
                                 dt_min_samples_leaf, dt_max_leaf, dt_max_feature]
+                st.sidebar.subheader("Prediction Options")
 
+                # ##### Regression Decision Tree Model
+                tree_plot, tree_metrics, tree_pred_plot = \
+                    tree_reg_application(data=data,
+                                         data_type=type_data,
+                                         team_map=data_map,
+                                         hyperparams=final_params,
+                                         features=analysis_stats,
+                                         predictor=dep_var,
+                                         train_sample=train_size,
+                                         plot_name=sample_filter,
+                                         prediction_type=game_prediction)
+
+                with result_col:
+                    st.plotly_chart(tree_plot,
+                                    config=config,
+                                    use_container_width=True)
+                with feature_col:
+                    download_plot_linear = plot_downloader(tree_plot)
+                    st.download_button(
+                        label='📥 Download DT Plot',
+                        data=download_plot_linear,
+                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot LR.html",
+                        mime='text/html')
+
+            # ##### Decision Tree Results
+            st.subheader("Decision Tree Prediction Results")
+            metrics_col, pred_col = st.columns([4, 6])
+            with metrics_col:
+                st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> Prediction Metrics by <b>"
+                            f"<font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(tree_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                    subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+            with pred_col:
+                st.plotly_chart(tree_pred_plot,
+                                config=config,
+                                use_container_width=True)
+
+            with metrics_col:
+                download_plot_prediction = plot_downloader(tree_pred_plot)
+                st.download_button(
+                    label='📥 Download Prediction Plot',
+                    data=download_plot_prediction,
+                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                    mime='text/html')
 
         # ##### ''' Random Forest '''
         elif regression_algo == "Random Forest":
@@ -357,6 +413,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                               options=[None, "log2", "sqrt"])
                 final_params = [rf_n_estimators, rf_criterion, rf_max_depth, rf_min_sample_split,
                                 rf_min_samples_leaf, rf_max_leaf, rf_max_feature]
+                st.sidebar.subheader("Prediction Options")
 
         # ##### ''' XgBoost '''
         elif regression_algo == "XgBoost":
@@ -381,6 +438,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                         options=["reg:squarederror",
                                                  "reg:squaredlogerror"])
                 final_params = [xgb_n_estimators, xgb_booster, xgb_lr, xgb_max_depth, xgb_colsample, xgb_loss]
+                st.sidebar.subheader("Prediction Options")
 
         st.sidebar.markdown("")
     else:
