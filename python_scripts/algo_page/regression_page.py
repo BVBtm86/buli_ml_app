@@ -15,7 +15,9 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
     st.sidebar.markdown("")
 
     # ##### Algo Description
-    if regression_algo == "All":
+    if regression_algo == "":
+        pass
+    elif regression_algo == "All":
         st.subheader("Regression Algorithms")
         st.markdown(f"<b><font color=#6600cc>Regression Algorithms</font></b> "
                     f"{reg_algo_name[reg_algo_options.index(regression_algo)]} <b><font color=#6600cc>"
@@ -26,48 +28,51 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     f"{reg_algo_name[reg_algo_options.index(regression_algo)]}", unsafe_allow_html=True)
 
     # ##### Features
-    feature_col, result_col = st.columns([3, 9])
-    with feature_col:
-        st.markdown("<b>Features</b>", unsafe_allow_html=True)
-        analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
+    if regression_algo != "":
+        feature_col, result_col = st.columns([3, 9])
+        with feature_col:
+            st.markdown("<b>Features</b>", unsafe_allow_html=True)
+            analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
+    else:
+        st.info(f"Please select one of the Regression Algorithms from the available options.")
+        analysis_stats = [""]
 
     if len(analysis_stats) > 0:
         # ##### ''' All Regression Models '''
         if regression_algo == "All":
-            pass
-            # with result_col:
-            #     with st.spinner("Running Regression Algorithms ....."):
-            #         progress_bar = st.progress(0)
-            #         fig_reg_plot, reg_scores_df, top_reg_algo = \
-            #             regression_all_models(data=data,
-            #                                   data_type=type_data,
-            #                                   features=analysis_stats,
-            #                                   predictor=dep_var,
-            #                                   progress=progress_bar,
-            #                                   all_algo=reg_algo_options,
-            #                                   plot_name=sample_filter,
-            #                                   prediction_type=game_prediction)
-            #
-            #         progress_bar.empty()
-            #         st.plotly_chart(fig_reg_plot,
-            #                         config=config,
-            #                         use_container_width=True)
-            #         st.markdown(f"The best performing Regression Algorithms are <b><font color=#6600cc>{top_reg_algo[0]}"
-            #                     f"</font></b>, <b><font color=#6600cc>{top_reg_algo[1]}</font></b> and "
-            #                     f"<b><font color=#6600cc>{top_reg_algo[2]}</font></b>.", unsafe_allow_html=True)
-            #
-            #     with feature_col:
-            #         download_plot_reg = plot_downloader(fig_reg_plot)
-            #         st.download_button(
-            #             label='📥 Download Plot Regression',
-            #             data=download_plot_reg,
-            #             file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot Regression.html",
-            #             mime='text/html')
-            #
-            #         df_scores_all = data_download(reg_scores_df, sample_filter.replace(': ', '_'))
-            #         st.download_button(label='📥 Download Data Regression',
-            #                            data=df_scores_all,
-            #                            file_name=f"{sample_filter.replace(': ', '_')}_Data Results.xlsx")
+            with result_col:
+                with st.spinner("Running Regression Algorithms ....."):
+                    progress_bar = st.progress(0)
+                    fig_reg_plot, reg_scores_df, top_reg_algo = \
+                        regression_all_models(data=data,
+                                              data_type=type_data,
+                                              features=analysis_stats,
+                                              predictor=dep_var,
+                                              progress=progress_bar,
+                                              all_algo=reg_algo_options,
+                                              plot_name=sample_filter,
+                                              prediction_type=game_prediction)
+
+                    progress_bar.empty()
+                    st.plotly_chart(fig_reg_plot,
+                                    config=config,
+                                    use_container_width=True)
+                    st.markdown(f"The best performing Regression Algorithms are <b><font color=#6600cc>{top_reg_algo[0]}"
+                                f"</font></b>, <b><font color=#6600cc>{top_reg_algo[1]}</font></b> and "
+                                f"<b><font color=#6600cc>{top_reg_algo[2]}</font></b>.", unsafe_allow_html=True)
+
+                with feature_col:
+                    download_plot_reg = plot_downloader(fig_reg_plot)
+                    st.download_button(
+                        label='📥 Download Plot Regression',
+                        data=download_plot_reg,
+                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot Regression.html",
+                        mime='text/html')
+
+                    df_scores_all = data_download(reg_scores_df, sample_filter.replace(': ', '_'))
+                    st.download_button(label='📥 Download Data Regression',
+                                       data=df_scores_all,
+                                       file_name=f"{sample_filter.replace(': ', '_')}_Data Results.xlsx")
 
         # ##### ''' Linear Regression '''
         elif regression_algo == "Linear Regression":

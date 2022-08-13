@@ -279,8 +279,63 @@ def naive_class_application(data):
     pass
 
 
-def knn_class_application(data):
-    pass
+def knn_class_application(data, data_type, team_map, hyperparams, features, predictor, predictor_map,
+                          train_sample, standardize_data, plot_name, prediction_type):
+    # ##### Create X, y Feature
+    x = data[features]
+    y = data[predictor]
+    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=train_sample, random_state=1909, stratify=y)
+
+    if (data_type == "Original Data") and (standardize_data == "Yes"):
+        sc_transform = StandardScaler()
+        sc_transform.fit(x_train)
+        x_train = sc_transform.transform(x_train)
+        x_test = sc_transform.transform(x_test)
+        x = sc_transform.transform(x)
+
+    # ##### Data Model
+    model = KNeighborsClassifier(n_neighbors=hyperparams[0], weights=hyperparams[1],
+                                 algorithm=hyperparams[2], metric=hyperparams[3])
+    model.fit(x_train, y_train)
+
+    # ##### Prediction Team Filter
+    class_labels = predictor_map[predictor_map['Statistics'] == predictor]['Label'].values
+    team_filter, team_names, feature_x_var, feature_y_var = filter_model_team_class(data=data,
+                                                                                    data_filter=team_map,
+                                                                                    stats=features)
+
+    # ##### Prediction Metrics
+    y_train_pred = model.predict(x_train)
+    y_test_pred = model.predict(x_test)
+
+    # ##### Classification Metrics
+    final_class_metrics = classification_metrics(y_train=y_train,
+                                                 y_train_pred=y_train_pred,
+                                                 y_test=y_test,
+                                                 y_test_pred=y_test_pred)
+
+    # ##### Confusion Matrix
+    y_pred = model.predict(x)
+    final_class_matrix = conf_matrix(data=data,
+                                     y=y,
+                                     y_pred=y_pred,
+                                     pred_labels=class_labels,
+                                     filter_team=team_filter,
+                                     filter_name=team_names)
+
+    # ##### Plot prediction
+    predict_class_plot = plot_y_class(data=data,
+                                      feature_x=feature_x_var,
+                                      feature_y=feature_y_var,
+                                      pred_var=y_pred,
+                                      plot_title=plot_name,
+                                      pred_label=class_labels,
+                                      filter_team=team_filter,
+                                      filter_name=team_names,
+                                      prediction_type=prediction_type,
+                                      plot_features=None)
+
+    return final_class_metrics, final_class_matrix, predict_class_plot, team_filter
 
 
 def dt_class_application(data):

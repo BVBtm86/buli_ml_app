@@ -3,7 +3,7 @@ import numpy as np
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import class_algo_options, \
     class_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
 from python_scripts.algo_page.algo_scripts.supervised_algo.classification_algo import classification_all_models, \
-    linear_class_application, svm_class_application
+    linear_class_application, svm_class_application, knn_class_application
 
 
 def classification_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -16,7 +16,9 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
     st.sidebar.markdown("")
 
     # ##### Algo Description
-    if classification_algo == "All":
+    if classification_algo == "":
+        pass
+    elif classification_algo == "All":
         st.subheader("Classification Algorithms")
         st.markdown(f"<b><font color=#6600cc>Classification Algorithms</font></b> "
                     f"{class_algo_name[class_algo_options.index(classification_algo)]} <b><font color=#6600cc>"
@@ -26,49 +28,53 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
         st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> "
                     f"{class_algo_name[class_algo_options.index(classification_algo)]}", unsafe_allow_html=True)
 
-    # ##### Features
-    feature_col, result_col = st.columns([3, 9])
-    with feature_col:
-        st.markdown("<b>Features</b>", unsafe_allow_html=True)
-        analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
+    if classification_algo != "":
+        # ##### Features
+        feature_col, result_col = st.columns([3, 9])
+        with feature_col:
+            st.markdown("<b>Features</b>", unsafe_allow_html=True)
+            analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
+    else:
+        st.info(f"Please select one of the Classification Algorithms from the available options.")
+        analysis_stats = [""]
 
     if len(analysis_stats) > 0:
+
         # ##### ''' All Classification Models '''
         if classification_algo == "All":
-            pass
-            # with result_col:
-            #     with st.spinner("Running Classification Algorithms ....."):
-            #         progress_bar = st.progress(0)
-            #         fig_class_plot, class_scores_df, top_class_algo = \
-            #             classification_all_models(data=data,
-            #                                       data_type=type_data,
-            #                                       features=analysis_stats,
-            #                                       predictor="Result",
-            #                                       progress=progress_bar,
-            #                                       all_algo=class_algo_options,
-            #                                       plot_name=sample_filter,
-            #                                       prediction_type=game_prediction)
-            #
-            #         progress_bar.empty()
-            #         st.plotly_chart(fig_class_plot,
-            #                         config=config,
-            #                         use_container_width=True)
-            #         st.markdown(f"The best performing Classification Algorithms are <b><font color=#6600cc>{top_class_algo[0]}"
-            #                     f"</font></b>, <b><font color=#6600cc>{top_class_algo[1]}</font></b> and "
-            #                     f"<b><font color=#6600cc>{top_class_algo[2]}</font></b>.", unsafe_allow_html=True)
-            #
-            #     with feature_col:
-            #         download_plot_class = plot_downloader(fig_class_plot)
-            #         st.download_button(
-            #             label='📥 Download Plot Classification',
-            #             data=download_plot_class,
-            #             file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot Classification.html",
-            #             mime='text/html')
-            #
-            #         df_scores_all = data_download(class_scores_df, sample_filter.replace(': ', '_'))
-            #         st.download_button(label='📥 Download Data Classification',
-            #                            data=df_scores_all,
-            #                            file_name=f"{sample_filter.replace(': ', '_')}_Data Results.xlsx")
+            with result_col:
+                with st.spinner("Running Classification Algorithms ....."):
+                    progress_bar = st.progress(0)
+                    fig_class_plot, class_scores_df, top_class_algo = \
+                        classification_all_models(data=data,
+                                                  data_type=type_data,
+                                                  features=analysis_stats,
+                                                  predictor="Result",
+                                                  progress=progress_bar,
+                                                  all_algo=class_algo_options,
+                                                  plot_name=sample_filter,
+                                                  prediction_type=game_prediction)
+
+                    progress_bar.empty()
+                    st.plotly_chart(fig_class_plot,
+                                    config=config,
+                                    use_container_width=True)
+                    st.markdown(f"The best performing Classification Algorithms are <b><font color=#6600cc>{top_class_algo[0]}"
+                                f"</font></b>, <b><font color=#6600cc>{top_class_algo[1]}</font></b> and "
+                                f"<b><font color=#6600cc>{top_class_algo[2]}</font></b>.", unsafe_allow_html=True)
+
+                with feature_col:
+                    download_plot_class = plot_downloader(fig_class_plot)
+                    st.download_button(
+                        label='📥 Download Plot Classification',
+                        data=download_plot_class,
+                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot Classification.html",
+                        mime='text/html')
+
+                    df_scores_all = data_download(class_scores_df, sample_filter.replace(': ', '_'))
+                    st.download_button(label='📥 Download Data Classification',
+                                       data=df_scores_all,
+                                       file_name=f"{sample_filter.replace(': ', '_')}_Data Results.xlsx")
 
         # ##### ''' Logistic Regression '''
         elif classification_algo == "Logistic Regression":
@@ -313,16 +319,77 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
         # ##### ''' K-Nearest Neighbors '''
         elif classification_algo == "K-Nearest Neighbors":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size, std_data = hyperparameters_linear(model_type=type_data)
-                knn_neighbors = st.slider("Neighbors", min_value=1, max_value=30, value=5)
+                knn_neighbors = st.slider("Neighbors", min_value=1, max_value=50, value=5)
                 knn_weights = st.selectbox(label="Weight", options=["uniform", "distance"])
                 knn_algorithm = st.selectbox(label="Algorithm",
                                              options=["auto", "ball_tree", "kd_tree", "brute"])
                 knn_metric = st.selectbox("Distance Metric",
                                           ["minkowski", "euclidean", "manhattan"])
-                final_params = [knn_neighbors, knn_algorithm, knn_metric]
+                final_params = [knn_neighbors, knn_weights, knn_algorithm, knn_metric]
+                # ##### Classification SVM Model
+                st.sidebar.subheader("Prediction Options")
+                if game_prediction != "Game Result":
+                    game_prediction += " Result"
+
+                with result_col:
+                    with st.spinner("Running Model..."):
+                        knn_metrics, knn_matrix, knn_pred_plot, knn_teams = \
+                            knn_class_application(data=data,
+                                                  data_type=type_data,
+                                                  team_map=data_map,
+                                                  hyperparams=final_params,
+                                                  features=analysis_stats,
+                                                  predictor="Result",
+                                                  predictor_map=data_map,
+                                                  train_sample=train_size,
+                                                  standardize_data=std_data,
+                                                  plot_name=sample_filter,
+                                                  prediction_type=game_prediction)
+
+            # ##### Classification Results
+            st.subheader("KNN Prediction Results")
+            metrics_col, pred_col = st.columns([4.5, 5.5])
+            with metrics_col:
+                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(knn_metrics.style.format(formatter="{:.2%}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+            with pred_col:
+                st.markdown(f"<b><font color=#6600cc>{knn_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(
+                    knn_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+            with result_col:
+                st.info(f"{classification_algo} Classifier does not have Feature Coefficients.")
+                st.plotly_chart(knn_pred_plot,
+                                config=config,
+                                use_container_width=True)
+            with metrics_col:
+                download_plot_prediction = plot_downloader(knn_pred_plot)
+                st.download_button(
+                    label='📥 Download Prediction Plot',
+                    data=download_plot_prediction,
+                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                    mime='text/html')
 
         # ##### ''' Decision Tree '''
         elif classification_algo == "Decision Tree":

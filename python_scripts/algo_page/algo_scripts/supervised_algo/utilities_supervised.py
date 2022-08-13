@@ -14,13 +14,14 @@ colors_plot = ["#6612cc", '#72bc75', '#c3110f', "#2596be", "#1a202a",
 
 target_color = ["#c3110f", "#2596be", "#6612cc"]
 
-class_algo_options = ["All", "Logistic Regression", "Support Vector Machine", "Naive Bayes",
+class_algo_options = ["", "All", "Logistic Regression", "Support Vector Machine", "Naive Bayes",
                       "K-Nearest Neighbors", "Decision Tree", "Random Forest", "XgBoost"]
 
-reg_algo_options = ["All", "Linear Regression", "Support Vector Machine",
+reg_algo_options = ["", "All", "Linear Regression", "Support Vector Machine",
                     "K-Nearest Neighbors", "Decision Tree", "Random Forest", "XgBoost"]
 
 class_algo_name = [
+    "",
     "a collection of algorithms to identify the best performing base model for predicting",
     "is a statistical analysis method to predict a binary outcome, such as yes or no, based on "
     "prior observations of a data set.",
@@ -39,6 +40,7 @@ class_algo_name = [
     "(GBDT) machine learning library. It provides parallel tree boosting."]
 
 reg_algo_name = [
+    "",
     "a collection of algorithms to identify the best performing base model on predicting",
     "is used to predict the value of a variable based on the value of another variable or variables.",
     "has the objective of finding a hyperplane in an N-dimensional space(N — the number of "
