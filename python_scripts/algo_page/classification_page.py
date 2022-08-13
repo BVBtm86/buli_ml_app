@@ -4,7 +4,7 @@ from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised 
     class_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
 from python_scripts.algo_page.algo_scripts.supervised_algo.classification_algo import classification_all_models, \
     linear_class_application, svm_class_application, knn_class_application, naive_class_application, \
-    dt_class_application
+    dt_class_application, rf_class_application
 
 
 def classification_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -474,9 +474,9 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                               options=[None, "log2", "sqrt"])
                 final_params = [df_criterion, dt_max_depth, dt_min_sample_split,
                                 dt_min_samples_leaf, dt_max_leaf, dt_max_feature]
+                st.sidebar.subheader("Prediction Options")
 
                 # ##### Classification Decision Tree Model
-                st.sidebar.subheader("Prediction Options")
                 if game_prediction != "Game Result":
                     game_prediction += " Result"
                 tree_plot, tree_metrics, tree_matrix, tree_pred_plot, tree_teams = \
@@ -500,7 +500,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.download_button(
                         label='📥 Download DT Plot',
                         data=download_plot_tree,
-                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot LR.html",
+                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot DT.html",
                         mime='text/html')
 
             # ##### Classification Results
@@ -567,6 +567,73 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                               options=[None, "log2", "sqrt"])
                 final_params = [rf_n_estimators, rf_criterion, rf_max_depth, rf_min_sample_split,
                                 rf_min_samples_leaf, rf_max_leaf, rf_max_feature]
+                st.sidebar.subheader("Prediction Options")
+
+                # ##### Classification Random Forest Model
+                if game_prediction != "Game Result":
+                    game_prediction += " Result"
+                rf_plot, rf_metrics, rf_matrix, rf_pred_plot, rf_teams = \
+                    rf_class_application(data=data,
+                                         data_type=type_data,
+                                         team_map=data_map,
+                                         hyperparams=final_params,
+                                         features=analysis_stats,
+                                         predictor="Result",
+                                         predictor_map=data_map,
+                                         train_sample=train_size,
+                                         plot_name=sample_filter,
+                                         prediction_type=game_prediction)
+
+                with result_col:
+                    st.plotly_chart(rf_plot,
+                                    config=config,
+                                    use_container_width=True)
+                with feature_col:
+                    download_plot_tree = plot_downloader(rf_plot)
+                    st.download_button(
+                        label='📥 Download DT Plot',
+                        data=download_plot_tree,
+                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot RF.html",
+                        mime='text/html')
+
+            # ##### Classification Results
+            st.subheader("Random Forest Prediction Results")
+            metrics_col, pred_col = st.columns([4.5, 5.5])
+            with metrics_col:
+                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(rf_metrics.style.format(formatter="{:.2%}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+                st.markdown(f"<b><font color=#6600cc>{rf_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(
+                    rf_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+
+            with pred_col:
+                st.plotly_chart(rf_pred_plot,
+                                config=config,
+                                use_container_width=True)
+            with metrics_col:
+                download_plot_prediction = plot_downloader(rf_pred_plot)
+                st.download_button(
+                    label='📥 Download Prediction Plot',
+                    data=download_plot_prediction,
+                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                    mime='text/html')
 
         # ##### ''' XgBoost '''
         elif classification_algo == "XgBoost":

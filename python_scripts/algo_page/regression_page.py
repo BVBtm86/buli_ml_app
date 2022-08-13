@@ -3,7 +3,7 @@ import streamlit as st
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import reg_algo_options, \
     reg_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
 from python_scripts.algo_page.algo_scripts.supervised_algo.regression_algo import regression_all_models, \
-    linear_reg_application, svm_reg_application, knn_reg_application, tree_reg_application
+    linear_reg_application, svm_reg_application, knn_reg_application, tree_reg_application, rf_reg_application
 
 
 def regression_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -314,6 +314,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
         # ##### ''' Decision Tree '''
         elif regression_algo == "Decision Tree":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size = hyperparameters_nonlinear()
@@ -357,7 +358,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     st.download_button(
                         label='📥 Download DT Plot',
                         data=download_plot_linear,
-                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot LR.html",
+                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot DT.html",
                         mime='text/html')
 
             # ##### Decision Tree Results
@@ -414,6 +415,58 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 final_params = [rf_n_estimators, rf_criterion, rf_max_depth, rf_min_sample_split,
                                 rf_min_samples_leaf, rf_max_leaf, rf_max_feature]
                 st.sidebar.subheader("Prediction Options")
+
+                # ##### Regression Random Forest Model
+                rf_plot, rf_metrics, rf_pred_plot = \
+                    rf_reg_application(data=data,
+                                       data_type=type_data,
+                                       team_map=data_map,
+                                       hyperparams=final_params,
+                                       features=analysis_stats,
+                                       predictor=dep_var,
+                                       train_sample=train_size,
+                                       plot_name=sample_filter,
+                                       prediction_type=game_prediction)
+
+                with result_col:
+                    st.plotly_chart(rf_plot,
+                                    config=config,
+                                    use_container_width=True)
+                with feature_col:
+                    download_plot_linear = plot_downloader(rf_plot)
+                    st.download_button(
+                        label='📥 Download RF Plot',
+                        data=download_plot_linear,
+                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot RF.html",
+                        mime='text/html')
+
+                # ##### Decision Tree Results
+            st.subheader("Random Forest Prediction Results")
+            metrics_col, pred_col = st.columns([4, 6])
+            with metrics_col:
+                st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> Prediction Metrics by <b>"
+                            f"<font color=#6600cc>{game_prediction}</font></b>",
+                            unsafe_allow_html=True)
+                st.table(rf_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                    subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+            with pred_col:
+                st.plotly_chart(rf_pred_plot,
+                                config=config,
+                                use_container_width=True)
+
+            with metrics_col:
+                download_plot_prediction = plot_downloader(rf_pred_plot)
+                st.download_button(
+                    label='📥 Download Prediction Plot',
+                    data=download_plot_prediction,
+                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                    mime='text/html')
 
         # ##### ''' XgBoost '''
         elif regression_algo == "XgBoost":

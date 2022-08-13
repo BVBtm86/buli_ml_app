@@ -466,8 +466,85 @@ def dt_class_application(data, data_type, team_map, hyperparams, features, predi
     return dt_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter
 
 
-def rf_class_application(data):
-    pass
+def rf_class_application(data, data_type, team_map, hyperparams, features, predictor, predictor_map,
+                         train_sample, plot_name, prediction_type):
+    # ##### Create X, y Feature
+    x = data[features]
+    y = data[predictor]
+    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=train_sample, random_state=1909, stratify=y)
+
+    # ##### Data Model
+    model = RandomForestClassifier(n_estimators=hyperparams[0],
+                                   criterion=hyperparams[1],
+                                   max_depth=hyperparams[2],
+                                   min_samples_split=hyperparams[3],
+                                   min_samples_leaf=hyperparams[4],
+                                   max_leaf_nodes=hyperparams[5],
+                                   max_features=hyperparams[6],
+                                   random_state=1909)
+    model.fit(x_train, y_train)
+
+    # ##### Create Final Data
+    class_labels = predictor_map[predictor_map['Statistics'] == predictor]['Label'].values
+    final_coef_df = pd.DataFrame(model.feature_importances_, index=features)
+    final_coef_df.reset_index(inplace=True)
+    final_coef_df.columns = ['Features', 'Importance']
+
+    # ##### Plot Coefficients
+    rf_class_plot = px.bar(final_coef_df,
+                           x="Importance",
+                           y="Features",
+                           orientation='h')
+
+    if data_type == "Original Data":
+        plot_height = 750
+    else:
+        plot_height = 500
+
+    rf_class_plot.update_layout(
+        title=f"<b>{plot_name}</b> Games - Random Forest Feature Importance by <b>{prediction_type}</b>",
+        plot_bgcolor='rgba(0,0,0,0)',
+        yaxis=dict(tickformat='.2f',
+                   hoverformat=".3f"),
+        height=plot_height)
+    rf_class_plot.update_traces(marker_color="#6612cc")
+
+    # ##### Prediction Team Filter
+    team_filter, team_names, feature_x_var, feature_y_var = filter_model_team_class(data=data,
+                                                                                    data_filter=team_map,
+                                                                                    stats=features)
+
+    # ##### Prediction Metrics
+    y_train_pred = model.predict(x_train)
+    y_test_pred = model.predict(x_test)
+
+    # ##### Classification Metrics
+    final_class_metrics = classification_metrics(y_train=y_train,
+                                                 y_train_pred=y_train_pred,
+                                                 y_test=y_test,
+                                                 y_test_pred=y_test_pred)
+
+    # ##### Confusion Matrix
+    y_pred = model.predict(x)
+    final_class_matrix = conf_matrix(data=data,
+                                     y=y,
+                                     y_pred=y_pred,
+                                     pred_labels=class_labels,
+                                     filter_team=team_filter,
+                                     filter_name=team_names)
+
+    # ##### Plot prediction
+    predict_class_plot = plot_y_class(data=data,
+                                      feature_x=feature_x_var,
+                                      feature_y=feature_y_var,
+                                      pred_var=y_pred,
+                                      plot_title=plot_name,
+                                      pred_label=class_labels,
+                                      filter_team=team_filter,
+                                      filter_name=team_names,
+                                      prediction_type=prediction_type)
+
+    return rf_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter
 
 
 def xgb_class_application(data):
