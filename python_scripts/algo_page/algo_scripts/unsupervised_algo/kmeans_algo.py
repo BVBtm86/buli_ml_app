@@ -57,7 +57,7 @@ def kmeans_eda(data, variables, var_filter, code_filter, progress):
                                showlegend=False,
                                height=700,
                                title_text="K-Means Segment Solution Metrics")
-    km_eda_plots.update_traces(line_color='#6600cc')
+    km_eda_plots.update_traces(line_color='#c3110f')
     km_eda_plots.update_xaxes(showgrid=False)
 
     # ##### Ranking Scores

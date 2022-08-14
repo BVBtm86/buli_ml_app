@@ -7,6 +7,10 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix, \
     r2_score, mean_squared_error, mean_absolute_error
 import plotly.express as px
+import base64
+from dtreeviz.trees import dtreeviz
+import uuid
+import re
 
 # ##### Info
 colors_plot = ["#6612cc", '#72bc75', '#c3110f', "#2596be", "#1a202a",
@@ -317,6 +321,7 @@ def regression_metrics(y_train, y_train_pred, y_test, y_test_pred):
     return final_metrics
 
 
+# ##### Plotting Predictions
 def plot_y_reg(data, y, y_pred, plot_title, pred_label, filter_team, filter_name, prediction_type, plot_features=False):
     # ##### Add Prediction to Data
     data_plot = data.copy()
@@ -386,3 +391,146 @@ def plot_y_class(data, feature_x, feature_y, pred_var, plot_title, pred_label, f
     plot_y.update_yaxes(showgrid=False)
 
     return plot_y
+
+
+# ##### Tree Plotting
+def display_tree(final_model, x_train, y_train, target, class_labels, features, plot_label, tree_depth):
+    # ##### Display Parameters
+    if tree_depth == 2:
+        scale_fig = 1.5
+    elif tree_depth == 3:
+        scale_fig = 1.4
+    elif tree_depth == 4:
+        scale_fig = 1.1
+    else:
+        scale_fig = 1
+
+    if tree_depth > 5:
+        position_plot = "LR"
+    else:
+        position_plot = "TD"
+
+    tree_graph = dtreeviz(final_model,
+                          x_data=x_train,
+                          y_data=y_train,
+                          target_name=target,
+                          feature_names=features,
+                          class_names=class_labels,
+                          orientation=position_plot,
+                          title=plot_label,
+                          show_node_labels=True,
+                          fontname="Arial",
+                          title_fontsize=16,
+                          label_fontsize=10,
+                          ticks_fontsize=8,
+                          scale=scale_fig,
+                          colors={'scatter_marker': '#6612cc'})
+    return tree_graph
+
+
+def display_rf_tree(final_model, x_train, y_train, target, class_labels, features, plot_label, tree_depth, tree_no):
+    # ##### Display Parameters
+    if tree_depth == 2:
+        scale_fig = 1.5
+    elif tree_depth == 3:
+        scale_fig = 1.4
+    elif tree_depth == 4:
+        scale_fig = 1.1
+    else:
+        scale_fig = 1
+
+    tree_graph = dtreeviz(final_model.estimators_[tree_no - 1],
+                          x_data=x_train,
+                          y_data=y_train,
+                          target_name=target,
+                          feature_names=features,
+                          class_names=class_labels,
+                          orientation="TD",
+                          title=plot_label,
+                          show_node_labels=True,
+                          fontname="Arial",
+                          title_fontsize=16,
+                          label_fontsize=10,
+                          ticks_fontsize=8,
+                          scale=scale_fig,
+                          colors={'scatter_marker': '#6612cc'})
+    return tree_graph
+
+
+def display_tree_xgb(final_model, num_tree, x_train, y_train, target, class_labels, features, plot_label, tree_depth):
+    # ##### Display Parameters
+    if tree_depth == 2:
+        scale_fig = 1.5
+    elif tree_depth == 3:
+        scale_fig = 1.4
+    elif tree_depth == 4:
+        scale_fig = 1.1
+    else:
+        scale_fig = 1
+
+    tree_graph = dtreeviz(final_model,
+                          tree_index=num_tree,
+                          x_data=x_train,
+                          y_data=y_train,
+                          target_name=target,
+                          feature_names=features,
+                          class_names=class_labels,
+                          title=plot_label,
+                          show_node_labels=True,
+                          fontname="Arial",
+                          title_fontsize=16,
+                          label_fontsize=10,
+                          ticks_fontsize=8,
+                          scale=scale_fig,
+                          colors={'scatter_marker': '#6612cc'})
+
+    return tree_graph
+
+
+def svg_write(svg, center=True):
+    """
+    Disable center to left-margin align like other objects.
+    """
+    # Encode as base 64
+    b64 = base64.b64encode(svg.encode("utf-8")).decode("utf-8")
+
+    # Add some CSS on top
+    css_justify = "center" if center else "left"
+    css = f'<p style="text-align:center; display: flex; justify-content: {css_justify};">'
+    html = f'{css}<img src="data:image/svg+xml;base64,{b64}"/>'
+
+    # Write the HTML
+    return html
+
+
+def download_button_tree(object_to_download, download_filename, button_text):
+    b64 = base64.b64encode(object_to_download.encode()).decode()
+
+    button_uuid = str(uuid.uuid4()).replace('-', '')
+    button_id = re.sub('\d+', '', button_uuid)
+
+    custom_css = f""" 
+            <style>
+                #{button_id} {{
+                    background-color: #ededed;
+                    color: rgb(38, 39, 48);
+                    padding: 0.25em 0.38em;
+                    position: relative;
+                    text-decoration: none;
+                    border-radius: 4px;
+                    border-width: 1px;
+                    border-style: solid;
+                    border-color: #ffffff;
+                    border-image: initial;
+                }} 
+                #{button_id}:hover {{
+                    background-color: #ededed;
+                    border-color: #6600cc;
+                    color: #6600cc;
+                }}
+            </style> """
+
+    dl_link = custom_css + f'<a download="{download_filename}" id="{button_id}" href="data:file/svg;base64,{b64}">' \
+                           f'{button_text}</a><br></br>'
+
+    return dl_link

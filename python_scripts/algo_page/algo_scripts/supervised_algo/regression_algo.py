@@ -361,7 +361,11 @@ def tree_reg_application(data, data_type, team_map, hyperparams, features, predi
                                  filter_name=team_names,
                                  prediction_type=prediction_type)
 
-    return tree_reg_plot, final_reg_metrics, plot_prediction
+    # ##### Tree Parameters for Plot
+    tree_params = [model, x_train, y_train, predictor, None,
+                   features, f"Decision Tree - {plot_name} Games", hyperparams[1]]
+
+    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params
 
 
 def rf_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,

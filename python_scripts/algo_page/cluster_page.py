@@ -3,6 +3,7 @@ from python_scripts.algo_page.algo_scripts.unsupervised_algo.utilities_unsupervi
     linkage_info, metric_info, plot_downloader, data_download
 from python_scripts.algo_page.algo_scripts.unsupervised_algo.hierarchical_algo import hierarchical_dendogram
 from python_scripts.algo_page.algo_scripts.unsupervised_algo.kmeans_algo import kmeans_eda, kmeans_final
+from PIL import Image
 
 
 def cluster_application(cluster_algo, data_app, data_raw, data_map,
@@ -63,10 +64,10 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
                                 config=config,
                                 use_container_width=True)
                 # ##### Display Info
-                st.markdown(f"<b><font color=#6600cc>{linkage_method} Linkage Method</font></b>: "
+                st.markdown(f"<b><font color=#c3110f>{linkage_method} Linkage Method</font></b>: "
                             f"<i>{linkage_info[linkage_types.index(linkage_method)]}</i>.",
                             unsafe_allow_html=True)
-                st.markdown(f"<b><font color=#6600cc>{distance_method} Distance Metric</font></b>: "
+                st.markdown(f"<b><font color=#c3110f>{distance_method} Distance Metric</font></b>: "
                             f"<i>{metric_info[distance_type.index(distance_method)]}</i>.",
                             unsafe_allow_html=True)
 
@@ -118,13 +119,13 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
 
                 st.markdown("Segment Solutions Metrics")
                 st.dataframe(data=kmeans_metric.style.format(formatter="{:.3f}").apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['background-color: #ffffff' if i % 2 == 0 else 'background-color: #e7e7e7'
+                    lambda x: ['background-color: #ffffff' if i % 2 == 0 else 'background-color: #e5e5e6'
                                for i in range(len(x))], axis=0))
-                st.markdown(f"Based on the Exploratory Analysis, we recommend to start with <b><font color=#6600cc>"
-                            f"{info_segments[0]}</font></b>, <b><font color=#6600cc>"
-                            f"{info_segments[1]}</font></b> and <b><font color=#6600cc>"
+                st.markdown(f"Based on the Exploratory Analysis, we recommend to start with <b><font color=#c3110f>"
+                            f"{info_segments[0]}</font></b>, <b><font color=#c3110f>"
+                            f"{info_segments[1]}</font></b> and <b><font color=#c3110f>"
                             f"{info_segments[2]}</font></b> Segments Solution", unsafe_allow_html=True)
             else:
                 with cluster_col:
@@ -146,7 +147,7 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
 
             if len(analysis_stats) > 0:
                 plot_silhouette, silhouette_df, metrics_avg, kmeans_sig, kmeans_plot, \
-                    kmeans_filter, km_filter_sig, km_final_df = \
+                kmeans_filter, km_filter_sig, km_final_df = \
                     kmeans_final(data=final_kmeans_df,
                                  data_stats=data_raw,
                                  data_filter_map=data_map,
@@ -165,30 +166,30 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
                                     use_container_width=True)
 
                 with feature_col:
-                    st.markdown(f"Average Silhouette Score: <b><font color=#6600cc>{metrics_avg[0]:.3f}"
+                    st.markdown(f"Average Silhouette Score: <b><font color=#c3110f>{metrics_avg[0]:.3f}"
                                 f"</font></b>", unsafe_allow_html=True)
-                    st.markdown(f"Calinski Harabaz index : <b><font color=#6600cc>{metrics_avg[1]:.3f}"
+                    st.markdown(f"Calinski Harabaz index : <b><font color=#c3110f>{metrics_avg[1]:.3f}"
                                 f"</font></b>", unsafe_allow_html=True)
-                    st.markdown(f"Davies Bouldin Index: <b><font color=#6600cc>{metrics_avg[2]:.3f}"
+                    st.markdown(f"Davies Bouldin Index: <b><font color=#c3110f>{metrics_avg[2]:.3f}"
                                 f"</font></b>", unsafe_allow_html=True)
                     st.table(data=silhouette_df.style.format(subset=['Size %'], formatter="{:.2%}").format(
                         subset=['Silhouette'], formatter="{:.4f}").apply(
                         lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                    for i in range(len(x))], axis=0).apply(
-                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                    for i in range(len(x))], axis=0).set_table_styles(
                         [{'selector': 'th',
-                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
                 st.subheader("Optimum K-Means Solution")
                 st.dataframe(data=kmeans_sig.T.style.apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['background-color: #ffffff' if i % 2 == 0 else 'background-color: #e7e7e7'
+                    lambda x: ['background-color: #ffffff' if i % 2 == 0 else 'background-color: #e5e5e6'
                                for i in range(len(x))], axis=0))
 
                 st.markdown(f"<b>Note</b>: If a cell contains the <b>No</b> of another column cell, the mean of that "
-                            f"cell is <b><font color=#6600cc>Statistically Higher</font></b> then the mean of "
+                            f"cell is <b><font color=#c3110f>Statistically Higher</font></b> then the mean of "
                             f"that specific column cell", unsafe_allow_html=True)
                 tab_col, kmeans_col = st.columns([2, 8])
                 with tab_col:
@@ -204,6 +205,15 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
                                   f"{feature_plot_x} vs {feature_plot_y} KM Plot.html",
                         mime='text/html')
 
+                    if 'Team' in app_filter:
+                        team_name = app_filter.split(": ")[1]
+                        team_logo = Image.open(f'images/{team_name}.png')
+                        st.image(team_logo, width=100)
+                    else:
+                        team_name = "Bundesliga"
+                        team_logo = Image.open(f'images/{team_name}.png')
+                        st.image(team_logo, width=100)
+
                 with kmeans_col:
                     st.plotly_chart(kmeans_plot,
                                     config=config,
@@ -216,22 +226,22 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
                     st.table(data=kmeans_filter.style.format(formatter="{:.2%}").apply(
                         lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                    for i in range(len(x))], axis=0).apply(
-                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                    for i in range(len(x))], axis=0).set_table_styles(
                         [{'selector': 'th',
-                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
                 with sig_col_results:
                     st.markdown("<b>Filter Significance Testing</b>", unsafe_allow_html=True)
                     st.table(data=km_filter_sig.style.apply(
                         lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                    for i in range(len(x))], axis=0).apply(
-                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                    for i in range(len(x))], axis=0).set_table_styles(
                         [{'selector': 'th',
-                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
                     st.markdown(f"<b>None</b>: If a column contains the <b>No</b> of another column, the % of that "
-                                f"column is <b><font color=#6600cc>Statistically Higher</font></b> then the % of "
+                                f"column is <b><font color=#c3110f>Statistically Higher</font></b> then the % of "
                                 f"that specific column", unsafe_allow_html=True)
         else:
             pass

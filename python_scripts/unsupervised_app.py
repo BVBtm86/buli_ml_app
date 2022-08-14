@@ -13,7 +13,7 @@ def unsupervised_application():
         st.subheader("Unsupervised Learning")
 
     st.markdown(
-        "<b><font color=#6600cc>Unsupervised Learning</font></b> refers to the use of machine learning "
+        "<b><font color=#c3110f>Unsupervised Learning</font></b> refers to the use of machine learning "
         "algorithms to identify patterns in data sets containing data points that are neither classified nor "
         "labeled. The algorithms are thus allowed to classify, label and/or group the data points contained "
         "within the data sets without having any external guidance in performing that task.",
@@ -33,12 +33,12 @@ def unsupervised_application():
                                     menu_icon="cast",
                                     orientation="horizontal",
                                     styles={
-                                        "container": {"width": "100%!important", "background-color": "#ffffff"},
-                                        "nav-link": {"--hover-color": "#e7e7e7"},
+                                        "container": {"width": "100%!important", "background-color": "#e5e5e6"},
+                                        "nav-link": {"--hover-color": "#ffffff"},
                                     })
 
     if unsupervised_algo == "Principal Component Analysis":
-        st.markdown(f"<b><font color=#6600cc>Principal Component Analysis</font></b> or PCA, is a "
+        st.markdown(f"<b><font color=#c3110f>Principal Component Analysis</font></b> or PCA, is a "
                     f"dimensionality-reduction method that is often used to reduce the dimensionality of large data "
                     f"sets, by transforming a large set of variables into a smaller one that still contains most of the"
                     f" information in the large set.", unsafe_allow_html=True)
@@ -71,7 +71,7 @@ def unsupervised_application():
                         feature_code=filter_code)
 
     elif unsupervised_algo == "Cluster Analysis":
-        st.markdown("<b><font color=#6600cc>Cluster Analysis</font></b> or clustering is the task of grouping a set of"
+        st.markdown("<b><font color=#c3110f>Cluster Analysis</font></b> or clustering is the task of grouping a set of"
                     " objects in such a way that objects in the same group (called a cluster) are more similar (in some"
                     " sense) to each other than to those in other groups (clusters).", unsafe_allow_html=True)
 
@@ -114,7 +114,7 @@ def unsupervised_application():
 
         # ##### Sample Size
         df_size = df_unsupervised[(df_unsupervised[filter_var] == filter_code)].shape[0]
-        st.sidebar.markdown(f'<b>Sample Size</b>: <b><font color=#e7e7e7>{df_size}</font></b>', unsafe_allow_html=True)
+        st.sidebar.markdown(f'<b>Sample Size</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
 
         cluster_application(cluster_algo=cluster_option,
                             data_app=df_unsupervised,

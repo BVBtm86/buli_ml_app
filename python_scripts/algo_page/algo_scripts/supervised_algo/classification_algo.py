@@ -1,5 +1,5 @@
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import colors_plot, target_color, \
-    filter_model_team_class, classification_metrics, conf_matrix, plot_y_class
+    filter_model_team_class, classification_metrics, conf_matrix, plot_y_class, display_tree
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -464,7 +464,11 @@ def dt_class_application(data, data_type, team_map, hyperparams, features, predi
                                       filter_name=team_names,
                                       prediction_type=prediction_type)
 
-    return dt_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter
+    # ##### Tree Parameters for Plot
+    tree_params = [model, x_train, y_train, predictor, list(class_labels),
+                   features, f"Decision Tree - {plot_name} Games", hyperparams[1]]
+
+    return dt_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter, tree_params
 
 
 def rf_class_application(data, data_type, team_map, hyperparams, features, predictor, predictor_map,
@@ -546,7 +550,11 @@ def rf_class_application(data, data_type, team_map, hyperparams, features, predi
                                       filter_name=team_names,
                                       prediction_type=prediction_type)
 
-    return rf_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter
+    # ##### Tree Parameters for Plot
+    tree_params = [model, x_train, y_train, predictor, list(class_labels),
+                   features, f"Random Forest - {plot_name} Games", hyperparams[1]]
+
+    return rf_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter, tree_params
 
 
 def xgb_class_application(data, data_type, team_map, hyperparams, features, predictor, predictor_map,
@@ -633,4 +641,8 @@ def xgb_class_application(data, data_type, team_map, hyperparams, features, pred
                                       filter_name=team_names,
                                       prediction_type=prediction_type)
 
-    return xgb_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter
+    # ##### Tree Parameters for Plot
+    tree_params = [model, x_train, y_train, predictor, list(class_labels),
+                   features, f"XgBoosting - {plot_name} Games", hyperparams[1]]
+
+    return xgb_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter, tree_params

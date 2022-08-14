@@ -27,7 +27,7 @@ st.markdown(
     """
     <style>
         .stProgress > div > div > div > div {
-            background-image: linear-gradient(to right, #d5e3d6 , #0db518);
+            background-image: linear-gradient(to right, #e5e5e6 , #c3110f);
         }
     </style>""",
     unsafe_allow_html=True,
@@ -63,7 +63,7 @@ def main():
 
     with title_col:
         st.markdown("")
-        st.markdown("<h1><font color=#c3110f>Bundesliga</font> <font color=#6600cc>Machine Learning</font> "
+        st.markdown("<h1><font color=#c3110f>Bundesliga</font> <font color=#1e1e1e>Machine Learning</font> "
                     "Application</h1>", unsafe_allow_html=True)
 
     # ##### Option Menu Bar
@@ -73,15 +73,15 @@ def main():
         analysis_menu = option_menu(menu_title=None,
                                     options=menu_options,
                                     icons=["house-fill", "upc-scan", "ui-checks-grid", "graph-up"],
-                                    styles={"container": {"background-color": "#e7e7e7"},
-                                            "nav-link": {"--hover-color": "#ffffff"}})
+                                    styles={"container": {"background-color": "#ffffff"},
+                                            "nav-link": {"--hover-color": "#e5e5e6"}})
 
     if analysis_menu == "Home":
         st.markdown(
-            "<b><font color=#6600cc>Machine Learning Application</font></b> that allows the user to perform both "
-            "<b><font color=#6600cc>Classification</font></b> and <b><font color=#6600cc>Regression</font></b> "
-            "analysis thru different <b><font color=#6600cc>Supervised</font></b> algorithms and to learn hidden "
-            "patterns from data thru different <b><font color=#6600cc>Unsupervised</font></b> algorithms based on "
+            "<b><font color=#c3110f>Machine Learning Application</font></b> that allows the user to perform both "
+            "<b><font color=#c3110f>Classification</font></b> and <b><font color=#c3110f>Regression</font></b> "
+            "analysis thru different <b><font color=#c3110f>Supervised</font></b> algorithms and to learn hidden "
+            "patterns from data thru different <b><font color=#c3110f>Unsupervised</font></b> algorithms based on "
             "the <b><font color=#c3110f>Bundesliga</font></b> data. "
             "<br> <br> <b>App Features</b>",
             unsafe_allow_html=True)
@@ -97,14 +97,25 @@ def main():
         * Charts and Tables based on the analysis available for download
         """
         st.markdown(
-            "<b><font color=#6600cc>Data</font></b>: is based on the <b><font color=#6600cc>Bundesliga</font></b> "
+            "<b><font color=#c3110f>Data</font></b>: is based on the <b><font color=#c3110f>Bundesliga</font></b> "
             "<b><font color=#1e1e1e>2017-2022</font></b> Seasons Team Statistics.",
             unsafe_allow_html=True)
         # ##### Footer Page
-        st.markdown(
-            f"<b><font color=#6600cc>Data Reference:</font></b><ul><li><a href='https://fbref.com' "
-            "style='text-decoration: none; '>Team Stats</a></li><li><a href='https://www.bundesliga.com' "
-            "style='text-decoration: none; '>Tracking Stats</a></li>", unsafe_allow_html=True)
+        ref_col, fan_club_name, fan_club_logo = st.columns([10, 1, 1])
+        with fan_club_name:
+            st.markdown(f"<p style='text-align: left;'p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='text-align: right;'p>Created By: ", unsafe_allow_html=True)
+        with fan_club_logo:
+            bvb_ro_logo = Image.open('images/BVB_Romania.png')
+            st.image(bvb_ro_logo, width=50)
+            st.markdown("@ <b><font color = #d20614 style='text-align: center;'>"
+                        "<a href='mailto:omescu.mario.lucian@gmail.com' style='text-decoration: none; '>"
+                        "Mario Omescu</a></font></b>", unsafe_allow_html=True)
+        with ref_col:
+            st.markdown(
+                f"<b><font color=#c3110f>Data Reference:</font></b><ul><li><a href='https://fbref.com' "
+                "style='text-decoration: none; '>Team Stats</a></li><li><a href='https://www.bundesliga.com' "
+                "style='text-decoration: none; '>Tracking Stats</a></li>", unsafe_allow_html=True)
 
     elif analysis_menu == "Unsupervised Learning":
         unsupervised_application()

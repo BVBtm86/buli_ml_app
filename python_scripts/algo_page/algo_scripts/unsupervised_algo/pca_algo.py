@@ -37,10 +37,10 @@ def pca_eda(data, variables, var_filter, code_filter, plot_title):
                         title="Elbow Plot Method",
                         height=700)
     fig_elbow.add_hline(y=1, line_width=3, line_dash="dash",
-                        line_color="#7575a3", opacity=0.5, )
-    fig_elbow.update_layout(plot_bgcolor='#e7e7e7',
+                        line_color="#1e1e1e", opacity=0.5, )
+    fig_elbow.update_layout(plot_bgcolor='#ffffff',
                             xaxis_title='Factors')
-    fig_elbow.update_traces(line_color='#6600cc')
+    fig_elbow.update_traces(line_color='#c3110f')
     fig_elbow.update_xaxes(showgrid=False, zeroline=False)
 
     # ##### Corr Plot
@@ -50,14 +50,14 @@ def pca_eda(data, variables, var_filter, code_filter, plot_title):
 
     pca_corr_plot = px.imshow(np.round(corr_final_df, 3),
                               labels=dict(color="Correlation"),
-                              color_continuous_scale='PRGn',
+                              color_continuous_scale='RdGy',
                               range_color=[-1, 1],
                               aspect="auto",
                               text_auto=True)
 
     pca_corr_plot.update_layout(title=f"<b>{plot_title} Correlation Heatmap</b>",
                                 font=dict(size=14),
-                                plot_bgcolor='#e7e7e7')
+                                plot_bgcolor='#ffffff')
     return pca_stats, pca_eda_tab, optimum_factors, fig_elbow, pca_corr_plot
 
 

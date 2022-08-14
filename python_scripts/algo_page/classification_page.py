@@ -1,7 +1,8 @@
 import streamlit as st
 import numpy as np
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import class_algo_options, \
-    class_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
+    class_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear, svg_write, \
+    download_button_tree, display_tree, display_rf_tree, display_tree_xgb
 from python_scripts.algo_page.algo_scripts.supervised_algo.classification_algo import classification_all_models, \
     linear_class_application, svm_class_application, knn_class_application, naive_class_application, \
     dt_class_application, rf_class_application, xgb_class_application
@@ -479,7 +480,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 # ##### Classification Decision Tree Model
                 if game_prediction != "Game Result":
                     game_prediction += " Result"
-                tree_plot, tree_metrics, tree_matrix, tree_pred_plot, tree_teams = \
+                tree_plot, tree_metrics, tree_matrix, tree_pred_plot, tree_teams, tree_params = \
                     dt_class_application(data=data,
                                          data_type=type_data,
                                          team_map=data_map,
@@ -542,8 +543,40 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            # ##### Displaying the Tree
+            st.subheader("Display Decision Tree")
+            button_col, description_col = st.columns([1, 10])
+            with button_col:
+                show_tree = st.checkbox(label="Display Tree",
+                                        value=False)
+            with description_col:
+                st.markdown("<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
+                            "<font color=#6600cc>Decision Tree </font></b> based on the Model the user created.",
+                            unsafe_allow_html=True)
+            if show_tree:
+                final_tree = display_tree(final_model=tree_params[0],
+                                          x_train=tree_params[1],
+                                          y_train=tree_params[2],
+                                          target=tree_params[3],
+                                          class_labels=tree_params[4],
+                                          features=tree_params[5],
+                                          plot_label=tree_params[6],
+                                          tree_depth=tree_params[7])
+
+                tree_svg_plot = final_tree.svg()
+                tree_show_plot = svg_write(tree_svg_plot)
+                st.write(tree_show_plot, unsafe_allow_html=True)
+
+                download_tree = download_button_tree(
+                    object_to_download=tree_svg_plot,
+                    download_filename=f"Decision Tree - {sample_filter}.svg",
+                    button_text="📥 Download Decision Tree")
+
+                st.markdown(download_tree, unsafe_allow_html=True)
+
         # ##### ''' Random Forest '''
         elif classification_algo == "Random Forest":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size = hyperparameters_nonlinear()
@@ -572,7 +605,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 # ##### Classification Random Forest Model
                 if game_prediction != "Game Result":
                     game_prediction += " Result"
-                rf_plot, rf_metrics, rf_matrix, rf_pred_plot, rf_teams = \
+                rf_plot, rf_metrics, rf_matrix, rf_pred_plot, rf_teams, rf_params = \
                     rf_class_application(data=data,
                                          data_type=type_data,
                                          team_map=data_map,
@@ -635,6 +668,41 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            # ##### Displaying the Tree
+            st.subheader("Display Random Forest Tree")
+            button_col, description_col, tree_no_col = st.columns([1, 8, 2])
+            with button_col:
+                show_tree = st.checkbox(label="Display Tree",
+                                        value=False)
+            with description_col:
+                st.markdown(f"<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
+                            f"<font color=#6600cc>Random Forest Tree </font></b> based on the Model the user created "
+                            f"and the <font color=#6600cc>Tree No</font></b> that was selected.",
+                            unsafe_allow_html=True)
+            if show_tree:
+                with tree_no_col:
+                    tree_no = st.selectbox("Tree No", options=[i+1 for i in range(rf_n_estimators)])
+                final_rf_tree = display_rf_tree(final_model=rf_params[0],
+                                                x_train=rf_params[1],
+                                                y_train=rf_params[2],
+                                                target=rf_params[3],
+                                                class_labels=rf_params[4],
+                                                features=rf_params[5],
+                                                plot_label=f"{rf_params[6]}: Tree No {tree_no}",
+                                                tree_depth=rf_params[7],
+                                                tree_no=tree_no)
+
+                rf_tree_svg_plot = final_rf_tree.svg()
+                rf_tree_show_plot = svg_write(rf_tree_svg_plot)
+                st.write(rf_tree_show_plot, unsafe_allow_html=True)
+
+                download_tree = download_button_tree(
+                    object_to_download=rf_tree_show_plot,
+                    download_filename=f"Random Forest - {sample_filter}.svg",
+                    button_text="📥 Download Random Forest Tree")
+
+                st.markdown(download_tree, unsafe_allow_html=True)
+
         # ##### ''' XgBoost '''
         elif classification_algo == "XgBoost":
             # ##### Hyperparameters
@@ -663,7 +731,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 # ##### Classification XgBoost Model
                 if game_prediction != "Game Result":
                     game_prediction += " Result"
-                xgb_plot, xgb_metrics, xgb_matrix, xgb_pred_plot, xgb_teams = \
+                xgb_plot, xgb_metrics, xgb_matrix, xgb_pred_plot, xgb_teams, xgb_params = \
                     xgb_class_application(data=data,
                                           data_type=type_data,
                                           team_map=data_map,
@@ -688,7 +756,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                         mime='text/html')
 
             # ##### Classification Results
-            st.subheader("XgBoosting Prediction Results")
+            st.subheader("XgBoost Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
                 st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
@@ -725,6 +793,42 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     data=download_plot_prediction,
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
+
+            # ##### Displaying the Tree
+            if xgb_booster == "gbtree":
+                st.subheader("Display XgBoost Tree")
+                button_col, description_col, tree_no_col = st.columns([2, 8, 2])
+                with button_col:
+                    show_tree = st.checkbox(label="Display Tree",
+                                            value=False)
+                with description_col:
+                    st.markdown(f"<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
+                                f"<font color=#6600cc>XgBoost Tree </font></b> based on the Model the user created "
+                                f"and the <font color=#6600cc>Tree No</font></b> that was selected.",
+                                unsafe_allow_html=True)
+                if show_tree:
+                    with tree_no_col:
+                        tree_no = st.selectbox("Tree No", options=[i + 1 for i in range(xgb_n_estimators)])
+                    final_xgb_tree = display_tree_xgb(final_model=xgb_params[0],
+                                                      num_tree=tree_no,
+                                                      x_train=xgb_params[1],
+                                                      y_train=xgb_params[2],
+                                                      target=xgb_params[3],
+                                                      class_labels=xgb_params[4],
+                                                      features=xgb_params[5],
+                                                      plot_label=f"{xgb_params[6]}: Tree No {tree_no}",
+                                                      tree_depth=xgb_params[7])
+
+                    xgb_tree_svg_plot = final_xgb_tree.svg()
+                    xgb_tree_show_plot = svg_write(xgb_tree_svg_plot)
+                    st.write(xgb_tree_show_plot, unsafe_allow_html=True)
+
+                    download_tree = download_button_tree(
+                        object_to_download=xgb_tree_show_plot,
+                        download_filename=f"XgBoost - {sample_filter}.svg",
+                        button_text="📥 Download XgBoost Tree")
+
+                    st.markdown(download_tree, unsafe_allow_html=True)
 
         st.sidebar.markdown("")
     else:
