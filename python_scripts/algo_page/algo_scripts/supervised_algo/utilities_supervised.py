@@ -13,10 +13,9 @@ import uuid
 import re
 
 # ##### Info
-colors_plot = ["#6612cc", '#72bc75', '#c3110f', "#2596be", "#1a202a",
-               "#d2a2f4", "#6e9df0"]
+colors_plot = ["#1a202a", "#2596be", '#c3110f', "#6612cc", '#72bc75', "#f7f705", "#FFBF00"]
 
-target_color = ["#c3110f", "#2596be", "#6612cc"]
+target_color = ["#1a202a", "#2596be", '#c3110f']
 
 class_algo_options = ["", "All", "Logistic Regression", "Support Vector Machine", "Naive Bayes",
                       "K-Nearest Neighbors", "Decision Tree", "Random Forest", "XgBoost"]

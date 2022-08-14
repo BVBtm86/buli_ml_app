@@ -13,7 +13,7 @@ def supervised_application():
         st.subheader("Supervised Learning")
 
     st.markdown(
-        '<b><font color=#6600cc>Supervised Learning</font></b> is the machine learning task of learning a function that'
+        '<b><font color=#c3110f>Supervised Learning</font></b> is the machine learning task of learning a function that'
         ' maps an input to an output based on example input-output pairs. It infers a function from labeled training '
         'data consisting of a set of training examples.', unsafe_allow_html=True)
 
@@ -24,8 +24,8 @@ def supervised_application():
                                   menu_icon="cast",
                                   orientation="horizontal",
                                   styles={
-                                      "container": {"width": "100%!important", "background-color": "#ffffff"},
-                                      "nav-link": {"--hover-color": "#e7e7e7"},
+                                      "container": {"width": "100%!important", "background-color": "#e5e5e6"},
+                                      "nav-link": {"--hover-color": "#ffffff"},
                                   })
     # ##### Load Data
     df_supervised, filter_map, all_stats = load_data_supervised()
@@ -83,16 +83,16 @@ def supervised_application():
 
         # ##### Sample Size
         df_size = df_classification_type[(df_classification_type[filter_var] == filter_code)].shape[0]
-        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#e7e7e7>{df_size}</font></b>', unsafe_allow_html=True)
+        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
 
         if prediction_type == "All Games":
-            st.markdown("<b><font color=#6600cc>Classification</font></b> Analysis: predict the <b>"
-                        "<font color=#6600cc>Game Result</font></b> based on a teams Game Stats.",
+            st.markdown("<b><font color=#c3110f>Classification</font></b> Analysis: predict the <b>"
+                        "<font color=#c3110f>Game Result</font></b> based on a teams Game Stats.",
                         unsafe_allow_html=True)
         else:
-            st.markdown("<b><font color=#6600cc>Classification</font></b> predict the <b>"
-                        "<font color=#6600cc>Game Result</font></b> based on the Game Stats difference between the "
-                        "<b><font color=#6600cc>Home</font></b> and <b><font color=#6600cc>Away</font></b> team.",
+            st.markdown("<b><font color=#c3110f>Classification</font></b> predict the <b>"
+                        "<font color=#c3110f>Game Result</font></b> based on the Game Stats difference between the "
+                        "<b><font color=#c3110f>Home</font></b> and <b><font color=#c3110f>Away</font></b> team.",
                         unsafe_allow_html=True)
 
         # ##### Prediction Stat
@@ -174,7 +174,7 @@ def supervised_application():
 
         # ##### Sample Size
         df_size = df_regression_type[(df_regression_type[filter_var] == filter_code)].shape[0]
-        st.sidebar.markdown(f'<b>Sample Size</b>: <b><font color=#e7e7e7>{df_size}</font></b>', unsafe_allow_html=True)
+        st.sidebar.markdown(f'<b>Sample Size</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
 
         # ##### Prediction Stat
         prediction_stat = st.sidebar.selectbox(label="Prediction Stat",
@@ -201,13 +201,13 @@ def supervised_application():
                                dep_var=prediction_stat)
 
         if prediction_type == "All Games":
-            st.markdown(f"<b><font color=#6600cc>Regression</font></b> Analysis: predict the <b>"
-                        f"<font color=#6600cc>{prediction_stat}</font></b> based on a teams Game Stats.",
+            st.markdown(f"<b><font color=#c3110f>Regression</font></b> Analysis: predict the <b>"
+                        f"<font color=#c3110f>{prediction_stat}</font></b> based on a teams Game Stats.",
                         unsafe_allow_html=True)
         else:
-            st.markdown(f"<b><font color=#6600cc>Regression</font></b> Analysis: predict the <b><font color=#6600cc>"
+            st.markdown(f"<b><font color=#c3110f>Regression</font></b> Analysis: predict the <b><font color=#c3110f>"
                         f"{prediction_stat}</font></b> based on the Game Stats difference between the "
-                        "<b><font color=#6600cc>Home</font></b> and <b><font color=#6600cc>Away</font></b> team.",
+                        "<b><font color=#c3110f>Home</font></b> and <b><font color=#c3110f>Away</font></b> team.",
                         unsafe_allow_html=True)
 
         # ##### Regression Page

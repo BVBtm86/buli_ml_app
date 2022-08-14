@@ -22,12 +22,12 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
         pass
     elif classification_algo == "All":
         st.subheader("Classification Algorithms")
-        st.markdown(f"<b><font color=#6600cc>Classification Algorithms</font></b> "
-                    f"{class_algo_name[class_algo_options.index(classification_algo)]} <b><font color=#6600cc>"
+        st.markdown(f"<b><font color=#c3110f>Classification Algorithms</font></b> "
+                    f"{class_algo_name[class_algo_options.index(classification_algo)]} <b><font color=#c3110f>"
                     f"{dep_var}</font></b>.", unsafe_allow_html=True)
     else:
         st.markdown(f"<h4>{classification_algo} Analysis</h5>", unsafe_allow_html=True)
-        st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> "
+        st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> "
                     f"{class_algo_name[class_algo_options.index(classification_algo)]}", unsafe_allow_html=True)
 
     if classification_algo != "":
@@ -61,9 +61,10 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.plotly_chart(fig_class_plot,
                                     config=config,
                                     use_container_width=True)
-                    st.markdown(f"The best performing Classification Algorithms are <b><font color=#6600cc>{top_class_algo[0]}"
-                                f"</font></b>, <b><font color=#6600cc>{top_class_algo[1]}</font></b> and "
-                                f"<b><font color=#6600cc>{top_class_algo[2]}</font></b>.", unsafe_allow_html=True)
+                    st.markdown(f"The best performing Classification Algorithms are <b><font color=#c3110f>"
+                                f"{top_class_algo[0]}</font></b>, <b><font color=#c3110f>{top_class_algo[1]}"
+                                f"</font></b> and <b><font color=#c3110f>{top_class_algo[2]}</font></b>.",
+                                unsafe_allow_html=True)
 
                 with feature_col:
                     download_plot_class = plot_downloader(fig_class_plot)
@@ -147,27 +148,27 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
             st.subheader("Regression Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
-                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(linear_metrics.style.format(formatter="{:.2%}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
-                st.markdown(f"<b><font color=#6600cc>{linear_teams}</font></b> <b>Observed</b> vs "
-                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{linear_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(linear_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
                 st.plotly_chart(linear_pred_plot,
@@ -256,41 +257,41 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
             st.subheader("SVM Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
-                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(svm_metrics.style.format(formatter="{:.2%}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             if svm_plot is not None:
                 with metrics_col:
-                    st.markdown(f"<b><font color=#6600cc>{svm_teams}</font></b> <b>Observed</b> vs "
-                                f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                    st.markdown(f"<b><font color=#c3110f>{svm_teams}</font></b> <b>Observed</b> vs "
+                                f"<b>Predicted</b> {sample_filter} <b><font color=#c3110f>{game_prediction}</font></b>",
                                 unsafe_allow_html=True)
                     st.table(svm_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                                   for i in range(len(x))], axis=0).apply(
-                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
-                                   for i in range(len(x))], axis=0).set_table_styles(
-                        [{'selector': 'th',
-                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
             else:
                 with pred_col:
-                    st.markdown(f"<b><font color=#6600cc>{svm_teams}</font></b> <b>Observed</b> vs "
-                                f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                    st.markdown(f"<b><font color=#c3110f>{svm_teams}</font></b> <b>Observed</b> vs "
+                                f"<b>Predicted</b> {sample_filter} <b><font color=#c3110f>{game_prediction}</font></b>",
                                 unsafe_allow_html=True)
                     st.table(svm_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                                   for i in range(len(x))], axis=0).apply(
-                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
-                                   for i in range(len(x))], axis=0).set_table_styles(
-                        [{'selector': 'th',
-                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
             if svm_plot is not None:
                 with pred_col:
                     st.plotly_chart(svm_pred_plot,
@@ -341,29 +342,29 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
             st.subheader("Naive Bayes Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
-                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(nb_metrics.style.format(formatter="{:.2%}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
-                st.markdown(f"<b><font color=#6600cc>{nb_teams}</font></b> <b>Observed</b> vs "
-                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{nb_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(
                     nb_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                                   for i in range(len(x))], axis=0).apply(
-                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
-                                   for i in range(len(x))], axis=0).set_table_styles(
-                        [{'selector': 'th',
-                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with result_col:
                 st.info(f"{classification_algo} Classifier does not have Feature Coefficients.")
@@ -416,29 +417,29 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
             st.subheader("KNN Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
-                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(knn_metrics.style.format(formatter="{:.2%}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
-                st.markdown(f"<b><font color=#6600cc>{knn_teams}</font></b> <b>Observed</b> vs "
-                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{knn_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(
                     knn_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                                   for i in range(len(x))], axis=0).apply(
-                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
-                                   for i in range(len(x))], axis=0).set_table_styles(
-                        [{'selector': 'th',
-                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with result_col:
                 st.info(f"{classification_algo} Classifier does not have Feature Coefficients.")
@@ -508,28 +509,28 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
             st.subheader("Decision Tree Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
-                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(tree_metrics.style.format(formatter="{:.2%}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
-                st.markdown(f"<b><font color=#6600cc>{tree_teams}</font></b> <b>Observed</b> vs "
-                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{tree_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(
                     tree_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                                   for i in range(len(x))], axis=0).apply(
-                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
-                                   for i in range(len(x))], axis=0).set_table_styles(
-                        [{'selector': 'th',
-                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
                 st.plotly_chart(tree_pred_plot,
@@ -551,7 +552,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                         value=False)
             with description_col:
                 st.markdown("<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
-                            "<font color=#6600cc>Decision Tree </font></b> based on the Model the user created.",
+                            "<font color=#c3110f>Decision Tree </font></b> based on the Model the user created.",
                             unsafe_allow_html=True)
             if show_tree:
                 final_tree = display_tree(final_model=tree_params[0],
@@ -633,28 +634,28 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
             st.subheader("Random Forest Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
-                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(rf_metrics.style.format(formatter="{:.2%}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
-                st.markdown(f"<b><font color=#6600cc>{rf_teams}</font></b> <b>Observed</b> vs "
-                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{rf_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(
                     rf_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                                   for i in range(len(x))], axis=0).apply(
-                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
-                                   for i in range(len(x))], axis=0).set_table_styles(
-                        [{'selector': 'th',
-                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
                 st.plotly_chart(rf_pred_plot,
@@ -676,8 +677,8 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                         value=False)
             with description_col:
                 st.markdown(f"<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
-                            f"<font color=#6600cc>Random Forest Tree </font></b> based on the Model the user created "
-                            f"and the <font color=#6600cc>Tree No</font></b> that was selected.",
+                            f"<font color=#c3110f>Random Forest Tree </font></b> based on the Model the user created "
+                            f"and the <font color=#c3110f>Tree No</font></b> that was selected.",
                             unsafe_allow_html=True)
             if show_tree:
                 with tree_no_col:
@@ -759,28 +760,28 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
             st.subheader("XgBoost Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{classification_algo}</font></b> Metrics for Predicting "
-                            f"<b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(xgb_metrics.style.format(formatter="{:.2%}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
-                st.markdown(f"<b><font color=#6600cc>{xgb_teams}</font></b> <b>Observed</b> vs "
-                            f"<b>Predicted</b> {sample_filter} <b><font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{xgb_teams}</font></b> <b>Observed</b> vs "
+                            f"<b>Predicted</b> {sample_filter} <b><font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(
                     xgb_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                                   for i in range(len(x))], axis=0).apply(
-                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
-                                   for i in range(len(x))], axis=0).set_table_styles(
-                        [{'selector': 'th',
-                          'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
                 st.plotly_chart(xgb_pred_plot,
@@ -803,8 +804,8 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                             value=False)
                 with description_col:
                     st.markdown(f"<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
-                                f"<font color=#6600cc>XgBoost Tree </font></b> based on the Model the user created "
-                                f"and the <font color=#6600cc>Tree No</font></b> that was selected.",
+                                f"<font color=#c3110f>XgBoost Tree </font></b> based on the Model the user created "
+                                f"and the <font color=#c3110f>Tree No</font></b> that was selected.",
                                 unsafe_allow_html=True)
                 if show_tree:
                     with tree_no_col:

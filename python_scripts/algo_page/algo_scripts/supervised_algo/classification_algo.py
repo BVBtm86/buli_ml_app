@@ -84,7 +84,7 @@ def classification_all_models(data, data_type, features, predictor, progress, al
 
     # ##### Top 3 Algorithms
     best_algo = pd.Series(final_class_df.nlargest(3, columns=['Average']).index)
-    final_best_algo = best_algo.map(dict(zip(final_class_names, all_algo[1:]))).values
+    final_best_algo = best_algo.map(dict(zip(final_class_names, all_algo[2:]))).values
 
     return fig_class_all, final_class_df, final_best_algo
 
@@ -424,10 +424,10 @@ def dt_class_application(data, data_type, team_map, hyperparams, features, predi
     dt_class_plot.update_layout(
         title=f"<b>{plot_name}</b> Games - Decision Tree Feature Importance by <b>{prediction_type}</b>",
         plot_bgcolor='rgba(0,0,0,0)',
-        yaxis=dict(tickformat='.2f',
-                   hoverformat=".3f"),
+        xaxis=dict(tickformat='.0%',
+                   hoverformat=".2%"),
         height=plot_height)
-    dt_class_plot.update_traces(marker_color="#6612cc")
+    dt_class_plot.update_traces(marker_color="#c3110f")
 
     # ##### Prediction Team Filter
     team_filter, team_names, feature_x_var, feature_y_var = filter_model_team_class(data=data,
@@ -510,10 +510,10 @@ def rf_class_application(data, data_type, team_map, hyperparams, features, predi
     rf_class_plot.update_layout(
         title=f"<b>{plot_name}</b> Games - Random Forest Feature Importance by <b>{prediction_type}</b>",
         plot_bgcolor='rgba(0,0,0,0)',
-        yaxis=dict(tickformat='.2f',
-                   hoverformat=".3f"),
+        xaxis=dict(tickformat='.0%',
+                   hoverformat=".2%"),
         height=plot_height)
-    rf_class_plot.update_traces(marker_color="#6612cc")
+    rf_class_plot.update_traces(marker_color="#c3110f")
 
     # ##### Prediction Team Filter
     team_filter, team_names, feature_x_var, feature_y_var = filter_model_team_class(data=data,
@@ -601,10 +601,10 @@ def xgb_class_application(data, data_type, team_map, hyperparams, features, pred
     xgb_class_plot.update_layout(
         title=f"<b>{plot_name}</b> Games - XgBoosting Feature Importance by <b>{prediction_type}</b>",
         plot_bgcolor='rgba(0,0,0,0)',
-        yaxis=dict(tickformat='.2f',
-                   hoverformat=".3f"),
+        xaxis=dict(tickformat='.0%',
+                   hoverformat=".2%"),
         height=plot_height)
-    xgb_class_plot.update_traces(marker_color="#6612cc")
+    xgb_class_plot.update_traces(marker_color="#c3110f")
 
     # ##### Prediction Team Filter
     team_filter, team_names, feature_x_var, feature_y_var = filter_model_team_class(data=data,

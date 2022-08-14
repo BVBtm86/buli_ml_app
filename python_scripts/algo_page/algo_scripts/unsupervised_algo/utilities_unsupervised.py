@@ -6,8 +6,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
 # ##### Info
-colors_plot = ["#c3110f", '#72bc75', '#6612cc', "#2596be", "#1a202a",
-               "#dbf700", "#f7f705", "#6e9df0", "#d2a2f4", "#f7f7f7"]
+colors_plot = ["#1a202a", "#2596be", '#c3110f', "#6612cc", '#72bc75',
+               "#f7f705", "#FFBF00", "#d2a2f4", "#6e9df0", "#dbf700"]
+
 
 linkage_info = ["the distance between two clusters is computed as the increase in the 'error sum of squares' "
                 "after fusing two clusters into a single cluster",

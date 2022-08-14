@@ -101,6 +101,16 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
 
         analysis_stage = st.sidebar.selectbox("Analysis Stage", ["Data Exploratory", "Final Analysis"])
         if analysis_stage == 'Data Exploratory':
+            with feature_col:
+                if 'Team' in app_filter:
+                    team_name = app_filter.split(": ")[1]
+                    team_logo = Image.open(f'images/{team_name}.png')
+                    st.image(team_logo, width=100)
+                else:
+                    team_name = "Bundesliga"
+                    team_logo = Image.open(f'images/{team_name}.png')
+                    st.image(team_logo, width=100)
+
             if len(analysis_stats) > 0:
                 with cluster_col:
                     with st.spinner("Running KMeans Analysis ....."):

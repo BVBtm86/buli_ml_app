@@ -80,7 +80,7 @@ def regression_all_models(data, data_type, features, predictor, progress, all_al
 
     # ##### Top 3 Algorithms
     best_algo = pd.Series(final_reg_df.nlargest(3, columns=['Average']).index)
-    final_best_algo = best_algo.map(dict(zip(final_reg_names, all_algo[1:]))).values
+    final_best_algo = best_algo.map(dict(zip(final_reg_names, all_algo[2:]))).values
 
     return fig_reg_all, final_reg_df, final_best_algo
 
