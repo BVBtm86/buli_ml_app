@@ -343,12 +343,12 @@ def plot_y_reg(data, y, y_pred, plot_title, pred_label, filter_team, filter_name
                         title=f"{plot_title} Games <b>Observed {pred_label}</b> vs <b>Predicted {pred_label}</b> "
                               f"for <b>{filter_team}</b> by <b>{prediction_type}</b>",
                         trendline="ols",
-                        trendline_color_override="#c3110f")
+                        trendline_color_override="#1e1e1e")
     plot_y.update_layout(plot_bgcolor='rgba(0,0,0,0)',
                          xaxis_title=f"Observed {pred_label}",
                          yaxis_title=f"Predicted {pred_label}",
                          height=plot_height)
-    plot_y.update_traces(marker_color='#6612cc')
+    plot_y.update_traces(marker_color='#c3110f')
     plot_y.update_xaxes(showgrid=False)
     plot_y.update_yaxes(showgrid=False)
 
@@ -404,10 +404,7 @@ def display_tree(final_model, x_train, y_train, target, class_labels, features, 
     else:
         scale_fig = 1
 
-    if tree_depth > 5:
-        position_plot = "LR"
-    else:
-        position_plot = "TD"
+    position_plot = "LR"
 
     tree_graph = dtreeviz(final_model,
                           x_data=x_train,
@@ -438,13 +435,15 @@ def display_rf_tree(final_model, x_train, y_train, target, class_labels, feature
     else:
         scale_fig = 1
 
+    position_plot = "LR"
+
     tree_graph = dtreeviz(final_model.estimators_[tree_no - 1],
                           x_data=x_train,
                           y_data=y_train,
                           target_name=target,
                           feature_names=features,
                           class_names=class_labels,
-                          orientation="TD",
+                          orientation=position_plot,
                           title=plot_label,
                           show_node_labels=True,
                           fontname="Arial",
@@ -457,15 +456,14 @@ def display_rf_tree(final_model, x_train, y_train, target, class_labels, feature
 
 
 def display_tree_xgb(final_model, num_tree, x_train, y_train, target, class_labels, features, plot_label, tree_depth):
+    print(tree_depth)
     # ##### Display Parameters
     if tree_depth == 2:
         scale_fig = 1.5
-    elif tree_depth == 3:
-        scale_fig = 1.4
-    elif tree_depth == 4:
-        scale_fig = 1.1
     else:
-        scale_fig = 1
+        scale_fig = 0.5
+
+    position_plot = "LR"
 
     tree_graph = dtreeviz(final_model,
                           tree_index=num_tree,
@@ -474,6 +472,7 @@ def display_tree_xgb(final_model, num_tree, x_train, y_train, target, class_labe
                           target_name=target,
                           feature_names=features,
                           class_names=class_labels,
+                          orientation=position_plot,
                           title=plot_label,
                           show_node_labels=True,
                           fontname="Arial",

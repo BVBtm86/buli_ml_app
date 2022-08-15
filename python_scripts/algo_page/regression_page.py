@@ -21,12 +21,12 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
         pass
     elif regression_algo == "All":
         st.subheader("Regression Algorithms")
-        st.markdown(f"<b><font color=#6600cc>Regression Algorithms</font></b> "
-                    f"{reg_algo_name[reg_algo_options.index(regression_algo)]} <b><font color=#6600cc>"
+        st.markdown(f"<b><font color=#c3110f>Regression Algorithms</font></b> "
+                    f"{reg_algo_name[reg_algo_options.index(regression_algo)]} <b><font color=#c3110f>"
                     f"{dep_var}</font></b>.", unsafe_allow_html=True)
     else:
         st.markdown(f"<h4>{regression_algo} Analysis</h5>", unsafe_allow_html=True)
-        st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> "
+        st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> "
                     f"{reg_algo_name[reg_algo_options.index(regression_algo)]}", unsafe_allow_html=True)
 
     # ##### Features
@@ -59,9 +59,9 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     st.plotly_chart(fig_reg_plot,
                                     config=config,
                                     use_container_width=True)
-                    st.markdown(f"The best performing Regression Algorithms are <b><font color=#6600cc>{top_reg_algo[0]}"
-                                f"</font></b>, <b><font color=#6600cc>{top_reg_algo[1]}</font></b> and "
-                                f"<b><font color=#6600cc>{top_reg_algo[2]}</font></b>.", unsafe_allow_html=True)
+                    st.markdown(f"The best performing Regression Algorithms are <b><font color=#c3110f>{top_reg_algo[0]}"
+                                f"</font></b>, <b><font color=#c3110f>{top_reg_algo[1]}</font></b> and "
+                                f"<b><font color=#c3110f>{top_reg_algo[2]}</font></b>.", unsafe_allow_html=True)
 
                 with feature_col:
                     download_plot_reg = plot_downloader(fig_reg_plot)
@@ -129,17 +129,17 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
             st.subheader("Regression Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> Prediction Metrics by <b>"
-                            f"<font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
+                            f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(linear_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
                     subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
             with pred_col:
                 st.plotly_chart(linear_pred_plot,
                                 config=config,
@@ -175,14 +175,16 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                              value=1)
                     svm_degree = 1
                     svm_gamma = st.select_slider(label='Kernel coefficient',
-                                                 options=[0.0001, 0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10])
+                                                 options=[0.0001, 0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10],
+                                                 value=1)
                 elif svm_kernel == 'sigmoid':
                     svm_c = st.select_slider(label='Regularization',
                                              options=[0.1, 1, 5, 10, 50, 100],
                                              value=1)
                     svm_degree = 1
                     svm_gamma = st.select_slider(label='Kernel coefficient',
-                                                 options=[0.0001, 0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10])
+                                                 options=[0.0001, 0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10],
+                                                 value=1)
                 else:
                     svm_c = None
                     svm_degree = None
@@ -225,17 +227,17 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
             st.subheader("SVM Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> Prediction Metrics by <b>"
-                            f"<font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
+                            f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(svm_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
                     subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
             if svm_plot is not None:
                 with pred_col:
                     st.plotly_chart(svm_pred_plot,
@@ -288,17 +290,17 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
             st.subheader("KNN Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> Prediction Metrics by <b>"
-                            f"<font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
+                            f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(knn_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
                     subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with result_col:
                 st.info(f"{regression_algo} Regression does not have Feature Coefficients.")
@@ -367,17 +369,17 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
             st.subheader("Decision Tree Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> Prediction Metrics by <b>"
-                            f"<font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
+                            f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(tree_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
                     subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
             with pred_col:
                 st.plotly_chart(tree_pred_plot,
                                 config=config,
@@ -399,7 +401,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                         value=False)
             with description_col:
                 st.markdown("<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
-                            "<font color=#6600cc>Decision Tree </font></b> based on the Model the user created.",
+                            "<font color=#c3110f>Decision Tree </font></b> based on the Model the user created.",
                             unsafe_allow_html=True)
             if show_tree:
                 final_tree = display_tree(final_model=tree_params[0],
@@ -411,16 +413,17 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                           plot_label=tree_params[6],
                                           tree_depth=tree_params[7])
 
-                tree_svg_plot = final_tree.svg()
-                tree_show_plot = svg_write(tree_svg_plot)
-                st.write(tree_show_plot, unsafe_allow_html=True)
+                with st.expander("Show Tree"):
+                    tree_svg_plot = final_tree.svg()
+                    tree_show_plot = svg_write(tree_svg_plot)
+                    st.write(tree_show_plot, unsafe_allow_html=True)
 
-                download_tree = download_button_tree(
-                    object_to_download=tree_svg_plot,
-                    download_filename=f"Decision Tree - {sample_filter}.svg",
-                    button_text="📥 Download Decision Tree")
+                    download_tree = download_button_tree(
+                        object_to_download=tree_svg_plot,
+                        download_filename=f"Decision Tree - {sample_filter}.svg",
+                        button_text="📥 Download Decision Tree")
 
-                st.markdown(download_tree, unsafe_allow_html=True)
+                    st.markdown(download_tree, unsafe_allow_html=True)
 
         # ##### ''' Random Forest '''
         elif regression_algo == "Random Forest":
@@ -450,7 +453,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Random Forest Model
-                rf_plot, rf_metrics, rf_pred_plot = \
+                rf_plot, rf_metrics, rf_pred_plot, rf_params = \
                     rf_reg_application(data=data,
                                        data_type=type_data,
                                        team_map=data_map,
@@ -477,17 +480,17 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
             st.subheader("Random Forest Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> Prediction Metrics by <b>"
-                            f"<font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
+                            f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(rf_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
                     subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
             with pred_col:
                 st.plotly_chart(rf_pred_plot,
                                 config=config,
@@ -500,6 +503,43 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     data=download_plot_prediction,
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
+
+            # ##### Displaying the Tree
+            st.subheader("Display Random Forest Tree")
+            button_col, description_col, tree_no_col = st.columns([1, 8, 2])
+            with button_col:
+                show_tree = st.checkbox(label="Display Tree",
+                                        value=False)
+            with description_col:
+                st.markdown(f"<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
+                            f"<font color=#c3110f>Random Forest Tree </font></b> based on the Model the user created "
+                            f"and the <font color=#c3110f>Tree No</font></b> that was selected.",
+                            unsafe_allow_html=True)
+
+            if show_tree:
+                with tree_no_col:
+                    tree_no = st.selectbox("Tree No", options=[i+1 for i in range(rf_n_estimators)])
+                final_rf_tree = display_rf_tree(final_model=rf_params[0],
+                                                x_train=rf_params[1],
+                                                y_train=rf_params[2],
+                                                target=rf_params[3],
+                                                class_labels=rf_params[4],
+                                                features=rf_params[5],
+                                                plot_label=f"{rf_params[6]}: Tree No {tree_no}",
+                                                tree_depth=rf_params[7],
+                                                tree_no=tree_no)
+
+                with st.expander("Show Tree"):
+                    rf_tree_svg_plot = final_rf_tree.svg()
+                    rf_tree_show_plot = svg_write(rf_tree_svg_plot)
+                    st.write(rf_tree_show_plot, unsafe_allow_html=True)
+
+                    download_tree = download_button_tree(
+                        object_to_download=rf_tree_show_plot,
+                        download_filename=f"Random Forest - {sample_filter}.svg",
+                        button_text="📥 Download Random Forest Tree")
+
+                    st.markdown(download_tree, unsafe_allow_html=True)
 
         # ##### ''' XgBoost '''
         elif regression_algo == "XgBoost":
@@ -527,7 +567,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression XgBoosting Model
-                xgb_plot, xgb_metrics, xgb_pred_plot = \
+                xgb_plot, xgb_metrics, xgb_pred_plot, xgb_params = \
                     xgb_reg_application(data=data,
                                         data_type=type_data,
                                         team_map=data_map,
@@ -554,17 +594,17 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
             st.subheader("XgBoosting Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
-                st.markdown(f"<b><font color=#6600cc>{regression_algo}</font></b> Prediction Metrics by <b>"
-                            f"<font color=#6600cc>{game_prediction}</font></b>",
+                st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
+                            f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
                 st.table(xgb_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
                     subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
                     lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
                                for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #6600cc'
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
-                      'props': [('background-color', '#aeaec5'), ('color', '#ffffff')]}]))
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
             with pred_col:
                 st.plotly_chart(xgb_pred_plot,
                                 config=config,
@@ -577,6 +617,44 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     data=download_plot_prediction,
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
+
+            # ##### Displaying the Tree
+            if xgb_booster == "gbtree":
+                st.subheader("Display XgBoost Tree")
+                button_col, description_col, tree_no_col = st.columns([2, 8, 2])
+                with button_col:
+                    show_tree = st.checkbox(label="Display Tree",
+                                            value=False)
+                with description_col:
+                    st.markdown(f"<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
+                                f"<font color=#c3110f>XgBoost Tree </font></b> based on the Model the user created "
+                                f"and the <font color=#c3110f>Tree No</font></b> that was selected.",
+                                unsafe_allow_html=True)
+
+                if show_tree:
+                    with tree_no_col:
+                        tree_no = st.selectbox("Tree No", options=[i + 1 for i in range(xgb_n_estimators)])
+                    final_xgb_tree = display_tree_xgb(final_model=xgb_params[0],
+                                                      num_tree=tree_no,
+                                                      x_train=xgb_params[1],
+                                                      y_train=xgb_params[2],
+                                                      target=xgb_params[3],
+                                                      class_labels=xgb_params[4],
+                                                      features=xgb_params[5],
+                                                      plot_label=f"{xgb_params[6]}: Tree No {tree_no}",
+                                                      tree_depth=xgb_params[7])
+
+                    with st.expander("Show Tree"):
+                        xgb_tree_svg_plot = final_xgb_tree.svg()
+                        xgb_tree_show_plot = svg_write(xgb_tree_svg_plot)
+                        st.write(xgb_tree_show_plot, unsafe_allow_html=True)
+
+                        download_tree = download_button_tree(
+                            object_to_download=xgb_tree_show_plot,
+                            download_filename=f"XgBoost - {sample_filter}.svg",
+                            button_text="📥 Download XgBoost Tree")
+
+                        st.markdown(download_tree, unsafe_allow_html=True)
 
         st.sidebar.markdown("")
     else:

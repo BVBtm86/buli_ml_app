@@ -131,7 +131,7 @@ def linear_reg_application(data, data_type, team_map, hyperparams, features, pre
         yaxis=dict(tickformat='.2f',
                    hoverformat=".3f"),
         height=plot_height)
-    linear_reg_plot.update_traces(marker_color="#6612cc")
+    linear_reg_plot.update_traces(marker_color="#c3110f")
 
     # ##### Prediction Team Filter
     team_filter, team_names = filter_model_team_reg(data=data,
@@ -209,7 +209,7 @@ def svm_reg_application(data, data_type, team_map, hyperparams, features, predic
             yaxis=dict(tickformat='.2f',
                        hoverformat=".3f"),
             height=plot_height)
-        svm_reg_plot.update_traces(marker_color="#6612cc")
+        svm_reg_plot.update_traces(marker_color="#c3110f")
     else:
         svm_reg_plot = None
 
@@ -333,7 +333,7 @@ def tree_reg_application(data, data_type, team_map, hyperparams, features, predi
         yaxis=dict(tickformat='.2f',
                    hoverformat=".3f"),
         height=plot_height)
-    tree_reg_plot.update_traces(marker_color="#6612cc")
+    tree_reg_plot.update_traces(marker_color="#c3110f")
 
     # ##### Prediction Team Filter
     team_filter, team_names = filter_model_team_reg(data=data,
@@ -409,7 +409,7 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
         yaxis=dict(tickformat='.2f',
                    hoverformat=".3f"),
         height=plot_height)
-    tree_reg_plot.update_traces(marker_color="#6612cc")
+    tree_reg_plot.update_traces(marker_color="#c3110f")
 
     # ##### Prediction Team Filter
     team_filter, team_names = filter_model_team_reg(data=data,
@@ -437,7 +437,11 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
                                  filter_name=team_names,
                                  prediction_type=prediction_type)
 
-    return tree_reg_plot, final_reg_metrics, plot_prediction
+    # ##### Tree Parameters for Plot
+    tree_params = [model, x_train, y_train, predictor, None,
+                   features, f"Random Forest - {plot_name} Games", hyperparams[2]]
+
+    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params
 
 
 def xgb_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
@@ -485,7 +489,7 @@ def xgb_reg_application(data, data_type, team_map, hyperparams, features, predic
         yaxis=dict(tickformat='.2f',
                    hoverformat=".3f"),
         height=plot_height)
-    xgb_reg_plot.update_traces(marker_color="#6612cc")
+    xgb_reg_plot.update_traces(marker_color="#c3110f")
 
     # ##### Prediction Team Filter
     team_filter, team_names = filter_model_team_reg(data=data,
@@ -513,4 +517,8 @@ def xgb_reg_application(data, data_type, team_map, hyperparams, features, predic
                                  filter_name=team_names,
                                  prediction_type=prediction_type)
 
-    return xgb_reg_plot, final_reg_metrics, plot_prediction
+    # ##### Tree Parameters for Plot
+    tree_params = [model, x_train, y_train, predictor, None,
+                   features, f"Random Forest - {plot_name} Games", hyperparams[3]]
+
+    return xgb_reg_plot, final_reg_metrics, plot_prediction, tree_params

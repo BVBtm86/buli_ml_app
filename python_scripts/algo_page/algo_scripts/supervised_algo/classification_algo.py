@@ -552,7 +552,7 @@ def rf_class_application(data, data_type, team_map, hyperparams, features, predi
 
     # ##### Tree Parameters for Plot
     tree_params = [model, x_train, y_train, predictor, list(class_labels),
-                   features, f"Random Forest - {plot_name} Games", hyperparams[1]]
+                   features, f"Random Forest - {plot_name} Games", hyperparams[2]]
 
     return rf_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter, tree_params
 
@@ -643,6 +643,6 @@ def xgb_class_application(data, data_type, team_map, hyperparams, features, pred
 
     # ##### Tree Parameters for Plot
     tree_params = [model, x_train, y_train, predictor, list(class_labels),
-                   features, f"XgBoosting - {plot_name} Games", hyperparams[1]]
+                   features, f"XgBoosting - {plot_name} Games", hyperparams[3]]
 
     return xgb_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter, tree_params
