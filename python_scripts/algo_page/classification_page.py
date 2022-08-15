@@ -203,14 +203,16 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                              value=1)
                     svm_degree = 1
                     svm_gamma = st.select_slider(label='Kernel coefficient',
-                                                 options=[0.0001, 0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10])
+                                                 options=[0.0001, 0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10],
+                                                 value=1)
                 elif svm_kernel == 'sigmoid':
                     svm_c = st.select_slider(label='Regularization',
                                              options=[0.1, 1, 5, 10, 50, 100],
                                              value=1)
                     svm_degree = 1
                     svm_gamma = st.select_slider(label='Kernel coefficient',
-                                                 options=[0.0001, 0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10])
+                                                 options=[0.0001, 0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10],
+                                                 value=1)
                 else:
                     svm_c = None
                     svm_degree = None
@@ -564,16 +566,17 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                           plot_label=tree_params[6],
                                           tree_depth=tree_params[7])
 
-                tree_svg_plot = final_tree.svg()
-                tree_show_plot = svg_write(tree_svg_plot)
-                st.write(tree_show_plot, unsafe_allow_html=True)
+                with st.expander("Show Tree"):
+                    tree_svg_plot = final_tree.svg()
+                    tree_show_plot = svg_write(tree_svg_plot)
+                    st.write(tree_show_plot, unsafe_allow_html=True)
 
-                download_tree = download_button_tree(
-                    object_to_download=tree_svg_plot,
-                    download_filename=f"Decision Tree - {sample_filter}.svg",
-                    button_text="📥 Download Decision Tree")
+                    download_tree = download_button_tree(
+                        object_to_download=tree_svg_plot,
+                        download_filename=f"Decision Tree - {sample_filter}.svg",
+                        button_text="📥 Download Decision Tree")
 
-                st.markdown(download_tree, unsafe_allow_html=True)
+                    st.markdown(download_tree, unsafe_allow_html=True)
 
         # ##### ''' Random Forest '''
         elif classification_algo == "Random Forest":
@@ -693,16 +696,17 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                                 tree_depth=rf_params[7],
                                                 tree_no=tree_no)
 
-                rf_tree_svg_plot = final_rf_tree.svg()
-                rf_tree_show_plot = svg_write(rf_tree_svg_plot)
-                st.write(rf_tree_show_plot, unsafe_allow_html=True)
+                with st.expander("Show Tree"):
+                    rf_tree_svg_plot = final_rf_tree.svg()
+                    rf_tree_show_plot = svg_write(rf_tree_svg_plot)
+                    st.write(rf_tree_show_plot, unsafe_allow_html=True)
 
-                download_tree = download_button_tree(
-                    object_to_download=rf_tree_show_plot,
-                    download_filename=f"Random Forest - {sample_filter}.svg",
-                    button_text="📥 Download Random Forest Tree")
+                    download_tree = download_button_tree(
+                        object_to_download=rf_tree_show_plot,
+                        download_filename=f"Random Forest - {sample_filter}.svg",
+                        button_text="📥 Download Random Forest Tree")
 
-                st.markdown(download_tree, unsafe_allow_html=True)
+                    st.markdown(download_tree, unsafe_allow_html=True)
 
         # ##### ''' XgBoost '''
         elif classification_algo == "XgBoost":
@@ -820,16 +824,17 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                                       plot_label=f"{xgb_params[6]}: Tree No {tree_no}",
                                                       tree_depth=xgb_params[7])
 
-                    xgb_tree_svg_plot = final_xgb_tree.svg()
-                    xgb_tree_show_plot = svg_write(xgb_tree_svg_plot)
-                    st.write(xgb_tree_show_plot, unsafe_allow_html=True)
+                    with st.expander("Show Tree"):
+                        xgb_tree_svg_plot = final_xgb_tree.svg()
+                        xgb_tree_show_plot = svg_write(xgb_tree_svg_plot)
+                        st.write(xgb_tree_show_plot, unsafe_allow_html=True)
 
-                    download_tree = download_button_tree(
-                        object_to_download=xgb_tree_show_plot,
-                        download_filename=f"XgBoost - {sample_filter}.svg",
-                        button_text="📥 Download XgBoost Tree")
+                        download_tree = download_button_tree(
+                            object_to_download=xgb_tree_show_plot,
+                            download_filename=f"XgBoost - {sample_filter}.svg",
+                            button_text="📥 Download XgBoost Tree")
 
-                    st.markdown(download_tree, unsafe_allow_html=True)
+                        st.markdown(download_tree, unsafe_allow_html=True)
 
         st.sidebar.markdown("")
     else:

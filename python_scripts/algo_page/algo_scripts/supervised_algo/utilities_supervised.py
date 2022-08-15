@@ -423,7 +423,7 @@ def display_tree(final_model, x_train, y_train, target, class_labels, features, 
                           label_fontsize=10,
                           ticks_fontsize=8,
                           scale=scale_fig,
-                          colors={'scatter_marker': '#6612cc'})
+                          colors={'scatter_marker': '#c3110f'})
     return tree_graph
 
 
@@ -452,7 +452,7 @@ def display_rf_tree(final_model, x_train, y_train, target, class_labels, feature
                           label_fontsize=10,
                           ticks_fontsize=8,
                           scale=scale_fig,
-                          colors={'scatter_marker': '#6612cc'})
+                          colors={'scatter_marker': '#c3110f'})
     return tree_graph
 
 
@@ -481,7 +481,7 @@ def display_tree_xgb(final_model, num_tree, x_train, y_train, target, class_labe
                           label_fontsize=10,
                           ticks_fontsize=8,
                           scale=scale_fig,
-                          colors={'scatter_marker': '#6612cc'})
+                          colors={'scatter_marker': '#c3110f'})
 
     return tree_graph
 
@@ -511,21 +511,21 @@ def download_button_tree(object_to_download, download_filename, button_text):
     custom_css = f""" 
             <style>
                 #{button_id} {{
-                    background-color: #ededed;
-                    color: rgb(38, 39, 48);
+                    background-color: #ffffff;
+                    color: #1e1e1e;
                     padding: 0.25em 0.38em;
                     position: relative;
                     text-decoration: none;
                     border-radius: 4px;
                     border-width: 1px;
                     border-style: solid;
-                    border-color: #ffffff;
+                    border-color: #e5e5e6;
                     border-image: initial;
                 }} 
                 #{button_id}:hover {{
-                    background-color: #ededed;
-                    border-color: #6600cc;
-                    color: #6600cc;
+                    background-color: #ffffff;
+                    border-color: #c3110f;
+                    color: #c3110f;
                 }}
             </style> """
 
