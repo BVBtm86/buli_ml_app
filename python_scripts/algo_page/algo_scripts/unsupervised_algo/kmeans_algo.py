@@ -148,12 +148,14 @@ def kmeans_final(data, data_stats, data_filter_map, variables, var_filter, code_
     if len(variables) > 1:
         clusters = go.Scatter(x=kmeans_df[feature_x],
                               y=kmeans_df[feature_y],
+                              text=kmeans_df['Segment'].apply(lambda x: f'Segment {x}'),
                               marker_color=kmeans_df['Segment'],
                               showlegend=False,
                               mode='markers',
                               marker=dict(colorscale=colors_plot[:no_clusters],
                                           size=3,
-                                          opacity=0.9))
+                                          opacity=0.9),
+                              hoverinfo=['x', 'y', 'text'])
 
         if data_format == "Original Data":
             fig_silhouette.add_trace(clusters, 2, 1)
@@ -164,6 +166,7 @@ def kmeans_final(data, data_stats, data_filter_map, variables, var_filter, code_
         centers_ = pd.DataFrame(centers_, columns=variables)
         centers = go.Scatter(x=centers_.loc[:, feature_x],
                              y=centers_.loc[:, feature_y],
+                             text=[f'Segment {i + 1}' for i in range(no_clusters)],
                              showlegend=False,
                              mode='markers',
                              marker=dict(size=14,
