@@ -157,7 +157,7 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
 
             if len(analysis_stats) > 0:
                 plot_silhouette, silhouette_df, metrics_avg, kmeans_sig, kmeans_plot, \
-                kmeans_filter, km_filter_sig, km_final_df = \
+                    kmeans_filter, km_filter_sig, km_final_df = \
                     kmeans_final(data=final_kmeans_df,
                                  data_stats=data_raw,
                                  data_filter_map=data_map,

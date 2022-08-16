@@ -84,11 +84,12 @@ def optimum_pca(data, variables, no_components, var_filter, code_filter):
 
 
 def pca_plot(data, filter_labels, x_feature, y_feature, pca_representation, game_filter):
-
+    # ##### Data Plot
+    data_plot = data.copy()
     if 'Team: ' not in pca_representation:
         label_transform = dict(zip(filter_labels[filter_labels['Statistics'] == pca_representation]['Code'],
                                filter_labels[filter_labels['Statistics'] == pca_representation]['Label']))
-        data[pca_representation] = data[pca_representation].map(label_transform)
+        data_plot[pca_representation] = data_plot[pca_representation].map(label_transform)
         final_map = \
             dict(zip(filter_labels[filter_labels['Statistics'] == pca_representation]['Label'].values,
                      colors_plot[:len(filter_labels[filter_labels['Statistics'] == pca_representation]
@@ -96,10 +97,11 @@ def pca_plot(data, filter_labels, x_feature, y_feature, pca_representation, game
     else:
         label_transform = dict(zip(filter_labels[filter_labels['Option'] == pca_representation]['Code'],
                                filter_labels[filter_labels['Option'] == pca_representation]['Label']))
-        data[pca_representation] = data['Team'].map(label_transform)
-        final_map = dict(zip(data[pca_representation].dropna().unique(), [colors_plot[0]]))
+        data_plot[pca_representation] = data_plot['Team'].map(label_transform)
+        final_map = dict(zip(data_plot[pca_representation].dropna().unique(), [colors_plot[0]]))
 
-    pca_fig = px.scatter(data,
+    # ##### Label for Plot
+    pca_fig = px.scatter(data_plot,
                          x=x_feature,
                          y=y_feature,
                          color=pca_representation,

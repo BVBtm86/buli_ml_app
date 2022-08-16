@@ -228,14 +228,38 @@ def kmeans_final(data, data_stats, data_filter_map, variables, var_filter, code_
     # ##### Filter Results
     data_filter = data.loc[(data[var_filter] == code_filter)].reset_index(drop=True)
     data_filter = data_filter.drop(columns=variables)
+    data_filter = data_filter.drop(columns=['Match Day', 'Opponent'])
     data_filter['Segment'] = cluster_labels
     filter_results_df, filter_sig_tab = kmeans_filters(data=data_filter,
                                                        data_map=data_filter_map,
                                                        no_clusters=no_clusters,
                                                        filter_feature=var_filter)
 
+    # ##### Map Data with labels
+    plot_label_df = data.loc[(data[var_filter] == code_filter),
+                             ['Team', 'Opponent', 'Match Day', 'Season',
+                              'Season Stage', 'Venue', 'Result']].reset_index(drop=True)
+    team_map = dict(zip(data_filter_map[data_filter_map['Statistics'] == 'Team']['Code'].values,
+                        data_filter_map[data_filter_map['Statistics'] == 'Team']['Label'].values))
+    season_map = dict(zip(data_filter_map[data_filter_map['Statistics'] == 'Season']['Code'].values,
+                          data_filter_map[data_filter_map['Statistics'] == 'Season']['Label'].values))
+    stage_map = dict(zip(data_filter_map[data_filter_map['Statistics'] == 'Season Stage']['Code'].values,
+                         data_filter_map[data_filter_map['Statistics'] == 'Season Stage']['Label'].values))
+    venue_map = dict(zip(data_filter_map[data_filter_map['Statistics'] == 'Venue']['Code'].values,
+                         data_filter_map[data_filter_map['Statistics'] == 'Venue']['Label'].values))
+    result_map = dict(zip(data_filter_map[data_filter_map['Statistics'] == 'Result']['Code'].values,
+                          data_filter_map[data_filter_map['Statistics'] == 'Result']['Label'].values))
+
+    plot_label_df['Team'] = plot_label_df['Team'].map(team_map)
+    plot_label_df['Opponent'] = plot_label_df['Opponent'].map(team_map)
+    plot_label_df['Season'] = plot_label_df['Season'].map(season_map)
+    plot_label_df['Season Stage'] = plot_label_df['Season Stage'].map(stage_map)
+    plot_label_df['Venue'] = plot_label_df['Venue'].map(venue_map)
+    plot_label_df['Result'] = plot_label_df['Result'].map(result_map)
+
     # ##### Final Kmeans Plot
     final_km_df = final_df.copy()
+    final_km_df = pd.merge(left=final_km_df, right=plot_label_df, left_index=True, right_index=True)
     final_km_df['Segment'] = final_km_df['Segment'].apply(lambda x: 'Segment ' + str(x))
     fig_kmeans = px.scatter(final_km_df,
                             x=feature_x,
@@ -244,7 +268,8 @@ def kmeans_final(data, data_stats, data_filter_map, variables, var_filter, code_
                             color_discrete_map=dict(zip(['Segment ' + str(i) for i in range(1, no_clusters + 1)],
                                                         colors_plot[:no_clusters])),
                             title=f"{plot_title} <b>{feature_x}</b> vs <b>{feature_y}</b> - <b>{no_clusters}</b> "
-                                  f"Cluster Solution")
+                                  f"Cluster Solution",
+                            hover_data=['Team', 'Opponent', 'Season', 'Season Stage', 'Venue', 'Result', 'Match Day'])
     fig_kmeans.update_layout(plot_bgcolor='rgba(0,0,0,0)',
                              height=600)
     fig_kmeans.update_xaxes(title_text=feature_x,
@@ -278,8 +303,8 @@ def kmeans_final(data, data_stats, data_filter_map, variables, var_filter, code_
     final_sig_tab = final_sig_tab.astype(str)
     final_sig_tab.set_index('Feature', inplace=True)
 
-    return fig_silhouette, silhouette_df, cluster_scores, final_sig_tab, \
-        fig_kmeans, filter_results_df, filter_sig_tab, km_final_df
+    return fig_silhouette, silhouette_df, cluster_scores, final_sig_tab, fig_kmeans, filter_results_df, \
+           filter_sig_tab, km_final_df
 
 
 def kmeans_sig(data, kmeans_results, stats, no_clusters):
