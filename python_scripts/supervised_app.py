@@ -174,7 +174,7 @@ def supervised_application():
 
         # ##### Sample Size
         df_size = df_regression_type[(df_regression_type[filter_var] == filter_code)].shape[0]
-        st.sidebar.markdown(f'<b>Sample Size</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
+        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
 
         # ##### Prediction Stat
         prediction_stat = st.sidebar.selectbox(label="Prediction Stat",

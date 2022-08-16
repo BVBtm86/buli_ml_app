@@ -159,7 +159,7 @@ def linear_reg_application(data, data_type, team_map, hyperparams, features, pre
                                  filter_name=team_names,
                                  prediction_type=prediction_type)
 
-    return linear_reg_plot, final_reg_metrics, plot_prediction
+    return linear_reg_plot, final_reg_metrics, plot_prediction, team_filter
 
 
 def svm_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, standardize_data,
@@ -240,7 +240,7 @@ def svm_reg_application(data, data_type, team_map, hyperparams, features, predic
                                  prediction_type=prediction_type,
                                  plot_features=None)
 
-    return svm_reg_plot, final_reg_metrics, plot_prediction
+    return svm_reg_plot, final_reg_metrics, plot_prediction, team_filter
 
 
 def knn_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, standardize_data,
@@ -289,7 +289,7 @@ def knn_reg_application(data, data_type, team_map, hyperparams, features, predic
                                  prediction_type=prediction_type,
                                  plot_features=None)
 
-    return final_reg_metrics, plot_prediction
+    return final_reg_metrics, plot_prediction, team_filter
 
 
 def tree_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
@@ -330,8 +330,8 @@ def tree_reg_application(data, data_type, team_map, hyperparams, features, predi
         title=f"<b>{plot_name}</b> Games - Decision Tree Feature Importance by <b>{predictor}</b> by "
               f"<b>{prediction_type}</b>",
         plot_bgcolor='rgba(0,0,0,0)',
-        yaxis=dict(tickformat='.2f',
-                   hoverformat=".3f"),
+        xaxis=dict(tickformat='.0%',
+                   hoverformat=".2%"),
         height=plot_height)
     tree_reg_plot.update_traces(marker_color="#c3110f")
 
@@ -365,7 +365,7 @@ def tree_reg_application(data, data_type, team_map, hyperparams, features, predi
     tree_params = [model, x_train, y_train, predictor, None,
                    features, f"Decision Tree - {plot_name} Games", hyperparams[1]]
 
-    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params
+    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter
 
 
 def rf_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
@@ -406,8 +406,8 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
         title=f"<b>{plot_name}</b> Games - Decision Tree Feature Importance by <b>{predictor}</b> by "
               f"<b>{prediction_type}</b>",
         plot_bgcolor='rgba(0,0,0,0)',
-        yaxis=dict(tickformat='.2f',
-                   hoverformat=".3f"),
+        xaxis=dict(tickformat='.0%',
+                   hoverformat=".2%"),
         height=plot_height)
     tree_reg_plot.update_traces(marker_color="#c3110f")
 
@@ -441,7 +441,7 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
     tree_params = [model, x_train, y_train, predictor, None,
                    features, f"Random Forest - {plot_name} Games", hyperparams[2]]
 
-    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params
+    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter
 
 
 def xgb_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
@@ -486,8 +486,8 @@ def xgb_reg_application(data, data_type, team_map, hyperparams, features, predic
         title=f"<b>{plot_name}</b> Games - XgBoosting Feature Importance by <b>{predictor}</b> by "
               f"<b>{prediction_type}</b>",
         plot_bgcolor='rgba(0,0,0,0)',
-        yaxis=dict(tickformat='.2f',
-                   hoverformat=".3f"),
+        xaxis=dict(tickformat='.0%',
+                   hoverformat=".2%"),
         height=plot_height)
     xgb_reg_plot.update_traces(marker_color="#c3110f")
 
@@ -521,4 +521,4 @@ def xgb_reg_application(data, data_type, team_map, hyperparams, features, predic
     tree_params = [model, x_train, y_train, predictor, None,
                    features, f"Random Forest - {plot_name} Games", hyperparams[3]]
 
-    return xgb_reg_plot, final_reg_metrics, plot_prediction, tree_params
+    return xgb_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter

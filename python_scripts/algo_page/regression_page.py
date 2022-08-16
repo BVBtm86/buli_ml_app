@@ -6,6 +6,7 @@ from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised 
 from python_scripts.algo_page.algo_scripts.supervised_algo.regression_algo import regression_all_models, \
     linear_reg_application, svm_reg_application, knn_reg_application, tree_reg_application, rf_reg_application, \
     xgb_reg_application
+from PIL import Image
 
 
 def regression_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -33,11 +34,12 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
     if regression_algo != "":
         feature_col, result_col = st.columns([3, 9])
         with feature_col:
-            st.markdown("<b>Features</b>", unsafe_allow_html=True)
+            st.markdown("<b>Game Stats</b>", unsafe_allow_html=True)
             analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
     else:
         st.info(f"Please select one of the Regression Algorithms from the available options.")
         analysis_stats = [""]
+        feature_col, result_col = None, None
 
     if len(analysis_stats) > 0:
         # ##### ''' All Regression Models '''
@@ -59,9 +61,10 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     st.plotly_chart(fig_reg_plot,
                                     config=config,
                                     use_container_width=True)
-                    st.markdown(f"The best performing Regression Algorithms are <b><font color=#c3110f>{top_reg_algo[0]}"
-                                f"</font></b>, <b><font color=#c3110f>{top_reg_algo[1]}</font></b> and "
-                                f"<b><font color=#c3110f>{top_reg_algo[2]}</font></b>.", unsafe_allow_html=True)
+                    st.markdown(
+                        f"The best performing Regression Algorithms are <b><font color=#c3110f>{top_reg_algo[0]}"
+                        f"</font></b>, <b><font color=#c3110f>{top_reg_algo[1]}</font></b> and "
+                        f"<b><font color=#c3110f>{top_reg_algo[2]}</font></b>.", unsafe_allow_html=True)
 
                 with feature_col:
                     download_plot_reg = plot_downloader(fig_reg_plot)
@@ -78,6 +81,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
         # ##### ''' Linear Regression '''
         elif regression_algo == "Linear Regression":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size, std_data = hyperparameters_linear(model_type=type_data)
@@ -101,7 +105,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Linear Model
-                linear_plot, linear_metrics, linear_pred_plot = \
+                linear_plot, linear_metrics, linear_pred_plot, linear_team = \
                     linear_reg_application(data=data,
                                            data_type=type_data,
                                            team_map=data_map,
@@ -126,7 +130,9 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                         mime='text/html')
 
             # ##### Regression Results
-            st.subheader("Regression Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("Regression Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
@@ -152,6 +158,14 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     data=download_plot_prediction,
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
+
+            with logo_col:
+                if linear_team != "All Teams":
+                    team_logo = Image.open(f'images/{linear_team}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
 
         # ##### ''' Support Vector Machine '''
         elif regression_algo == "Support Vector Machine":
@@ -195,7 +209,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 # ##### Regression SVM Model
                 with result_col:
                     with st.spinner("Running Model..."):
-                        svm_plot, svm_metrics, svm_pred_plot = \
+                        svm_plot, svm_metrics, svm_pred_plot, svm_team = \
                             svm_reg_application(data=data,
                                                 data_type=type_data,
                                                 team_map=data_map,
@@ -224,7 +238,9 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                         st.info("Feature Coefficients are only available when the Kernel is Linear.")
 
             # ##### SVM Results
-            st.subheader("SVM Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("SVM Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
@@ -257,6 +273,14 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            with logo_col:
+                if svm_team != "All Teams":
+                    team_logo = Image.open(f'images/{svm_team}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
+
         # ##### ''' K-Nearest Neighbors '''
         elif regression_algo == "K-Nearest Neighbors":
 
@@ -274,7 +298,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
                 # ##### Regression KNN Model
                 with result_col:
-                    knn_metrics, knn_pred_plot = \
+                    knn_metrics, knn_pred_plot, knn_team = \
                         knn_reg_application(data=data,
                                             data_type=type_data,
                                             team_map=data_map,
@@ -287,7 +311,9 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                             prediction_type=game_prediction)
 
             # ##### KNN Results
-            st.subheader("KNN Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("KNN Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
@@ -316,6 +342,14 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            with logo_col:
+                if knn_team != "All Teams":
+                    team_logo = Image.open(f'images/{knn_team}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
+
         # ##### ''' Decision Tree '''
         elif regression_algo == "Decision Tree":
 
@@ -342,7 +376,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Decision Tree Model
-                tree_plot, tree_metrics, tree_pred_plot, tree_params = \
+                tree_plot, tree_metrics, tree_pred_plot, tree_params, tree_team = \
                     tree_reg_application(data=data,
                                          data_type=type_data,
                                          team_map=data_map,
@@ -366,7 +400,9 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                         mime='text/html')
 
             # ##### Decision Tree Results
-            st.subheader("Decision Tree Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("Decision Tree Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
@@ -393,6 +429,14 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            with logo_col:
+                if tree_team != "All Teams":
+                    team_logo = Image.open(f'images/{tree_team}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
+
             # ##### Displaying the Tree
             st.subheader("Display Decision Tree")
             button_col, description_col = st.columns([1, 10])
@@ -404,14 +448,15 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                             "<font color=#c3110f>Decision Tree </font></b> based on the Model the user created.",
                             unsafe_allow_html=True)
             if show_tree:
-                final_tree = display_tree(final_model=tree_params[0],
-                                          x_train=tree_params[1],
-                                          y_train=tree_params[2],
-                                          target=tree_params[3],
-                                          class_labels=tree_params[4],
-                                          features=tree_params[5],
-                                          plot_label=tree_params[6],
-                                          tree_depth=tree_params[7])
+                with st.spinner("Creating Tree ....."):
+                    final_tree = display_tree(final_model=tree_params[0],
+                                              x_train=tree_params[1],
+                                              y_train=tree_params[2],
+                                              target=tree_params[3],
+                                              class_labels=tree_params[4],
+                                              features=tree_params[5],
+                                              plot_label=tree_params[6],
+                                              tree_depth=tree_params[7])
 
                 with st.expander("Show Tree"):
                     tree_svg_plot = final_tree.svg()
@@ -427,6 +472,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
         # ##### ''' Random Forest '''
         elif regression_algo == "Random Forest":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size = hyperparameters_nonlinear()
@@ -453,7 +499,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Random Forest Model
-                rf_plot, rf_metrics, rf_pred_plot, rf_params = \
+                rf_plot, rf_metrics, rf_pred_plot, rf_params, rf_team = \
                     rf_reg_application(data=data,
                                        data_type=type_data,
                                        team_map=data_map,
@@ -477,7 +523,9 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                         mime='text/html')
 
             # ##### Random Forest Results
-            st.subheader("Random Forest Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("Random Forest Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
@@ -504,6 +552,14 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            with logo_col:
+                if rf_team != "All Teams":
+                    team_logo = Image.open(f'images/{rf_team}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
+
             # ##### Displaying the Tree
             st.subheader("Display Random Forest Tree")
             button_col, description_col, tree_no_col = st.columns([1, 8, 2])
@@ -518,16 +574,17 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
             if show_tree:
                 with tree_no_col:
-                    tree_no = st.selectbox("Tree No", options=[i+1 for i in range(rf_n_estimators)])
-                final_rf_tree = display_rf_tree(final_model=rf_params[0],
-                                                x_train=rf_params[1],
-                                                y_train=rf_params[2],
-                                                target=rf_params[3],
-                                                class_labels=rf_params[4],
-                                                features=rf_params[5],
-                                                plot_label=f"{rf_params[6]}: Tree No {tree_no}",
-                                                tree_depth=rf_params[7],
-                                                tree_no=tree_no)
+                    tree_no = st.selectbox("Tree No", options=[i + 1 for i in range(rf_n_estimators)])
+                    with st.spinner("Creating Tree ....."):
+                        final_rf_tree = display_rf_tree(final_model=rf_params[0],
+                                                        x_train=rf_params[1],
+                                                        y_train=rf_params[2],
+                                                        target=rf_params[3],
+                                                        class_labels=rf_params[4],
+                                                        features=rf_params[5],
+                                                        plot_label=f"{rf_params[6]}: Tree No {tree_no}",
+                                                        tree_depth=rf_params[7],
+                                                        tree_no=tree_no)
 
                 with st.expander("Show Tree"):
                     rf_tree_svg_plot = final_rf_tree.svg()
@@ -567,7 +624,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression XgBoosting Model
-                xgb_plot, xgb_metrics, xgb_pred_plot, xgb_params = \
+                xgb_plot, xgb_metrics, xgb_pred_plot, xgb_params, xgb_team = \
                     xgb_reg_application(data=data,
                                         data_type=type_data,
                                         team_map=data_map,
@@ -590,8 +647,10 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                         file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot XgB.html",
                         mime='text/html')
 
-                # ##### Random Forest Results
-            st.subheader("XgBoosting Prediction Results")
+            # ##### Random Forest Results
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("XgBoosting Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
@@ -618,6 +677,14 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            with logo_col:
+                if xgb_team != "All Teams":
+                    team_logo = Image.open(f'images/{xgb_team}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
+
             # ##### Displaying the Tree
             if xgb_booster == "gbtree":
                 st.subheader("Display XgBoost Tree")
@@ -634,15 +701,16 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 if show_tree:
                     with tree_no_col:
                         tree_no = st.selectbox("Tree No", options=[i + 1 for i in range(xgb_n_estimators)])
-                    final_xgb_tree = display_tree_xgb(final_model=xgb_params[0],
-                                                      num_tree=tree_no,
-                                                      x_train=xgb_params[1],
-                                                      y_train=xgb_params[2],
-                                                      target=xgb_params[3],
-                                                      class_labels=xgb_params[4],
-                                                      features=xgb_params[5],
-                                                      plot_label=f"{xgb_params[6]}: Tree No {tree_no}",
-                                                      tree_depth=xgb_params[7])
+                        with st.spinner("Creating Tree ....."):
+                            final_xgb_tree = display_tree_xgb(final_model=xgb_params[0],
+                                                              num_tree=tree_no,
+                                                              x_train=xgb_params[1],
+                                                              y_train=xgb_params[2],
+                                                              target=xgb_params[3],
+                                                              class_labels=xgb_params[4],
+                                                              features=xgb_params[5],
+                                                              plot_label=f"{xgb_params[6]}: Tree No {tree_no}",
+                                                              tree_depth=xgb_params[7])
 
                     with st.expander("Show Tree"):
                         xgb_tree_svg_plot = final_xgb_tree.svg()

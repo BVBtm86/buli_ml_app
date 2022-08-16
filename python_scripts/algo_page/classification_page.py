@@ -6,6 +6,7 @@ from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised 
 from python_scripts.algo_page.algo_scripts.supervised_algo.classification_algo import classification_all_models, \
     linear_class_application, svm_class_application, knn_class_application, naive_class_application, \
     dt_class_application, rf_class_application, xgb_class_application
+from PIL import Image
 
 
 def classification_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
@@ -34,18 +35,19 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
         # ##### Features
         feature_col, result_col = st.columns([3, 9])
         with feature_col:
-            st.markdown("<b>Features</b>", unsafe_allow_html=True)
+            st.markdown("<b>Game Stats</b>", unsafe_allow_html=True)
             analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
     else:
         st.info(f"Please select one of the Classification Algorithms from the available options.")
         analysis_stats = [""]
+        feature_col, result_col = None, None
 
     if len(analysis_stats) > 0:
 
         # ##### ''' All Classification Models '''
         if classification_algo == "All":
             with result_col:
-                with st.spinner("Running Classification Algorithms ....."):
+                with st.spinner("Running Classification Algorithms (this may take a couple of minutes) ....."):
                     progress_bar = st.progress(0)
                     fig_class_plot, class_scores_df, top_class_algo = \
                         classification_all_models(data=data,
@@ -81,6 +83,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
         # ##### ''' Logistic Regression '''
         elif classification_algo == "Logistic Regression":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size, std_data = hyperparameters_linear(model_type=type_data)
@@ -145,7 +148,9 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     mime='text/html')
 
             # ##### Classification Results
-            st.subheader("Regression Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("Regression Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
@@ -182,8 +187,17 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            with logo_col:
+                if linear_teams != "All Teams":
+                    team_logo = Image.open(f'images/{linear_teams}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
+
         # ##### ''' Support Vector Machine '''
         elif classification_algo == "Support Vector Machine":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size, std_data = hyperparameters_linear(model_type=type_data)
@@ -256,7 +270,9 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.info("Feature Coefficients are only available when the Kernel is Linear.")
 
             # ##### Classification Results
-            st.subheader("SVM Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("SVM Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
@@ -276,24 +292,24 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                 f"<b>Predicted</b> {sample_filter} <b><font color=#c3110f>{game_prediction}</font></b>",
                                 unsafe_allow_html=True)
                     st.table(svm_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                               for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
-                               for i in range(len(x))], axis=0).set_table_styles(
-                    [{'selector': 'th',
-                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
             else:
                 with pred_col:
                     st.markdown(f"<b><font color=#c3110f>{svm_teams}</font></b> <b>Observed</b> vs "
                                 f"<b>Predicted</b> {sample_filter} <b><font color=#c3110f>{game_prediction}</font></b>",
                                 unsafe_allow_html=True)
                     st.table(svm_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                               for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
-                               for i in range(len(x))], axis=0).set_table_styles(
-                    [{'selector': 'th',
-                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
             if svm_plot is not None:
                 with pred_col:
                     st.plotly_chart(svm_pred_plot,
@@ -312,8 +328,17 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            with logo_col:
+                if svm_teams != "All Teams":
+                    team_logo = Image.open(f'images/{svm_teams}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
+
         # ##### ''' Naive Bayes '''
         elif classification_algo == "Naive Bayes":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size = hyperparameters_nonlinear()
@@ -341,7 +366,9 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                                 prediction_type=game_prediction)
 
             # ##### Classification Results
-            st.subheader("Naive Bayes Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("Naive Bayes Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
@@ -361,12 +388,12 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                             unsafe_allow_html=True)
                 st.table(
                     nb_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                               for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
-                               for i in range(len(x))], axis=0).set_table_styles(
-                    [{'selector': 'th',
-                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with result_col:
                 st.info(f"{classification_algo} Classifier does not have Feature Coefficients.")
@@ -380,6 +407,14 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     data=download_plot_prediction,
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
+
+            with logo_col:
+                if nb_teams != "All Teams":
+                    team_logo = Image.open(f'images/{nb_teams}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
 
         # ##### ''' K-Nearest Neighbors '''
         elif classification_algo == "K-Nearest Neighbors":
@@ -416,7 +451,9 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                                   prediction_type=game_prediction)
 
             # ##### Classification Results
-            st.subheader("KNN Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("KNN Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
@@ -436,12 +473,12 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                             unsafe_allow_html=True)
                 st.table(
                     knn_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                               for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
-                               for i in range(len(x))], axis=0).set_table_styles(
-                    [{'selector': 'th',
-                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with result_col:
                 st.info(f"{classification_algo} Classifier does not have Feature Coefficients.")
@@ -456,8 +493,17 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            with logo_col:
+                if knn_teams != "All Teams":
+                    team_logo = Image.open(f'images/{knn_teams}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
+
         # ##### ''' Decision Tree '''
         elif classification_algo == "Decision Tree":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size = hyperparameters_nonlinear()
@@ -508,7 +554,9 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                         mime='text/html')
 
             # ##### Classification Results
-            st.subheader("Decision Tree Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("Decision Tree Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
@@ -527,12 +575,12 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                             unsafe_allow_html=True)
                 st.table(
                     tree_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                               for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
-                               for i in range(len(x))], axis=0).set_table_styles(
-                    [{'selector': 'th',
-                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
                 st.plotly_chart(tree_pred_plot,
@@ -546,6 +594,14 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
 
+            with logo_col:
+                if tree_teams != "All Teams":
+                    team_logo = Image.open(f'images/{tree_teams}.png')
+                    st.image(team_logo, width=50)
+                else:
+                    team_logo = Image.open(f'images/Bundesliga.png')
+                    st.image(team_logo, width=50)
+
             # ##### Displaying the Tree
             st.subheader("Display Decision Tree")
             button_col, description_col = st.columns([1, 10])
@@ -557,14 +613,15 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                             "<font color=#c3110f>Decision Tree </font></b> based on the Model the user created.",
                             unsafe_allow_html=True)
             if show_tree:
-                final_tree = display_tree(final_model=tree_params[0],
-                                          x_train=tree_params[1],
-                                          y_train=tree_params[2],
-                                          target=tree_params[3],
-                                          class_labels=tree_params[4],
-                                          features=tree_params[5],
-                                          plot_label=tree_params[6],
-                                          tree_depth=tree_params[7])
+                with st.spinner("Creating Tree ....."):
+                    final_tree = display_tree(final_model=tree_params[0],
+                                              x_train=tree_params[1],
+                                              y_train=tree_params[2],
+                                              target=tree_params[3],
+                                              class_labels=tree_params[4],
+                                              features=tree_params[5],
+                                              plot_label=tree_params[6],
+                                              tree_depth=tree_params[7])
 
                 with st.expander("Show Tree"):
                     tree_svg_plot = final_tree.svg()
@@ -634,7 +691,9 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                         mime='text/html')
 
             # ##### Classification Results
-            st.subheader("Random Forest Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("Random Forest Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
@@ -653,12 +712,12 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                             unsafe_allow_html=True)
                 st.table(
                     rf_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                               for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
-                               for i in range(len(x))], axis=0).set_table_styles(
-                    [{'selector': 'th',
-                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
                 st.plotly_chart(rf_pred_plot,
@@ -671,6 +730,14 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     data=download_plot_prediction,
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
+
+                with logo_col:
+                    if rf_teams != "All Teams":
+                        team_logo = Image.open(f'images/{rf_teams}.png')
+                        st.image(team_logo, width=50)
+                    else:
+                        team_logo = Image.open(f'images/Bundesliga.png')
+                        st.image(team_logo, width=50)
 
             # ##### Displaying the Tree
             st.subheader("Display Random Forest Tree")
@@ -685,16 +752,17 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                             unsafe_allow_html=True)
             if show_tree:
                 with tree_no_col:
-                    tree_no = st.selectbox("Tree No", options=[i+1 for i in range(rf_n_estimators)])
-                final_rf_tree = display_rf_tree(final_model=rf_params[0],
-                                                x_train=rf_params[1],
-                                                y_train=rf_params[2],
-                                                target=rf_params[3],
-                                                class_labels=rf_params[4],
-                                                features=rf_params[5],
-                                                plot_label=f"{rf_params[6]}: Tree No {tree_no}",
-                                                tree_depth=rf_params[7],
-                                                tree_no=tree_no)
+                    tree_no = st.selectbox("Tree No", options=[i + 1 for i in range(rf_n_estimators)])
+                    with st.spinner("Creating Tree ....."):
+                        final_rf_tree = display_rf_tree(final_model=rf_params[0],
+                                                        x_train=rf_params[1],
+                                                        y_train=rf_params[2],
+                                                        target=rf_params[3],
+                                                        class_labels=rf_params[4],
+                                                        features=rf_params[5],
+                                                        plot_label=f"{rf_params[6]}: Tree No {tree_no}",
+                                                        tree_depth=rf_params[7],
+                                                        tree_no=tree_no)
 
                 with st.expander("Show Tree"):
                     rf_tree_svg_plot = final_rf_tree.svg()
@@ -710,6 +778,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
         # ##### ''' XgBoost '''
         elif classification_algo == "XgBoost":
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size = hyperparameters_nonlinear()
@@ -761,7 +830,9 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                         mime='text/html')
 
             # ##### Classification Results
-            st.subheader("XgBoost Prediction Results")
+            title_col, logo_col = st.columns([10, 1])
+            with title_col:
+                st.subheader("XgBoost Prediction Results")
             metrics_col, pred_col = st.columns([4.5, 5.5])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{classification_algo}</font></b> Metrics for Predicting "
@@ -780,12 +851,12 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                             unsafe_allow_html=True)
                 st.table(
                     xgb_matrix.style.format(subset=["Defeat %", "Draw %", "Win %"], formatter="{:.2%}").apply(
-                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
-                               for i in range(len(x))], axis=0).apply(
-                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
-                               for i in range(len(x))], axis=0).set_table_styles(
-                    [{'selector': 'th',
-                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
                 st.plotly_chart(xgb_pred_plot,
@@ -798,6 +869,14 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     data=download_plot_prediction,
                     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
                     mime='text/html')
+
+                with logo_col:
+                    if xgb_teams != "All Teams":
+                        team_logo = Image.open(f'images/{xgb_teams}.png')
+                        st.image(team_logo, width=50)
+                    else:
+                        team_logo = Image.open(f'images/Bundesliga.png')
+                        st.image(team_logo, width=50)
 
             # ##### Displaying the Tree
             if xgb_booster == "gbtree":
@@ -814,15 +893,16 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 if show_tree:
                     with tree_no_col:
                         tree_no = st.selectbox("Tree No", options=[i + 1 for i in range(xgb_n_estimators)])
-                    final_xgb_tree = display_tree_xgb(final_model=xgb_params[0],
-                                                      num_tree=tree_no,
-                                                      x_train=xgb_params[1],
-                                                      y_train=xgb_params[2],
-                                                      target=xgb_params[3],
-                                                      class_labels=xgb_params[4],
-                                                      features=xgb_params[5],
-                                                      plot_label=f"{xgb_params[6]}: Tree No {tree_no}",
-                                                      tree_depth=xgb_params[7])
+                    with st.spinner("Creating Tree ....."):
+                        final_xgb_tree = display_tree_xgb(final_model=xgb_params[0],
+                                                          num_tree=tree_no,
+                                                          x_train=xgb_params[1],
+                                                          y_train=xgb_params[2],
+                                                          target=xgb_params[3],
+                                                          class_labels=xgb_params[4],
+                                                          features=xgb_params[5],
+                                                          plot_label=f"{xgb_params[6]}: Tree No {tree_no}",
+                                                          tree_depth=xgb_params[7])
 
                     with st.expander("Show Tree"):
                         xgb_tree_svg_plot = final_xgb_tree.svg()

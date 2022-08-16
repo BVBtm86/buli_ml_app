@@ -16,7 +16,7 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
                                          options=['Original Data', 'PCA Data'])
         feature_col, cluster_col = st.columns([3, 9])
         with feature_col:
-            st.markdown("<b>Features</b>", unsafe_allow_html=True)
+            st.markdown("<b>Game Stats</b>", unsafe_allow_html=True)
             if data_type == "Original Data":
                 final_hierarchical_df = data_app.copy()
                 analysis_stats = [col for col in all_features if st.checkbox(col, True)]
@@ -88,7 +88,7 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
                                          options=['Original Data', 'PCA Data'])
         feature_col, cluster_col = st.columns([3, 9])
         with feature_col:
-            st.markdown("<b>Features</b>", unsafe_allow_html=True)
+            st.markdown("<b>Game Stats</b>", unsafe_allow_html=True)
             if data_type == "Original Data":
                 final_kmeans_df = data_app.copy()
                 analysis_stats = [col for col in all_features if st.checkbox(col, True)]
@@ -113,7 +113,7 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
 
             if len(analysis_stats) > 0:
                 with cluster_col:
-                    with st.spinner("Running KMeans Analysis ....."):
+                    with st.spinner("Running KMeans Analysis (this may take a couple of minutes) ....."):
                         progress_bar = st.progress(0)
                         km_metrics_plot, kmeans_metric, info_segments = \
                             kmeans_eda(data=final_kmeans_df,

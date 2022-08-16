@@ -60,7 +60,7 @@ def unsupervised_application():
 
         # ##### Sample Size
         df_size = df_unsupervised[(df_unsupervised[filter_var] == filter_code)].shape[0]
-        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#e7e7e7>{df_size}</font></b>', unsafe_allow_html=True)
+        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
 
         pca_application(data_app=df_unsupervised,
                         data_map=filter_map,
@@ -114,7 +114,7 @@ def unsupervised_application():
 
         # ##### Sample Size
         df_size = df_unsupervised[(df_unsupervised[filter_var] == filter_code)].shape[0]
-        st.sidebar.markdown(f'<b>Sample Size</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
+        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
 
         cluster_application(cluster_algo=cluster_option,
                             data_app=df_unsupervised,

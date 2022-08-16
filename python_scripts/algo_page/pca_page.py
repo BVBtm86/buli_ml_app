@@ -14,7 +14,7 @@ def pca_application(data_app, data_map, all_features, main_filter, app_filter, f
     feature_col, _, pca_col = st.columns([2, 0.5, 7])
     with feature_col:
         pca_analysis = st.sidebar.selectbox("Show Analysis", ["Table", "Elbow Plot", "Correlation Plot"])
-        st.markdown("<b>Features</b>", unsafe_allow_html=True)
+        st.markdown("<b>Game Stats</b>", unsafe_allow_html=True)
         analysis_stats = [col for col in all_features if st.checkbox(col, True)]
 
     if len(analysis_stats) > 1:
@@ -135,4 +135,4 @@ def pca_application(data_app, data_map, all_features, main_filter, app_filter, f
                 mime='text/html')
     else:
         with pca_col:
-            st.info("You need at least 2 features to run the algorithm!")
+            st.info("You need at least 2 game stats to run the algorithm!")
