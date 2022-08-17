@@ -115,7 +115,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Linear Model
-                linear_plot, linear_metrics, linear_pred_plot, linear_team = \
+                linear_plot, linear_metrics, linear_pred_plot, linear_team, linear_team_metrics = \
                     linear_reg_application(data=data,
                                            data_type=type_data,
                                            team_map=data_map,
@@ -145,6 +145,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.subheader("Regression Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
+                # ###### Model Metrics
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
                             f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
@@ -156,6 +157,25 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
                       'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
+                # ##### Team Metrics
+                if game_prediction == "Game":
+                    team_description = "Game"
+                elif game_prediction == "Home Team":
+                    team_description = "Home Games"
+                else:
+                    team_description = "Away Games"
+                st.markdown(f"<b>{linear_team}</b> <b><font color=#c3110f>{regression_algo}</font></b> Model Metrics"
+                            f" by <b><font color=#c3110f>{team_description}</font></b>", unsafe_allow_html=True)
+                st.table(linear_team_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                    subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
             with pred_col:
                 st.plotly_chart(linear_pred_plot,
                                 config=config,
@@ -219,7 +239,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 # ##### Regression SVM Model
                 with result_col:
                     with st.spinner("Running Model..."):
-                        svm_plot, svm_metrics, svm_pred_plot, svm_team = \
+                        svm_plot, svm_metrics, svm_pred_plot, svm_team, svm_team_metrics = \
                             svm_reg_application(data=data,
                                                 data_type=type_data,
                                                 team_map=data_map,
@@ -253,6 +273,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.subheader("SVM Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
+                # ###### Model Metrics
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
                             f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
@@ -264,6 +285,42 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
                       'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
+                # ###### Team Metrics
+                if game_prediction == "Game":
+                    team_description = "Game"
+                elif game_prediction == "Home Team":
+                    team_description = "Home Games"
+                else:
+                    team_description = "Away Games"
+                if svm_plot is not None:
+                    with metrics_col:
+                        st.markdown(f"<b>{svm_team}</b> <b><font color=#c3110f>{regression_algo}</font></b> Model "
+                                    f"Metrics by <b><font color=#c3110f>{team_description}</font></b>",
+                                    unsafe_allow_html=True)
+                        st.table(svm_team_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                            subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                            lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                       for i in range(len(x))], axis=0).apply(
+                            lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                                       for i in range(len(x))], axis=0).set_table_styles(
+                            [{'selector': 'th',
+                              'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+                else:
+                    with result_col:
+                        with pred_col:
+                            st.markdown(f"<b>{svm_team}</b> <b><font color=#c3110f>{regression_algo}</font></b> Model "
+                                        f"Metrics by <b><font color=#c3110f>{team_description}</font></b>",
+                                        unsafe_allow_html=True)
+                            st.table(svm_team_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                                subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                                lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                           for i in range(len(x))], axis=0).apply(
+                                lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                                           for i in range(len(x))], axis=0).set_table_styles(
+                                [{'selector': 'th',
+                                  'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
             if svm_plot is not None:
                 with pred_col:
                     st.plotly_chart(svm_pred_plot,
@@ -308,7 +365,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
                 # ##### Regression KNN Model
                 with result_col:
-                    knn_metrics, knn_pred_plot, knn_team = \
+                    knn_metrics, knn_pred_plot, knn_team, knn_team_metrics = \
                         knn_reg_application(data=data,
                                             data_type=type_data,
                                             team_map=data_map,
@@ -326,6 +383,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.subheader("KNN Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
+                # ###### Model Metrics
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
                             f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
@@ -337,6 +395,25 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
                       'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
+                # ##### Team Metrics
+                if game_prediction == "Game":
+                    team_description = "Game"
+                elif game_prediction == "Home Team":
+                    team_description = "Home Games"
+                else:
+                    team_description = "Away Games"
+                with pred_col:
+                    st.markdown(f"<b>{knn_team}</b> <b><font color=#c3110f>{regression_algo}</font></b> Model Metrics"
+                                f" by <b><font color=#c3110f>{team_description}</font></b>", unsafe_allow_html=True)
+                    st.table(knn_team_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                        subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                        lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                                   for i in range(len(x))], axis=0).apply(
+                        lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                                   for i in range(len(x))], axis=0).set_table_styles(
+                        [{'selector': 'th',
+                          'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with result_col:
                 st.info(f"{regression_algo} Regression does not have Feature Coefficients.")
@@ -386,7 +463,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Decision Tree Model
-                tree_plot, tree_metrics, tree_pred_plot, tree_params, tree_team = \
+                tree_plot, tree_metrics, tree_pred_plot, tree_params, tree_team, tree_team_metrics = \
                     tree_reg_application(data=data,
                                          data_type=type_data,
                                          team_map=data_map,
@@ -415,6 +492,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.subheader("Decision Tree Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
+                # ##### Model Metrics
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
                             f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
@@ -426,6 +504,25 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
                       'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
+                # ##### Team Metrics
+                if game_prediction == "Game":
+                    team_description = "Game"
+                elif game_prediction == "Home Team":
+                    team_description = "Home Games"
+                else:
+                    team_description = "Away Games"
+                st.markdown(f"<b>{tree_team}</b> <b><font color=#c3110f>{regression_algo}</font></b> Model Metrics"
+                            f" by <b><font color=#c3110f>{team_description}</font></b>", unsafe_allow_html=True)
+                st.table(tree_team_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                    subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
             with pred_col:
                 st.plotly_chart(tree_pred_plot,
                                 config=config,
@@ -509,7 +606,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Random Forest Model
-                rf_plot, rf_metrics, rf_pred_plot, rf_params, rf_team = \
+                rf_plot, rf_metrics, rf_pred_plot, rf_params, rf_team, rf_team_metrics = \
                     rf_reg_application(data=data,
                                        data_type=type_data,
                                        team_map=data_map,
@@ -538,6 +635,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.subheader("Random Forest Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
+                # ##### Model Metrics
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
                             f"<font color=#c3110f>{game_prediction}</font></b>",
                             unsafe_allow_html=True)
@@ -549,6 +647,25 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
                       'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
+                # ##### Team Metrics
+                if game_prediction == "Game":
+                    team_description = "Game"
+                elif game_prediction == "Home Team":
+                    team_description = "Home Games"
+                else:
+                    team_description = "Away Games"
+                st.markdown(f"<b>{rf_team}</b> <b><font color=#c3110f>{regression_algo}</font></b> Model Metrics"
+                            f" by <b><font color=#c3110f>{team_description}</font></b>", unsafe_allow_html=True)
+                st.table(rf_team_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                    subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
             with pred_col:
                 st.plotly_chart(rf_pred_plot,
                                 config=config,
@@ -634,7 +751,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression XgBoosting Model
-                xgb_plot, xgb_metrics, xgb_pred_plot, xgb_params, xgb_team = \
+                xgb_plot, xgb_metrics, xgb_pred_plot, xgb_params, xgb_team, xgb_team_metrics = \
                     xgb_reg_application(data=data,
                                         data_type=type_data,
                                         team_map=data_map,
@@ -657,10 +774,10 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                         file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot XgB.html",
                         mime='text/html')
 
-            # ##### Random Forest Results
+            # ##### XgBoost Results
             title_col, logo_col = st.columns([10, 1])
             with title_col:
-                st.subheader("XgBoosting Prediction Results")
+                st.subheader("XgBoost Prediction Results")
             metrics_col, pred_col = st.columns([4, 6])
             with metrics_col:
                 st.markdown(f"<b><font color=#c3110f>{regression_algo}</font></b> Prediction Metrics by <b>"
@@ -674,6 +791,25 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                for i in range(len(x))], axis=0).set_table_styles(
                     [{'selector': 'th',
                       'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
+                # ##### Team Metrics
+                if game_prediction == "Game":
+                    team_description = "Game"
+                elif game_prediction == "Home Team":
+                    team_description = "Home Games"
+                else:
+                    team_description = "Away Games"
+                st.markdown(f"<b>{xgb_team}</b> <b><font color=#c3110f>{regression_algo}</font></b> Model Metrics"
+                            f" by <b><font color=#c3110f>{team_description}</font></b>", unsafe_allow_html=True)
+                st.table(xgb_team_metrics.style.format(subset=["R2 Score"], formatter="{:.2%}").format(
+                    subset=["MAE", "RMSE"], formatter="{:.3f}").apply(
+                    lambda x: ['background: #ffffff' if i % 2 == 0 else 'background: #e7e7e7'
+                               for i in range(len(x))], axis=0).apply(
+                    lambda x: ['color: #1e1e1e' if i % 2 == 0 else 'color: #c3110f'
+                               for i in range(len(x))], axis=0).set_table_styles(
+                    [{'selector': 'th',
+                      'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
+
             with pred_col:
                 st.plotly_chart(xgb_pred_plot,
                                 config=config,

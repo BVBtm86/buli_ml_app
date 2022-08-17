@@ -140,17 +140,23 @@ def linear_reg_application(data, data_type, team_map, hyperparams, features, pre
     # ##### Prediction Metrics
     y_train_pred = model.predict(x_train)
     y_test_pred = model.predict(x_test)
-
-    # ##### Regression Metrics
-    final_reg_metrics = regression_metrics(y_train=y_train,
-                                           y_train_pred=y_train_pred,
-                                           y_test=y_test,
-                                           y_test_pred=y_test_pred)
-
-    # ##### Plot Observed vs Predicted
     y_pred = model.predict(x)
 
+    # ##### Regression Metrics
+    data_metric = data.copy()
+    data_metric['Team'] = data_metric['Team'].map(team_names)
+    data_metric['y_pred'] = y_pred
+    final_reg_metrics, final_team_metrics = regression_metrics(data=data_metric,
+                                                               y_train=y_train,
+                                                               y_train_pred=y_train_pred,
+                                                               y_test=y_test,
+                                                               y_test_pred=y_test_pred,
+                                                               team_metric=team_filter,
+                                                               pred_label=predictor)
+
+    # ##### Plot Observed vs Predicted
     plot_prediction = plot_y_reg(data=data,
+                                 data_filter_map=team_map,
                                  y=y,
                                  y_pred=y_pred,
                                  plot_title=plot_name,
@@ -159,7 +165,7 @@ def linear_reg_application(data, data_type, team_map, hyperparams, features, pre
                                  filter_name=team_names,
                                  prediction_type=prediction_type)
 
-    return linear_reg_plot, final_reg_metrics, plot_prediction, team_filter
+    return linear_reg_plot, final_reg_metrics, plot_prediction, team_filter, final_team_metrics
 
 
 def svm_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, standardize_data,
@@ -220,17 +226,23 @@ def svm_reg_application(data, data_type, team_map, hyperparams, features, predic
     # ##### Prediction Metrics
     y_train_pred = model.predict(x_train)
     y_test_pred = model.predict(x_test)
-
-    # ##### Regression Metrics
-    final_reg_metrics = regression_metrics(y_train=y_train,
-                                           y_train_pred=y_train_pred,
-                                           y_test=y_test,
-                                           y_test_pred=y_test_pred)
-
-    # ##### Plot Observed vs Predicted
     y_pred = model.predict(x)
 
+    # ##### Regression Metrics
+    data_metric = data.copy()
+    data_metric['Team'] = data_metric['Team'].map(team_names)
+    data_metric['y_pred'] = y_pred
+    final_reg_metrics, final_team_metrics = regression_metrics(data=data_metric,
+                                                               y_train=y_train,
+                                                               y_train_pred=y_train_pred,
+                                                               y_test=y_test,
+                                                               y_test_pred=y_test_pred,
+                                                               team_metric=team_filter,
+                                                               pred_label=predictor)
+
+    # ##### Plot Observed vs Predicted
     plot_prediction = plot_y_reg(data=data,
+                                 data_filter_map=team_map,
                                  y=y,
                                  y_pred=y_pred,
                                  plot_title=plot_name,
@@ -240,7 +252,7 @@ def svm_reg_application(data, data_type, team_map, hyperparams, features, predic
                                  prediction_type=prediction_type,
                                  plot_features=None)
 
-    return svm_reg_plot, final_reg_metrics, plot_prediction, team_filter
+    return svm_reg_plot, final_reg_metrics, plot_prediction, team_filter, final_team_metrics
 
 
 def knn_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, standardize_data,
@@ -269,17 +281,23 @@ def knn_reg_application(data, data_type, team_map, hyperparams, features, predic
     # ##### Prediction Metrics
     y_train_pred = model.predict(x_train)
     y_test_pred = model.predict(x_test)
-
-    # ##### Regression Metrics
-    final_reg_metrics = regression_metrics(y_train=y_train,
-                                           y_train_pred=y_train_pred,
-                                           y_test=y_test,
-                                           y_test_pred=y_test_pred)
-
-    # ##### Plot Observed vs Predicted
     y_pred = model.predict(x)
 
+    # ##### Regression Metrics
+    data_metric = data.copy()
+    data_metric['Team'] = data_metric['Team'].map(team_names)
+    data_metric['y_pred'] = y_pred
+    final_reg_metrics, final_team_metrics = regression_metrics(data=data_metric,
+                                                               y_train=y_train,
+                                                               y_train_pred=y_train_pred,
+                                                               y_test=y_test,
+                                                               y_test_pred=y_test_pred,
+                                                               team_metric=team_filter,
+                                                               pred_label=predictor)
+
+    # ##### Plot Observed vs Predicted
     plot_prediction = plot_y_reg(data=data,
+                                 data_filter_map=team_map,
                                  y=y,
                                  y_pred=y_pred,
                                  plot_title=plot_name,
@@ -289,7 +307,7 @@ def knn_reg_application(data, data_type, team_map, hyperparams, features, predic
                                  prediction_type=prediction_type,
                                  plot_features=None)
 
-    return final_reg_metrics, plot_prediction, team_filter
+    return final_reg_metrics, plot_prediction, team_filter, final_team_metrics
 
 
 def tree_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
@@ -342,17 +360,23 @@ def tree_reg_application(data, data_type, team_map, hyperparams, features, predi
     # ##### Prediction Metrics
     y_train_pred = model.predict(x_train)
     y_test_pred = model.predict(x_test)
-
-    # ##### Regression Metrics
-    final_reg_metrics = regression_metrics(y_train=y_train,
-                                           y_train_pred=y_train_pred,
-                                           y_test=y_test,
-                                           y_test_pred=y_test_pred)
-
-    # ##### Plot Observed vs Predicted
     y_pred = model.predict(x)
 
+    # ##### Regression Metrics
+    data_metric = data.copy()
+    data_metric['Team'] = data_metric['Team'].map(team_names)
+    data_metric['y_pred'] = y_pred
+    final_reg_metrics, final_team_metrics = regression_metrics(data=data_metric,
+                                                               y_train=y_train,
+                                                               y_train_pred=y_train_pred,
+                                                               y_test=y_test,
+                                                               y_test_pred=y_test_pred,
+                                                               team_metric=team_filter,
+                                                               pred_label=predictor)
+
+    # ##### Plot Observed vs Predicted
     plot_prediction = plot_y_reg(data=data,
+                                 data_filter_map=team_map,
                                  y=y,
                                  y_pred=y_pred,
                                  plot_title=plot_name,
@@ -365,7 +389,7 @@ def tree_reg_application(data, data_type, team_map, hyperparams, features, predi
     tree_params = [model, x_train, y_train, predictor, None,
                    features, f"Decision Tree - {plot_name} Games", hyperparams[1]]
 
-    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter
+    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics
 
 
 def rf_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
@@ -418,17 +442,23 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
     # ##### Prediction Metrics
     y_train_pred = model.predict(x_train)
     y_test_pred = model.predict(x_test)
-
-    # ##### Regression Metrics
-    final_reg_metrics = regression_metrics(y_train=y_train,
-                                           y_train_pred=y_train_pred,
-                                           y_test=y_test,
-                                           y_test_pred=y_test_pred)
-
-    # ##### Plot Observed vs Predicted
     y_pred = model.predict(x)
 
+    # ##### Regression Metrics
+    data_metric = data.copy()
+    data_metric['Team'] = data_metric['Team'].map(team_names)
+    data_metric['y_pred'] = y_pred
+    final_reg_metrics, final_team_metrics = regression_metrics(data=data_metric,
+                                                               y_train=y_train,
+                                                               y_train_pred=y_train_pred,
+                                                               y_test=y_test,
+                                                               y_test_pred=y_test_pred,
+                                                               team_metric=team_filter,
+                                                               pred_label=predictor)
+
+    # ##### Plot Observed vs Predicted
     plot_prediction = plot_y_reg(data=data,
+                                 data_filter_map=team_map,
                                  y=y,
                                  y_pred=y_pred,
                                  plot_title=plot_name,
@@ -441,7 +471,7 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
     tree_params = [model, x_train, y_train, predictor, None,
                    features, f"Random Forest - {plot_name} Games", hyperparams[2]]
 
-    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter
+    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics
 
 
 def xgb_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
@@ -498,17 +528,23 @@ def xgb_reg_application(data, data_type, team_map, hyperparams, features, predic
     # ##### Prediction Metrics
     y_train_pred = model.predict(x_train)
     y_test_pred = model.predict(x_test)
-
-    # ##### Regression Metrics
-    final_reg_metrics = regression_metrics(y_train=y_train,
-                                           y_train_pred=y_train_pred,
-                                           y_test=y_test,
-                                           y_test_pred=y_test_pred)
-
-    # ##### Plot Observed vs Predicted
     y_pred = model.predict(x)
 
+    # ##### Regression Metrics
+    data_metric = data.copy()
+    data_metric['Team'] = data_metric['Team'].map(team_names)
+    data_metric['y_pred'] = y_pred
+    final_reg_metrics, final_team_metrics = regression_metrics(data=data_metric,
+                                                               y_train=y_train,
+                                                               y_train_pred=y_train_pred,
+                                                               y_test=y_test,
+                                                               y_test_pred=y_test_pred,
+                                                               team_metric=team_filter,
+                                                               pred_label=predictor)
+
+    # ##### Plot Observed vs Predicted
     plot_prediction = plot_y_reg(data=data,
+                                 data_filter_map=team_map,
                                  y=y,
                                  y_pred=y_pred,
                                  plot_title=plot_name,
@@ -521,4 +557,4 @@ def xgb_reg_application(data, data_type, team_map, hyperparams, features, predic
     tree_params = [model, x_train, y_train, predictor, None,
                    features, f"Random Forest - {plot_name} Games", hyperparams[3]]
 
-    return xgb_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter
+    return xgb_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics
