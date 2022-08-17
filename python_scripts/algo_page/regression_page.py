@@ -38,6 +38,16 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
             analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
     else:
         st.info(f"Please select one of the Regression Algorithms from the available options.")
+        st.markdown(
+            """
+            <b><font color=#c3110f>Available Algorithms</font></b>
+              * Linear Regression
+              * Support Vector Machine
+              * K-Nearest Neighbors
+              * Decision Tree
+              * Random Forest
+              * XgBoost
+            """, unsafe_allow_html=True)
         analysis_stats = [""]
         feature_col, result_col = None, None
 

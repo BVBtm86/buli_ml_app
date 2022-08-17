@@ -39,6 +39,17 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
             analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
     else:
         st.info(f"Please select one of the Classification Algorithms from the available options.")
+        st.markdown(
+            """
+            <b><font color=#c3110f>Available Algorithms</font></b>
+              * Logistic Regression
+              * Support Vector Machine
+              * Naive Bayes
+              * K-Nearest Neighbors
+              * Decision Tree
+              * Random Forest
+              * XgBoost
+            """, unsafe_allow_html=True)
         analysis_stats = [""]
         feature_col, result_col = None, None
 
@@ -122,7 +133,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
             st.sidebar.subheader("Prediction Options")
             if game_prediction != "Game Result":
                 game_prediction += " Result"
-            linear_plot, linear_metrics, linear_matrix, linear_pred_plot, linear_teams = \
+            linear_plot, linear_metrics, linear_matrix, linear_pred_plot, linear_teams, coef_impact = \
                 linear_class_application(data=data,
                                          data_type=type_data,
                                          team_map=data_map,
@@ -134,11 +145,12 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                          standardize_data=std_data,
                                          plot_name=sample_filter,
                                          prediction_type=game_prediction)
-
             with result_col:
                 st.plotly_chart(linear_plot,
                                 config=config,
                                 use_container_width=True)
+                st.markdown(f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
             with feature_col:
                 download_plot_linear = plot_downloader(linear_plot)
                 st.download_button(
@@ -176,9 +188,12 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                       'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
-                st.plotly_chart(linear_pred_plot,
-                                config=config,
-                                use_container_width=True)
+                if len(analysis_stats) > 1:
+                    st.plotly_chart(linear_pred_plot,
+                                    config=config,
+                                    use_container_width=True)
+                else:
+                    st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
             with metrics_col:
                 download_plot_prediction = plot_downloader(linear_pred_plot)
                 st.download_button(
@@ -240,7 +255,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
             with result_col:
                 with st.spinner("Running Model..."):
-                    svm_plot, svm_metrics, svm_matrix, svm_pred_plot, svm_teams = \
+                    svm_plot, svm_metrics, svm_matrix, svm_pred_plot, svm_teams, coef_impact = \
                         svm_class_application(data=data,
                                               data_type=type_data,
                                               team_map=data_map,
@@ -258,6 +273,10 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.plotly_chart(svm_plot,
                                     config=config,
                                     use_container_width=True)
+                    st.markdown(
+                        f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                        f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+
                 with feature_col:
                     download_plot_linear = plot_downloader(svm_plot)
                     st.download_button(
@@ -312,14 +331,21 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                           'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
             if svm_plot is not None:
                 with pred_col:
-                    st.plotly_chart(svm_pred_plot,
-                                    config=config,
-                                    use_container_width=True)
+                    if len(analysis_stats) > 1:
+                        st.plotly_chart(svm_pred_plot,
+                                        config=config,
+                                        use_container_width=True)
+                    else:
+                        st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
             else:
                 with result_col:
-                    st.plotly_chart(svm_pred_plot,
-                                    config=config,
-                                    use_container_width=True)
+                    if len(analysis_stats) > 1:
+                        st.plotly_chart(svm_pred_plot,
+                                        config=config,
+                                        use_container_width=True)
+                    else:
+                        st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
+
             with metrics_col:
                 download_plot_prediction = plot_downloader(svm_pred_plot)
                 st.download_button(
@@ -397,9 +423,13 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
             with result_col:
                 st.info(f"{classification_algo} Classifier does not have Feature Coefficients.")
-                st.plotly_chart(nb_pred_plot,
-                                config=config,
-                                use_container_width=True)
+                if len(analysis_stats) > 1:
+                    st.plotly_chart(nb_pred_plot,
+                                    config=config,
+                                    use_container_width=True)
+                else:
+                    st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
+
             with metrics_col:
                 download_plot_prediction = plot_downloader(nb_pred_plot)
                 st.download_button(
@@ -482,9 +512,13 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
             with result_col:
                 st.info(f"{classification_algo} Classifier does not have Feature Coefficients.")
-                st.plotly_chart(knn_pred_plot,
-                                config=config,
-                                use_container_width=True)
+                if len(analysis_stats) > 1:
+                    st.plotly_chart(knn_pred_plot,
+                                    config=config,
+                                    use_container_width=True)
+                else:
+                    st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
+
             with metrics_col:
                 download_plot_prediction = plot_downloader(knn_pred_plot)
                 st.download_button(
@@ -529,7 +563,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 # ##### Classification Decision Tree Model
                 if game_prediction != "Game Result":
                     game_prediction += " Result"
-                tree_plot, tree_metrics, tree_matrix, tree_pred_plot, tree_teams, tree_params = \
+                tree_plot, tree_metrics, tree_matrix, tree_pred_plot, tree_teams, tree_params, coef_impact = \
                     dt_class_application(data=data,
                                          data_type=type_data,
                                          team_map=data_map,
@@ -542,9 +576,16 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                          prediction_type=game_prediction)
 
                 with result_col:
-                    st.plotly_chart(tree_plot,
-                                    config=config,
-                                    use_container_width=True)
+                    if len(analysis_stats) > 1:
+                        st.plotly_chart(tree_plot,
+                                        config=config,
+                                        use_container_width=True)
+                        st.markdown(
+                            f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+                    else:
+                        st.info("At least 2 Game Stats are needed to create the Game Stats Importance Plot.")
+
                 with feature_col:
                     download_plot_tree = plot_downloader(tree_plot)
                     st.download_button(
@@ -583,9 +624,13 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                           'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
-                st.plotly_chart(tree_pred_plot,
-                                config=config,
-                                use_container_width=True)
+                if len(analysis_stats) > 1:
+                    st.plotly_chart(tree_pred_plot,
+                                    config=config,
+                                    use_container_width=True)
+                else:
+                    st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
+
             with metrics_col:
                 download_plot_prediction = plot_downloader(tree_pred_plot)
                 st.download_button(
@@ -666,7 +711,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 # ##### Classification Random Forest Model
                 if game_prediction != "Game Result":
                     game_prediction += " Result"
-                rf_plot, rf_metrics, rf_matrix, rf_pred_plot, rf_teams, rf_params = \
+                rf_plot, rf_metrics, rf_matrix, rf_pred_plot, rf_teams, rf_params, coef_impact = \
                     rf_class_application(data=data,
                                          data_type=type_data,
                                          team_map=data_map,
@@ -679,9 +724,16 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                          prediction_type=game_prediction)
 
                 with result_col:
-                    st.plotly_chart(rf_plot,
-                                    config=config,
-                                    use_container_width=True)
+                    if len(analysis_stats) > 1:
+                        st.plotly_chart(rf_plot,
+                                        config=config,
+                                        use_container_width=True)
+                        st.markdown(
+                            f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+                    else:
+                        st.info("At least 2 Game Stats are needed to create the Game Stats Importance Plot.")
+
                 with feature_col:
                     download_plot_tree = plot_downloader(rf_plot)
                     st.download_button(
@@ -720,9 +772,13 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                           'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
-                st.plotly_chart(rf_pred_plot,
-                                config=config,
-                                use_container_width=True)
+                if len(analysis_stats) > 1:
+                    st.plotly_chart(rf_pred_plot,
+                                    config=config,
+                                    use_container_width=True)
+                else:
+                    st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
+
             with metrics_col:
                 download_plot_prediction = plot_downloader(rf_pred_plot)
                 st.download_button(
@@ -805,7 +861,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 # ##### Classification XgBoost Model
                 if game_prediction != "Game Result":
                     game_prediction += " Result"
-                xgb_plot, xgb_metrics, xgb_matrix, xgb_pred_plot, xgb_teams, xgb_params = \
+                xgb_plot, xgb_metrics, xgb_matrix, xgb_pred_plot, xgb_teams, xgb_params, coef_impact = \
                     xgb_class_application(data=data,
                                           data_type=type_data,
                                           team_map=data_map,
@@ -818,9 +874,16 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                           prediction_type=game_prediction)
 
                 with result_col:
-                    st.plotly_chart(xgb_plot,
-                                    config=config,
-                                    use_container_width=True)
+                    if len(analysis_stats) > 1:
+                        st.plotly_chart(xgb_plot,
+                                        config=config,
+                                        use_container_width=True)
+                        st.markdown(
+                            f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+                    else:
+                        st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
+
                 with feature_col:
                     download_plot_tree = plot_downloader(xgb_plot)
                     st.download_button(
@@ -859,9 +922,13 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                           'props': [('background-color', '#c3110f'), ('color', '#ffffff')]}]))
 
             with pred_col:
-                st.plotly_chart(xgb_pred_plot,
-                                config=config,
-                                use_container_width=True)
+                if len(analysis_stats) > 1:
+                    st.plotly_chart(xgb_pred_plot,
+                                    config=config,
+                                    use_container_width=True)
+                else:
+                    st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
+
             with metrics_col:
                 download_plot_prediction = plot_downloader(xgb_pred_plot)
                 st.download_button(
@@ -919,4 +986,4 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
         st.sidebar.markdown("")
     else:
         with result_col:
-            st.info("You need at least 1 feature to run the algorithm!")
+            st.info("You need at least 1 Game Stat to run the algorithm!")

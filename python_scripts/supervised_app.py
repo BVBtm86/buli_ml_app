@@ -104,7 +104,7 @@ def supervised_application():
 
         if data_type == "Original Data":
             final_class_features = classification_features_raw.copy()
-            final_class_features.extend(['Result', 'Team'])
+            final_class_features.extend(['Result', 'Team', 'Opponent', 'Season', 'Season Stage', 'Venue', 'Match Day'])
             df_classification = \
                 df_classification_type.loc[(df_classification_type[filter_var] == filter_code),
                                            final_class_features].reset_index(drop=True)
@@ -187,7 +187,8 @@ def supervised_application():
 
         if data_type == "Original Data":
             final_reg_features = regression_features_type.copy()
-            final_reg_features.extend([prediction_stat, 'Team'])
+            final_reg_features.extend([prediction_stat,
+                                       'Team', 'Opponent', 'Result', 'Season', 'Season Stage', 'Venue', 'Match Day'])
             df_regression = \
                 df_regression_type.loc[(df_regression_type[filter_var] == filter_code),
                                        final_reg_features].reset_index(drop=True)

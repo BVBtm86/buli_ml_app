@@ -163,7 +163,15 @@ def supervised_pca(data, variables, var_filter, code_filter, dep_var):
     final_pca_df = pca_scores.iloc[:, :final_pca_no]
     final_pca_features = final_pca_df.columns.to_list()
 
-    pred_df = data.loc[(data[var_filter] == code_filter), [dep_var, 'Team']].reset_index(drop=True)
+    if dep_var == 'Result':
+        pred_df = data.loc[(data[var_filter] == code_filter),
+                           [dep_var, 'Team', 'Opponent', 'Season',
+                            'Season Stage', 'Venue', 'Match Day']].reset_index(drop=True)
+    else:
+        pred_df = data.loc[(data[var_filter] == code_filter),
+                           [dep_var, 'Team', 'Opponent', 'Result', 'Season',
+                            'Season Stage', 'Venue', 'Match Day']].reset_index(drop=True)
+
     final_pca_df = pd.merge(left=final_pca_df, right=pred_df, left_index=True, right_index=True)
 
     return final_pca_df, final_pca_features
@@ -355,8 +363,9 @@ def plot_y_reg(data, y, y_pred, plot_title, pred_label, filter_team, filter_name
     return plot_y
 
 
-def plot_y_class(data, feature_x, feature_y, pred_var, plot_title, pred_label, filter_team, filter_name,
+def plot_y_class(data, data_filter_map, feature_x, feature_y, pred_var, plot_title, pred_label, filter_team, filter_name,
                  prediction_type, plot_features=False):
+
     # ##### Add Prediction to Data
     data_plot = data.copy()
     data_plot['Prediction Result'] = pred_var
@@ -369,19 +378,45 @@ def plot_y_class(data, feature_x, feature_y, pred_var, plot_title, pred_label, f
         data_plot['Team'] = data_plot['Team'].map(filter_name)
         data_plot = data_plot[data_plot['Team'] == filter_team].reset_index(drop=True)
 
+        # ##### Map Data with labels
+        team_map = dict(zip(data_filter_map[data_filter_map['Statistics'] == 'Team']['Code'].values,
+                            data_filter_map[data_filter_map['Statistics'] == 'Team']['Label'].values))
+        season_map = dict(zip(data_filter_map[data_filter_map['Statistics'] == 'Season']['Code'].values,
+                              data_filter_map[data_filter_map['Statistics'] == 'Season']['Label'].values))
+        stage_map = dict(zip(data_filter_map[data_filter_map['Statistics'] == 'Season Stage']['Code'].values,
+                             data_filter_map[data_filter_map['Statistics'] == 'Season Stage']['Label'].values))
+        venue_map = dict(zip(data_filter_map[data_filter_map['Statistics'] == 'Venue']['Code'].values,
+                             data_filter_map[data_filter_map['Statistics'] == 'Venue']['Label'].values))
+        data_plot['Opponent'] = data_plot['Opponent'].map(team_map)
+        data_plot['Season'] = data_plot['Season'].map(season_map)
+        data_plot['Season Stage'] = data_plot['Season Stage'].map(stage_map)
+        data_plot['Venue'] = data_plot['Venue'].map(venue_map)
+
     # #### Plot Predictions
     if plot_features:
         plot_height = 500
     else:
         plot_height = 550
-    plot_y = px.scatter(data_plot,
-                        x=feature_x,
-                        y=feature_y,
-                        color="Prediction Result",
-                        color_discrete_map=dict(zip(pred_label, target_color)),
-                        title=f"{plot_title} - Predicted <b>{prediction_type}</b> {feature_x} <b>vs</b> {feature_y} for"
-                              f" <br><b>{filter_team}</b>",
-                        hover_data=["Actual Result"])
+
+    if filter_team != "All Teams":
+        plot_y = px.scatter(data_plot,
+                            x=feature_x,
+                            y=feature_y,
+                            color="Prediction Result",
+                            color_discrete_map=dict(zip(pred_label, target_color)),
+                            title=f"{plot_title} - Predicted <b>{prediction_type}</b> {feature_x} <b>vs</b> {feature_y} for"
+                                  f" <br><b>{filter_team}</b>",
+                            hover_data=["Actual Result", 'Team', 'Opponent', 'Season', 'Season Stage', 'Venue',
+                                        'Match Day'])
+    else:
+        plot_y = px.scatter(data_plot,
+                            x=feature_x,
+                            y=feature_y,
+                            color="Prediction Result",
+                            color_discrete_map=dict(zip(pred_label, target_color)),
+                            title=f"{plot_title} - Predicted <b>{prediction_type}</b> {feature_x} <b>vs</b> {feature_y} for"
+                                  f" <br><b>{filter_team}</b>",
+                            hover_data=["Actual Result"])
     plot_y.update_layout(plot_bgcolor='rgba(0,0,0,0)',
                          xaxis_title=f"{feature_x}",
                          yaxis_title=f"{feature_y}",

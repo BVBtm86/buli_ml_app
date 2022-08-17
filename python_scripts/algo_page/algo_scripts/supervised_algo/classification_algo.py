@@ -1,5 +1,5 @@
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import colors_plot, target_color, \
-    filter_model_team_class, classification_metrics, conf_matrix, plot_y_class, display_tree
+    filter_model_team_class, classification_metrics, conf_matrix, plot_y_class
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -91,6 +91,7 @@ def classification_all_models(data, data_type, features, predictor, progress, al
 
 def linear_class_application(data, data_type, team_map, hyperparams, features, predictor, predictor_map,
                              train_sample, standardize_data, plot_name, prediction_type):
+
     # ##### Create X, y Feature
     x = data[features]
     y = data[predictor]
@@ -166,6 +167,7 @@ def linear_class_application(data, data_type, team_map, hyperparams, features, p
 
     # ##### Plot prediction
     predict_class_plot = plot_y_class(data=data,
+                                      data_filter_map=team_map,
                                       feature_x=feature_x_var,
                                       feature_y=feature_y_var,
                                       pred_var=y_pred,
@@ -175,7 +177,11 @@ def linear_class_application(data, data_type, team_map, hyperparams, features, p
                                       filter_name=team_names,
                                       prediction_type=prediction_type)
 
-    return linear_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter
+    # ##### Most important and Least important Coefficients
+    coef_df_imact = pd.DataFrame(np.mean(np.abs(final_coef_df), axis=1), columns=['Coef'])
+    coef_impact = coef_df_imact.nlargest(1, 'Coef').index.values[0]
+
+    return linear_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter, coef_impact
 
 
 def svm_class_application(data, data_type, team_map, hyperparams, features, predictor, predictor_map,
@@ -235,6 +241,7 @@ def svm_class_application(data, data_type, team_map, hyperparams, features, pred
             height=plot_height)
     else:
         svm_class_plot = None
+        final_coef_df = None
 
     # ##### Prediction Team Filter
     class_labels = predictor_map[predictor_map['Statistics'] == predictor]['Label'].values
@@ -263,6 +270,7 @@ def svm_class_application(data, data_type, team_map, hyperparams, features, pred
 
     # ##### Plot prediction
     predict_class_plot = plot_y_class(data=data,
+                                      data_filter_map=team_map,
                                       feature_x=feature_x_var,
                                       feature_y=feature_y_var,
                                       pred_var=y_pred,
@@ -273,7 +281,14 @@ def svm_class_application(data, data_type, team_map, hyperparams, features, pred
                                       prediction_type=prediction_type,
                                       plot_features=None)
 
-    return svm_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter
+    if hyperparams[0] == 'linear':
+        # ##### Most important and Least important Coefficients
+        coef_df_imact = pd.DataFrame(np.mean(np.abs(final_coef_df), axis=1), columns=['Coef'])
+        coef_impact = coef_df_imact.nlargest(1, 'Coef').index.values[0]
+    else:
+        coef_impact = None
+
+    return svm_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter, coef_impact
 
 
 def naive_class_application(data, team_map, hyperparams, features, predictor, predictor_map,
@@ -314,6 +329,7 @@ def naive_class_application(data, team_map, hyperparams, features, predictor, pr
 
     # ##### Plot prediction
     predict_class_plot = plot_y_class(data=data,
+                                      data_filter_map=team_map,
                                       feature_x=feature_x_var,
                                       feature_y=feature_y_var,
                                       pred_var=y_pred,
@@ -373,6 +389,7 @@ def knn_class_application(data, data_type, team_map, hyperparams, features, pred
 
     # ##### Plot prediction
     predict_class_plot = plot_y_class(data=data,
+                                      data_filter_map=team_map,
                                       feature_x=feature_x_var,
                                       feature_y=feature_y_var,
                                       pred_var=y_pred,
@@ -455,6 +472,7 @@ def dt_class_application(data, data_type, team_map, hyperparams, features, predi
 
     # ##### Plot prediction
     predict_class_plot = plot_y_class(data=data,
+                                      data_filter_map=team_map,
                                       feature_x=feature_x_var,
                                       feature_y=feature_y_var,
                                       pred_var=y_pred,
@@ -468,7 +486,11 @@ def dt_class_application(data, data_type, team_map, hyperparams, features, predi
     tree_params = [model, x_train, y_train, predictor, list(class_labels),
                    features, f"Decision Tree - {plot_name} Games", hyperparams[1]]
 
-    return dt_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter, tree_params
+    # ##### Most important and Least important Coefficients
+    coef_impact = final_coef_df.set_index('Features').nlargest(1, 'Importance').index.values[0]
+
+    return dt_class_plot, final_class_metrics, final_class_matrix, \
+        predict_class_plot, team_filter, tree_params, coef_impact
 
 
 def rf_class_application(data, data_type, team_map, hyperparams, features, predictor, predictor_map,
@@ -541,6 +563,7 @@ def rf_class_application(data, data_type, team_map, hyperparams, features, predi
 
     # ##### Plot prediction
     predict_class_plot = plot_y_class(data=data,
+                                      data_filter_map=team_map,
                                       feature_x=feature_x_var,
                                       feature_y=feature_y_var,
                                       pred_var=y_pred,
@@ -554,7 +577,11 @@ def rf_class_application(data, data_type, team_map, hyperparams, features, predi
     tree_params = [model, x_train, y_train, predictor, list(class_labels),
                    features, f"Random Forest - {plot_name} Games", hyperparams[2]]
 
-    return rf_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter, tree_params
+    # ##### Most important and Least important Coefficients
+    coef_impact = final_coef_df.set_index('Features').nlargest(1, 'Importance').index.values[0]
+
+    return rf_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, \
+        team_filter, tree_params, coef_impact
 
 
 def xgb_class_application(data, data_type, team_map, hyperparams, features, predictor, predictor_map,
@@ -632,6 +659,7 @@ def xgb_class_application(data, data_type, team_map, hyperparams, features, pred
 
     # ##### Plot prediction
     predict_class_plot = plot_y_class(data=data,
+                                      data_filter_map=team_map,
                                       feature_x=feature_x_var,
                                       feature_y=feature_y_var,
                                       pred_var=y_pred,
@@ -645,4 +673,8 @@ def xgb_class_application(data, data_type, team_map, hyperparams, features, pred
     tree_params = [model, x_train, y_train, predictor, list(class_labels),
                    features, f"XgBoosting - {plot_name} Games", hyperparams[3]]
 
-    return xgb_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, team_filter, tree_params
+    # ##### Most important and Least important Coefficients
+    coef_impact = final_coef_df.set_index('Features').nlargest(1, 'Importance').index.values[0]
+
+    return xgb_class_plot, final_class_metrics, final_class_matrix, \
+        predict_class_plot, team_filter, tree_params, coef_impact
