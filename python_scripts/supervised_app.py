@@ -47,13 +47,15 @@ def supervised_application():
                                                options=['Game Result', 'Home Team', 'Away Team'])
 
         if prediction_type == "Home Team":
-            df_classification_type = home_away_data(data=df_raw,
-                                                    features=classification_features_raw,
-                                                    type_game=prediction_type)
+            df_classification_type = \
+                home_away_data(data=df_raw,
+                               features=classification_features_raw,
+                               type_game=prediction_type)
         elif prediction_type == "Away Team":
-            df_classification_type = home_away_data(data=df_raw,
-                                                    features=classification_features_raw,
-                                                    type_game=prediction_type)
+            df_classification_type = \
+                home_away_data(data=df_raw,
+                               features=classification_features_raw,
+                               type_game=prediction_type)
         else:
             df_classification_type = df_raw.copy()
 

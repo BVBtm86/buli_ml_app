@@ -106,26 +106,26 @@ def home_away_data(data, features, type_game):
                         right=away_team_df,
                         left_index=True,
                         right_index=True)
-    if type_game == "Home Team":
-        final_df.drop(columns=['Home Venue', 'Away Total', 'Away Season', 'Away Season Stage', 'Away Venue'],
-                      inplace=True)
-        final_df.rename(columns={'Home Total': 'Total', 'Home Season': 'Season', 'Home Season Stage': 'Season Stage',
-                                 'Home Result': 'Result', 'Home Team': 'Team'},
-                        inplace=True)
 
+    if type_game == "Home Team":
+        final_df.drop(columns=['Away Match Day', 'Away Total', 'Away Season', 'Away Season Stage', 'Away Venue',
+                               'Away Result', 'Away Opponent', 'Home Opponent'], inplace=True)
+        final_df.rename(columns={'Home Match Day': 'Match Day', 'Home Total': 'Total', 'Home Season': 'Season',
+                                 'Home Season Stage': 'Season Stage', 'Home Result': 'Result', 'Home Team': 'Team',
+                                 'Home Venue': 'Venue', 'Away Team': 'Opponent'}, inplace=True)
         # ##### Create Features
         features_remove = []
         for col in features:
             final_df[col] = final_df[f"Home {col}"] - final_df[f"Away {col}"]
             features_remove.append(f"Home {col}")
             features_remove.append(f"Away {col}")
-
     elif type_game == "Away Team":
-        final_df.drop(columns=['Away Venue', 'Home Total', 'Home Season', 'Home Season Stage', 'Home Venue'],
+        final_df.drop(columns=['Home Match Day', 'Home Total', 'Home Season', 'Home Season Stage', 'Home Venue',
+                               'Home Result', 'Home Opponent', 'Away Opponent'],
                       inplace=True)
-        final_df.rename(columns={'Away Total': 'Total', 'Away Season': 'Season', 'Away Season Stage': 'Season Stage',
-                                 'Away Result': 'Result', 'Away Team': 'Team'},
-                        inplace=True)
+        final_df.rename(columns={'Away Match Day': 'Match Day', 'Away Total': 'Total', 'Away Season': 'Season',
+                                 'Away Season Stage': 'Season Stage', 'Away Result': 'Result', 'Away Team': 'Team',
+                                 'Away Venue': 'Venue', 'Home Team': 'Opponent'}, inplace=True)
 
         # ##### Create Features
         features_remove = []
@@ -491,7 +491,7 @@ def display_rf_tree(final_model, x_train, y_train, target, class_labels, feature
 
 
 def display_tree_xgb(final_model, num_tree, x_train, y_train, target, class_labels, features, plot_label, tree_depth):
-    print(tree_depth)
+
     # ##### Display Parameters
     if tree_depth == 2:
         scale_fig = 1.5
