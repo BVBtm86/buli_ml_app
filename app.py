@@ -3,6 +3,7 @@ from streamlit_option_menu import option_menu
 from python_scripts.unsupervised_app import unsupervised_application
 from python_scripts.supervised_app import supervised_application
 from PIL import Image
+import graphviz
 
 logo = Image.open('images/Bundesliga.png')
 
