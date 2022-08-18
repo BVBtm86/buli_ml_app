@@ -673,12 +673,12 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     tree_show_plot = svg_write(tree_svg_plot)
                     st.write(tree_show_plot, unsafe_allow_html=True)
 
-                    download_tree = download_button_tree(
-                        object_to_download=tree_svg_plot,
-                        download_filename=f"Decision Tree - {sample_filter}.svg",
-                        button_text="📥 Download Decision Tree")
-
-                    st.markdown(download_tree, unsafe_allow_html=True)
+                    # download_tree = download_button_tree(
+                    #     object_to_download=tree_svg_plot,
+                    #     download_filename=f"Decision Tree - {sample_filter}.svg",
+                    #     button_text="📥 Download Decision Tree")
+                    #
+                    # st.markdown(download_tree, unsafe_allow_html=True)
 
         # ##### ''' Random Forest '''
         elif classification_algo == "Random Forest":
