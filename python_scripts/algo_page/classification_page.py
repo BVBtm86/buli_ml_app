@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import class_algo_options, \
     class_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
-    # svg_write, download_button_tree, display_tree, display_rf_tree, display_tree_xgb
+# svg_write, download_button_tree, display_tree, display_rf_tree, display_tree_xgb
 from python_scripts.algo_page.algo_scripts.supervised_algo.classification_algo import classification_all_models, \
     linear_class_application, svm_class_application, knn_class_application, naive_class_application, \
     dt_class_application, rf_class_application, xgb_class_application
