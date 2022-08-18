@@ -177,7 +177,7 @@ def linear_class_application(data, data_type, team_map, hyperparams, features, p
                                       filter_name=team_names,
                                       prediction_type=prediction_type)
 
-    # ##### Most important and Least important Coefficients
+    # ##### Most important Coefficient
     coef_df_imact = pd.DataFrame(np.mean(np.abs(final_coef_df), axis=1), columns=['Coef'])
     coef_impact = coef_df_imact.nlargest(1, 'Coef').index.values[0]
 
@@ -282,7 +282,7 @@ def svm_class_application(data, data_type, team_map, hyperparams, features, pred
                                       plot_features=None)
 
     if hyperparams[0] == 'linear':
-        # ##### Most important and Least important Coefficients
+        # ##### Most important Coefficient
         coef_df_imact = pd.DataFrame(np.mean(np.abs(final_coef_df), axis=1), columns=['Coef'])
         coef_impact = coef_df_imact.nlargest(1, 'Coef').index.values[0]
     else:
@@ -486,7 +486,7 @@ def dt_class_application(data, data_type, team_map, hyperparams, features, predi
     tree_params = [model, x_train, y_train, predictor, list(class_labels),
                    features, f"Decision Tree - {plot_name} Games", hyperparams[1]]
 
-    # ##### Most important and Least important Coefficients
+    # ##### Most important Feature
     coef_impact = final_coef_df.set_index('Features').nlargest(1, 'Importance').index.values[0]
 
     return dt_class_plot, final_class_metrics, final_class_matrix, \
@@ -577,7 +577,7 @@ def rf_class_application(data, data_type, team_map, hyperparams, features, predi
     tree_params = [model, x_train, y_train, predictor, list(class_labels),
                    features, f"Random Forest - {plot_name} Games", hyperparams[2]]
 
-    # ##### Most important and Least important Coefficients
+    # ##### Most important Feature
     coef_impact = final_coef_df.set_index('Features').nlargest(1, 'Importance').index.values[0]
 
     return rf_class_plot, final_class_metrics, final_class_matrix, predict_class_plot, \
@@ -673,7 +673,7 @@ def xgb_class_application(data, data_type, team_map, hyperparams, features, pred
     tree_params = [model, x_train, y_train, predictor, list(class_labels),
                    features, f"XgBoosting - {plot_name} Games", hyperparams[3]]
 
-    # ##### Most important and Least important Coefficients
+    # ##### Most important Feature
     coef_impact = final_coef_df.set_index('Features').nlargest(1, 'Importance').index.values[0]
 
     return xgb_class_plot, final_class_metrics, final_class_matrix, \

@@ -115,7 +115,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Linear Model
-                linear_plot, linear_metrics, linear_pred_plot, linear_team, linear_team_metrics = \
+                linear_plot, linear_metrics, linear_pred_plot, linear_team, linear_team_metrics, coef_impact = \
                     linear_reg_application(data=data,
                                            data_type=type_data,
                                            team_map=data_map,
@@ -132,6 +132,9 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                     config=config,
                                     use_container_width=True)
                 with feature_col:
+                    st.markdown(f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                                f"<b><font color=#c3110f>{dep_var}</font></b>.", unsafe_allow_html=True)
+
                     download_plot_linear = plot_downloader(linear_plot)
                     st.download_button(
                         label='📥 Download LR Plot',
@@ -239,7 +242,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 # ##### Regression SVM Model
                 with result_col:
                     with st.spinner("Running Model..."):
-                        svm_plot, svm_metrics, svm_pred_plot, svm_team, svm_team_metrics = \
+                        svm_plot, svm_metrics, svm_pred_plot, svm_team, svm_team_metrics, coef_impact = \
                             svm_reg_application(data=data,
                                                 data_type=type_data,
                                                 team_map=data_map,
@@ -256,7 +259,12 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                         st.plotly_chart(svm_plot,
                                         config=config,
                                         use_container_width=True)
+
                     with feature_col:
+                        st.markdown(
+                            f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                            f"<b><font color=#c3110f>{dep_var}</font></b>.", unsafe_allow_html=True)
+
                         download_plot_linear = plot_downloader(svm_plot)
                         st.download_button(
                             label='📥 Download SVM Plot',
@@ -463,7 +471,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Decision Tree Model
-                tree_plot, tree_metrics, tree_pred_plot, tree_params, tree_team, tree_team_metrics = \
+                tree_plot, tree_metrics, tree_pred_plot, tree_params, tree_team, tree_team_metrics, coef_impact = \
                     tree_reg_application(data=data,
                                          data_type=type_data,
                                          team_map=data_map,
@@ -475,16 +483,24 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                          prediction_type=game_prediction)
 
                 with result_col:
-                    st.plotly_chart(tree_plot,
-                                    config=config,
-                                    use_container_width=True)
-                with feature_col:
-                    download_plot_linear = plot_downloader(tree_plot)
-                    st.download_button(
-                        label='📥 Download DT Plot',
-                        data=download_plot_linear,
-                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot DT.html",
-                        mime='text/html')
+                    if len(analysis_stats) > 1:
+                        with result_col:
+                            st.plotly_chart(tree_plot,
+                                            config=config,
+                                            use_container_width=True)
+                        with feature_col:
+                            st.markdown(f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in "
+                                        f"predicting <b><font color=#c3110f>{dep_var}</font></b>.",
+                                        unsafe_allow_html=True)
+
+                            download_plot_linear = plot_downloader(tree_plot)
+                            st.download_button(
+                                label='📥 Download DT Plot',
+                                data=download_plot_linear,
+                                file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot DT.html",
+                                mime='text/html')
+                    else:
+                        st.info("At least 2 Game Stats are needed to create the Game Stats Importance Plot.")
 
             # ##### Decision Tree Results
             title_col, logo_col = st.columns([10, 1])
@@ -606,7 +622,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression Random Forest Model
-                rf_plot, rf_metrics, rf_pred_plot, rf_params, rf_team, rf_team_metrics = \
+                rf_plot, rf_metrics, rf_pred_plot, rf_params, rf_team, rf_team_metrics, coef_impact = \
                     rf_reg_application(data=data,
                                        data_type=type_data,
                                        team_map=data_map,
@@ -618,16 +634,24 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                        prediction_type=game_prediction)
 
                 with result_col:
-                    st.plotly_chart(rf_plot,
-                                    config=config,
-                                    use_container_width=True)
-                with feature_col:
-                    download_plot_linear = plot_downloader(rf_plot)
-                    st.download_button(
-                        label='📥 Download RF Plot',
-                        data=download_plot_linear,
-                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot RF.html",
-                        mime='text/html')
+                    if len(analysis_stats) > 1:
+                        st.plotly_chart(rf_plot,
+                                        config=config,
+                                        use_container_width=True)
+
+                        with feature_col:
+                            st.markdown(f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in "
+                                        f"predicting <b><font color=#c3110f>{dep_var}</font></b>.",
+                                        unsafe_allow_html=True)
+
+                            download_plot_linear = plot_downloader(rf_plot)
+                            st.download_button(
+                                label='📥 Download RF Plot',
+                                data=download_plot_linear,
+                                file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot RF.html",
+                                mime='text/html')
+                    else:
+                        st.info("At least 2 Game Stats are needed to create the Game Stats Importance Plot.")
 
             # ##### Random Forest Results
             title_col, logo_col = st.columns([10, 1])
@@ -751,7 +775,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression XgBoosting Model
-                xgb_plot, xgb_metrics, xgb_pred_plot, xgb_params, xgb_team, xgb_team_metrics = \
+                xgb_plot, xgb_metrics, xgb_pred_plot, xgb_params, xgb_team, xgb_team_metrics, coef_impact = \
                     xgb_reg_application(data=data,
                                         data_type=type_data,
                                         team_map=data_map,
@@ -763,16 +787,23 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                         prediction_type=game_prediction)
 
                 with result_col:
-                    st.plotly_chart(xgb_plot,
-                                    config=config,
-                                    use_container_width=True)
-                with feature_col:
-                    download_plot_linear = plot_downloader(xgb_plot)
-                    st.download_button(
-                        label='📥 Download XgB Plot',
-                        data=download_plot_linear,
-                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot XgB.html",
-                        mime='text/html')
+                    if len(analysis_stats) > 1:
+                        st.plotly_chart(xgb_plot,
+                                        config=config,
+                                        use_container_width=True)
+
+                        with feature_col:
+                            st.markdown(f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in "
+                                        f"predicting <b><font color=#c3110f>{dep_var}</font></b>.",
+                                        unsafe_allow_html=True)
+                            download_plot_linear = plot_downloader(xgb_plot)
+                            st.download_button(
+                                label='📥 Download XgB Plot',
+                                data=download_plot_linear,
+                                file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot XgB.html",
+                                mime='text/html')
+                    else:
+                        st.info("At least 2 Game Stats are needed to create the Game Stats Importance Plot.")
 
             # ##### XgBoost Results
             title_col, logo_col = st.columns([10, 1])

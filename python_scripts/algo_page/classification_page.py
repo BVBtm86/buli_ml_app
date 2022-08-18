@@ -149,9 +149,9 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 st.plotly_chart(linear_plot,
                                 config=config,
                                 use_container_width=True)
+            with feature_col:
                 st.markdown(f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
                             f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
-            with feature_col:
                 download_plot_linear = plot_downloader(linear_plot)
                 st.download_button(
                     label='📥 Download LR Plot',
@@ -192,15 +192,15 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.plotly_chart(linear_pred_plot,
                                     config=config,
                                     use_container_width=True)
+                    with metrics_col:
+                        download_plot_prediction = plot_downloader(linear_pred_plot)
+                        st.download_button(
+                            label='📥 Download Prediction Plot',
+                            data=download_plot_prediction,
+                            file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                            mime='text/html')
                 else:
                     st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
-            with metrics_col:
-                download_plot_prediction = plot_downloader(linear_pred_plot)
-                st.download_button(
-                    label='📥 Download Prediction Plot',
-                    data=download_plot_prediction,
-                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
-                    mime='text/html')
 
             with logo_col:
                 if linear_teams != "All Teams":
@@ -273,11 +273,11 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.plotly_chart(svm_plot,
                                     config=config,
                                     use_container_width=True)
+                with feature_col:
                     st.markdown(
                         f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
                         f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
 
-                with feature_col:
                     download_plot_linear = plot_downloader(svm_plot)
                     st.download_button(
                         label='📥 Download SVM Plot',
@@ -343,16 +343,15 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                         st.plotly_chart(svm_pred_plot,
                                         config=config,
                                         use_container_width=True)
+                        with metrics_col:
+                            download_plot_prediction = plot_downloader(svm_pred_plot)
+                            st.download_button(
+                                label='📥 Download Prediction Plot',
+                                data=download_plot_prediction,
+                                file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                                mime='text/html')
                     else:
                         st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
-
-            with metrics_col:
-                download_plot_prediction = plot_downloader(svm_pred_plot)
-                st.download_button(
-                    label='📥 Download Prediction Plot',
-                    data=download_plot_prediction,
-                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
-                    mime='text/html')
 
             with logo_col:
                 if svm_teams != "All Teams":
@@ -427,16 +426,15 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.plotly_chart(nb_pred_plot,
                                     config=config,
                                     use_container_width=True)
+                    with metrics_col:
+                        download_plot_prediction = plot_downloader(nb_pred_plot)
+                        st.download_button(
+                            label='📥 Download Prediction Plot',
+                            data=download_plot_prediction,
+                            file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                            mime='text/html')
                 else:
                     st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
-
-            with metrics_col:
-                download_plot_prediction = plot_downloader(nb_pred_plot)
-                st.download_button(
-                    label='📥 Download Prediction Plot',
-                    data=download_plot_prediction,
-                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
-                    mime='text/html')
 
             with logo_col:
                 if nb_teams != "All Teams":
@@ -516,16 +514,15 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.plotly_chart(knn_pred_plot,
                                     config=config,
                                     use_container_width=True)
+                    with metrics_col:
+                        download_plot_prediction = plot_downloader(knn_pred_plot)
+                        st.download_button(
+                            label='📥 Download Prediction Plot',
+                            data=download_plot_prediction,
+                            file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                            mime='text/html')
                 else:
                     st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
-
-            with metrics_col:
-                download_plot_prediction = plot_downloader(knn_pred_plot)
-                st.download_button(
-                    label='📥 Download Prediction Plot',
-                    data=download_plot_prediction,
-                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
-                    mime='text/html')
 
             with logo_col:
                 if knn_teams != "All Teams":
@@ -580,19 +577,19 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                         st.plotly_chart(tree_plot,
                                         config=config,
                                         use_container_width=True)
-                        st.markdown(
-                            f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
-                            f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+                        with feature_col:
+                            st.markdown(
+                                f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                                f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+
+                            download_plot_tree = plot_downloader(tree_plot)
+                            st.download_button(
+                                label='📥 Download DT Plot',
+                                data=download_plot_tree,
+                                file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot DT.html",
+                                mime='text/html')
                     else:
                         st.info("At least 2 Game Stats are needed to create the Game Stats Importance Plot.")
-
-                with feature_col:
-                    download_plot_tree = plot_downloader(tree_plot)
-                    st.download_button(
-                        label='📥 Download DT Plot',
-                        data=download_plot_tree,
-                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot DT.html",
-                        mime='text/html')
 
             # ##### Classification Results
             title_col, logo_col = st.columns([10, 1])
@@ -628,16 +625,15 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.plotly_chart(tree_pred_plot,
                                     config=config,
                                     use_container_width=True)
+                    with metrics_col:
+                        download_plot_prediction = plot_downloader(tree_pred_plot)
+                        st.download_button(
+                            label='📥 Download Prediction Plot',
+                            data=download_plot_prediction,
+                            file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                            mime='text/html')
                 else:
                     st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
-
-            with metrics_col:
-                download_plot_prediction = plot_downloader(tree_pred_plot)
-                st.download_button(
-                    label='📥 Download Prediction Plot',
-                    data=download_plot_prediction,
-                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
-                    mime='text/html')
 
             with logo_col:
                 if tree_teams != "All Teams":
@@ -728,19 +724,19 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                         st.plotly_chart(rf_plot,
                                         config=config,
                                         use_container_width=True)
-                        st.markdown(
-                            f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
-                            f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+                        with feature_col:
+                            st.markdown(
+                                f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                                f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+
+                            download_plot_tree = plot_downloader(rf_plot)
+                            st.download_button(
+                                label='📥 Download RF Plot',
+                                data=download_plot_tree,
+                                file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot RF.html",
+                                mime='text/html')
                     else:
                         st.info("At least 2 Game Stats are needed to create the Game Stats Importance Plot.")
-
-                with feature_col:
-                    download_plot_tree = plot_downloader(rf_plot)
-                    st.download_button(
-                        label='📥 Download RF Plot',
-                        data=download_plot_tree,
-                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot RF.html",
-                        mime='text/html')
 
             # ##### Classification Results
             title_col, logo_col = st.columns([10, 1])
@@ -776,16 +772,15 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.plotly_chart(rf_pred_plot,
                                     config=config,
                                     use_container_width=True)
+                    with metrics_col:
+                        download_plot_prediction = plot_downloader(rf_pred_plot)
+                        st.download_button(
+                            label='📥 Download Prediction Plot',
+                            data=download_plot_prediction,
+                            file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                            mime='text/html')
                 else:
                     st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
-
-            with metrics_col:
-                download_plot_prediction = plot_downloader(rf_pred_plot)
-                st.download_button(
-                    label='📥 Download Prediction Plot',
-                    data=download_plot_prediction,
-                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
-                    mime='text/html')
 
                 with logo_col:
                     if rf_teams != "All Teams":
@@ -878,19 +873,20 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                         st.plotly_chart(xgb_plot,
                                         config=config,
                                         use_container_width=True)
-                        st.markdown(
-                            f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
-                            f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+
+                        with feature_col:
+                            st.markdown(
+                                f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                                f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+
+                            download_plot_tree = plot_downloader(xgb_plot)
+                            st.download_button(
+                                label='📥 Download XgB Plot',
+                                data=download_plot_tree,
+                                file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot XgB.html",
+                                mime='text/html')
                     else:
                         st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
-
-                with feature_col:
-                    download_plot_tree = plot_downloader(xgb_plot)
-                    st.download_button(
-                        label='📥 Download XgB Plot',
-                        data=download_plot_tree,
-                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot XgB.html",
-                        mime='text/html')
 
             # ##### Classification Results
             title_col, logo_col = st.columns([10, 1])
@@ -926,16 +922,15 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                     st.plotly_chart(xgb_pred_plot,
                                     config=config,
                                     use_container_width=True)
+                    with metrics_col:
+                        download_plot_prediction = plot_downloader(xgb_pred_plot)
+                        st.download_button(
+                            label='📥 Download Prediction Plot',
+                            data=download_plot_prediction,
+                            file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
+                            mime='text/html')
                 else:
                     st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
-
-            with metrics_col:
-                download_plot_prediction = plot_downloader(xgb_pred_plot)
-                st.download_button(
-                    label='📥 Download Prediction Plot',
-                    data=download_plot_prediction,
-                    file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Prediction Plot.html",
-                    mime='text/html')
 
                 with logo_col:
                     if xgb_teams != "All Teams":

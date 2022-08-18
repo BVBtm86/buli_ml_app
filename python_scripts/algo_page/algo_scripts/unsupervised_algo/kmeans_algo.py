@@ -307,7 +307,7 @@ def kmeans_final(data, data_stats, data_filter_map, variables, var_filter, code_
     final_sig_tab.set_index('Feature', inplace=True)
 
     return fig_silhouette, silhouette_df, cluster_scores, final_sig_tab, fig_kmeans, filter_results_df, \
-           filter_sig_tab, km_final_df
+        filter_sig_tab, km_final_df
 
 
 def kmeans_sig(data, kmeans_results, stats, no_clusters):

@@ -165,7 +165,12 @@ def linear_reg_application(data, data_type, team_map, hyperparams, features, pre
                                  filter_name=team_names,
                                  prediction_type=prediction_type)
 
-    return linear_reg_plot, final_reg_metrics, plot_prediction, team_filter, final_team_metrics
+    # ##### Most important Coefficient
+    coef_df_importance = final_coef_df.copy()
+    coef_df_importance['Coefficient'] = np.abs(coef_df_importance['Coefficient'])
+    coef_impact = coef_df_importance.nlargest(1, 'Coefficient')['Features'].values[0]
+
+    return linear_reg_plot, final_reg_metrics, plot_prediction, team_filter, final_team_metrics, coef_impact
 
 
 def svm_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, standardize_data,
@@ -218,6 +223,7 @@ def svm_reg_application(data, data_type, team_map, hyperparams, features, predic
         svm_reg_plot.update_traces(marker_color="#c3110f")
     else:
         svm_reg_plot = None
+        model_coef = None
 
     # ##### Prediction Team Filter
     team_filter, team_names = filter_model_team_reg(data=data,
@@ -252,7 +258,15 @@ def svm_reg_application(data, data_type, team_map, hyperparams, features, predic
                                  prediction_type=prediction_type,
                                  plot_features=None)
 
-    return svm_reg_plot, final_reg_metrics, plot_prediction, team_filter, final_team_metrics
+    if hyperparams[0] == 'linear':
+        # ##### Most important Coefficient
+        coef_df_importance = model_coef.copy()
+        coef_df_importance['Coefficient'] = np.abs(coef_df_importance['Coefficient'])
+        coef_impact = coef_df_importance.nlargest(1, 'Coefficient')['Features'].values[0]
+    else:
+        coef_impact = None
+
+    return svm_reg_plot, final_reg_metrics, plot_prediction, team_filter, final_team_metrics, coef_impact
 
 
 def knn_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, standardize_data,
@@ -389,7 +403,10 @@ def tree_reg_application(data, data_type, team_map, hyperparams, features, predi
     tree_params = [model, x_train, y_train, predictor, None,
                    features, f"Decision Tree - {plot_name} Games", hyperparams[1]]
 
-    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics
+    # ##### Most important Feature
+    coef_impact = final_coef_df.set_index('Features').nlargest(1, 'Importance').index.values[0]
+
+    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics, coef_impact
 
 
 def rf_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
@@ -471,7 +488,10 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
     tree_params = [model, x_train, y_train, predictor, None,
                    features, f"Random Forest - {plot_name} Games", hyperparams[2]]
 
-    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics
+    # ##### Most important Feature
+    coef_impact = final_coef_df.set_index('Features').nlargest(1, 'Importance').index.values[0]
+
+    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics, coef_impact
 
 
 def xgb_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
@@ -557,4 +577,7 @@ def xgb_reg_application(data, data_type, team_map, hyperparams, features, predic
     tree_params = [model, x_train, y_train, predictor, None,
                    features, f"Random Forest - {plot_name} Games", hyperparams[3]]
 
-    return xgb_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics
+    # ##### Most important Feature
+    coef_impact = final_coef_df.set_index('Features').nlargest(1, 'Importance').index.values[0]
+
+    return xgb_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics, coef_impact
