@@ -668,10 +668,14 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                               plot_label=tree_params[6],
                                               tree_depth=tree_params[7])
 
+                import streamlit.components.v1 as components
                 with st.expander("Show Tree"):
-                    tree_svg_plot = final_tree.svg()
-                    tree_show_plot = svg_write(tree_svg_plot)
-                    st.write(tree_show_plot, unsafe_allow_html=True)
+                    dtree_html = f'<body>{final_tree.svg()}</body>'
+                    components.html(dtree_html, height=600)
+
+                    # tree_svg_plot = final_tree.svg()
+                    # tree_show_plot = svg_write(tree_svg_plot)
+                    # st.write(tree_show_plot, unsafe_allow_html=True)
 
                     # download_tree = download_button_tree(
                     #     object_to_download=tree_svg_plot,
