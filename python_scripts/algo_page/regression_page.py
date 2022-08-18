@@ -2,7 +2,7 @@ import numpy as np
 import streamlit as st
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import reg_algo_options, \
     reg_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear
-    # svg_write, download_button_tree, display_tree, display_rf_tree, display_tree_xgb
+# svg_write, download_button_tree, display_tree, display_rf_tree, display_tree_xgb
 from python_scripts.algo_page.algo_scripts.supervised_algo.regression_algo import regression_all_models, \
     linear_reg_application, svm_reg_application, knn_reg_application, tree_reg_application, rf_reg_application, \
     xgb_reg_application
