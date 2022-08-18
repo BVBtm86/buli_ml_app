@@ -670,8 +670,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
                 import streamlit.components.v1 as components
                 with st.expander("Show Tree"):
-                    dtree_html = f'<body>{final_tree.svg()}</body>'
-                    components.html(dtree_html, height=600)
+                    st.image(final_tree._repr_svg_(), use_column_width=True)
 
                     # tree_svg_plot = final_tree.svg()
                     # tree_show_plot = svg_write(tree_svg_plot)
