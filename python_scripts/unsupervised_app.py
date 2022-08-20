@@ -8,7 +8,7 @@ from python_scripts.algo_page.algo_scripts.unsupervised_algo.utilities_unsupervi
 # ##### Main Application
 def unsupervised_application():
     # ##### Data File to Use
-    data_file = st.sidebar.selectbox(label="Data File To Use",
+    data_file = st.sidebar.selectbox(label="Statistics Used",
                                      options=['Top Statistics', 'All Statistics'])
     # ##### App Name
     title_col, image_col, _ = st.columns([7, 1, 1.5])

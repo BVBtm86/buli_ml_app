@@ -9,7 +9,8 @@ from python_scripts.algo_page.algo_scripts.supervised_algo.classification_algo i
 from PIL import Image
 
 
-def classification_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
+def classification_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var,
+                               data_file):
     config = {'displayModeBar': False}
     # ##### Algorithm Selection
     st.sidebar.subheader("Algorithm")
@@ -36,7 +37,11 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
         feature_col, result_col = st.columns([3, 9])
         with feature_col:
             st.markdown("<b>Game Stats</b>", unsafe_allow_html=True)
-            analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
+            if data_file == "Top Statistics":
+                analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
+            else:
+                with st.expander(""):
+                    analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
     else:
         st.info(f"Please select one of the Classification Algorithms from the available options.")
         st.markdown(

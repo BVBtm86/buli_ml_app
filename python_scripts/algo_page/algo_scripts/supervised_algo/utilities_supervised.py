@@ -67,8 +67,8 @@ def load_data_supervised(data_file):
     else:
         df_stats = pd.read_excel("./data/Bundesliga All Statistics.xlsx", sheet_name=0)
 
-    df_filter = pd.read_excel("./data/Bundesliga Statistics Filter.xlsx", sheet_name=0)
-    df_map = pd.read_excel("./data/Bundesliga Statistics Filter.xlsx", sheet_name=1)
+    df_filter = pd.read_excel("./data/Bundesliga Filter Statistics.xlsx", sheet_name=0)
+    df_map = pd.read_excel("./data/Bundesliga Filter Statistics.xlsx", sheet_name=1)
 
     # ##### Merge Data and File stats
     main_stats = df_stats.columns.to_list()

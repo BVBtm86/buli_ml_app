@@ -9,7 +9,7 @@ from python_scripts.algo_page.algo_scripts.supervised_algo.regression_algo impor
 from PIL import Image
 
 
-def regression_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var):
+def regression_application(data, data_map, type_data, game_prediction, sample_filter, dep_var, indep_var, data_file):
     config = {'displayModeBar': False}
     # ##### Algorithm Selection
     st.sidebar.subheader("Algorithm")
@@ -35,7 +35,11 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
         feature_col, result_col = st.columns([3, 9])
         with feature_col:
             st.markdown("<b>Game Stats</b>", unsafe_allow_html=True)
-            analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
+            if data_file == "Top Statistics":
+                analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
+            else:
+                with st.expander(""):
+                    analysis_stats = [col for col in indep_var if st.checkbox(col, True)]
     else:
         st.info(f"Please select one of the Regression Algorithms from the available options.")
         st.markdown(
