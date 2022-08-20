@@ -61,8 +61,12 @@ reg_algo_name = [
 
 # ##### Load Data
 @st.cache
-def load_data_supervised():
-    df_stats = pd.read_excel("./data/Supervised Bundesliga Team Statistics.xlsx", sheet_name=0)
+def load_data_supervised(data_file):
+    if data_file == "Top Statistics":
+        df_stats = pd.read_excel("./data/Bundesliga Top Statistics.xlsx", sheet_name=0)
+    else:
+        df_stats = pd.read_excel("./data/Bundesliga All Statistics.xlsx", sheet_name=0)
+
     df_filter = pd.read_excel("./data/Bundesliga Statistics Filter.xlsx", sheet_name=0)
     df_map = pd.read_excel("./data/Bundesliga Statistics Filter.xlsx", sheet_name=1)
 

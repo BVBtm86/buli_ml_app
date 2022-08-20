@@ -7,6 +7,9 @@ from python_scripts.algo_page.algo_scripts.unsupervised_algo.utilities_unsupervi
 
 # ##### Main Application
 def unsupervised_application():
+    # ##### Data File to Use
+    data_file = st.sidebar.selectbox(label="Data File To Use",
+                                     options=['Top Statistics', 'All Statistics'])
     # ##### App Name
     title_col, image_col, _ = st.columns([7, 1, 1.5])
     with title_col:
@@ -20,7 +23,7 @@ def unsupervised_application():
         unsafe_allow_html=True)
 
     # ##### Load Data
-    df_unsupervised, df_raw, filter_map, all_stats = load_data_unsupervised()
+    df_unsupervised, df_raw, filter_map, all_stats = load_data_unsupervised(data_file=data_file)
 
     # ##### Analysis Options
     st.sidebar.header("Analysis Options")
@@ -68,7 +71,8 @@ def unsupervised_application():
                         main_filter=filter_main_stat,
                         app_filter=filter_stat,
                         feature_filter=filter_var,
-                        feature_code=filter_code)
+                        feature_code=filter_code,
+                        data_file=data_file)
 
     elif unsupervised_algo == "Cluster Analysis":
         st.markdown("<b><font color=#c3110f>Cluster Analysis</font></b> or clustering is the task of grouping a set of"
@@ -123,4 +127,5 @@ def unsupervised_application():
                             all_features=all_stats,
                             app_filter=filter_stat,
                             feature_filter=filter_var,
-                            feature_code=filter_code)
+                            feature_code=filter_code,
+                            data_file=data_file)

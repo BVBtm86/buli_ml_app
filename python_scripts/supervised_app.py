@@ -7,6 +7,9 @@ from python_scripts.algo_page.regression_page import regression_application
 
 
 def supervised_application():
+    # ##### Data File to Use
+    data_file = st.sidebar.selectbox(label="Data File To Use",
+                                     options=['Top Statistics', 'All Statistics'])
     # ##### App Name
     title_col, image_col, _ = st.columns([7, 1, 1.5])
     with title_col:
@@ -28,7 +31,7 @@ def supervised_application():
                                       "nav-link": {"--hover-color": "#ffffff"},
                                   })
     # ##### Load Data
-    df_supervised, filter_map, all_stats = load_data_supervised()
+    df_supervised, filter_map, all_stats = load_data_supervised(data_file=data_file)
 
     # ##### Analysis Options
     st.sidebar.header("Analysis Options")
@@ -38,9 +41,7 @@ def supervised_application():
 
         # ##### Final Classification Data
         df_raw = df_supervised.copy()
-        df_raw.drop(columns=['xG'], inplace=True)
         classification_features_raw = all_stats.copy()
-        classification_features_raw.remove('xG')
 
         # ##### Analysis Type
         prediction_type = st.sidebar.selectbox(label="Prediction by",

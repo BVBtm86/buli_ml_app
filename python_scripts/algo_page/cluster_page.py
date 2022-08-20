@@ -7,7 +7,7 @@ from PIL import Image
 
 
 def cluster_application(cluster_algo, data_app, data_raw, data_map,
-                        all_features, app_filter, feature_filter, feature_code):
+                        all_features, app_filter, feature_filter, feature_code, data_file):
     config = {'displayModeBar': False}
 
     if cluster_algo == "Hierarchical Clustering":
@@ -19,7 +19,11 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
             st.markdown("<b>Game Stats</b>", unsafe_allow_html=True)
             if data_type == "Original Data":
                 final_hierarchical_df = data_app.copy()
-                analysis_stats = [col for col in all_features if st.checkbox(col, True)]
+                if data_file == "Top Statistics":
+                    analysis_stats = [col for col in all_features if st.checkbox(col, True)]
+                else:
+                    with st.expander(""):
+                        analysis_stats = [col for col in all_features if st.checkbox(col, True)]
             else:
                 final_hierarchical_df, pca_features = cluster_pca(data=data_app,
                                                                   variables=all_features,
@@ -91,7 +95,11 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
             st.markdown("<b>Game Stats</b>", unsafe_allow_html=True)
             if data_type == "Original Data":
                 final_kmeans_df = data_app.copy()
-                analysis_stats = [col for col in all_features if st.checkbox(col, True)]
+                if data_file == "Top Statistics":
+                    analysis_stats = [col for col in all_features if st.checkbox(col, True)]
+                else:
+                    with st.expander(""):
+                        analysis_stats = [col for col in all_features if st.checkbox(col, True)]
             else:
                 final_kmeans_df, pca_features = cluster_pca(data=data_app,
                                                             variables=all_features,

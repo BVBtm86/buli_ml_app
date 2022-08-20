@@ -8,14 +8,18 @@ import warnings
 warnings.filterwarnings('ignore', category=UserWarning)
 
 
-def pca_application(data_app, data_map, all_features, main_filter, app_filter, feature_filter, feature_code):
+def pca_application(data_app, data_map, all_features, main_filter, app_filter, feature_filter, feature_code, data_file):
 
     config = {'displayModeBar': False}
     feature_col, _, pca_col = st.columns([2, 0.5, 7])
     with feature_col:
         pca_analysis = st.sidebar.selectbox("Show Analysis", ["Table", "Elbow Plot", "Correlation Plot"])
         st.markdown("<b>Game Stats</b>", unsafe_allow_html=True)
-        analysis_stats = [col for col in all_features if st.checkbox(col, True)]
+        if data_file == "Top Statistics":
+            analysis_stats = [col for col in all_features if st.checkbox(col, True)]
+        else:
+            with st.expander(""):
+                analysis_stats = [col for col in all_features if st.checkbox(col, True)]
 
     if len(analysis_stats) > 1:
         with feature_col:

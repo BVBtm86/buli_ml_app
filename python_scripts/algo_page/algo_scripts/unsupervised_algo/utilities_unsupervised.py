@@ -28,10 +28,14 @@ sig_markers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣",
 
 # ##### Load Data
 @st.cache
-def load_data_unsupervised():
-    df_stats = pd.read_excel("./data/Unsupervised Bundesliga Team Statistics.xlsx", sheet_name=0)
-    df_filter = pd.read_excel("./data/Bundesliga Statistics Filter.xlsx", sheet_name=0)
-    df_map = pd.read_excel("./data/Bundesliga Statistics Filter.xlsx", sheet_name=1)
+def load_data_unsupervised(data_file):
+    if data_file == "Top Statistics":
+        df_stats = pd.read_excel("./data/Bundesliga Top Statistics.xlsx", sheet_name=0)
+    else:
+        df_stats = pd.read_excel("./data/Bundesliga All Statistics.xlsx", sheet_name=0)
+
+    df_filter = pd.read_excel("./data/Bundesliga Filter Statistics.xlsx", sheet_name=0)
+    df_map = pd.read_excel("./data/Bundesliga Filter Statistics.xlsx", sheet_name=1)
 
     # ##### Transform Data
     sc = StandardScaler()
