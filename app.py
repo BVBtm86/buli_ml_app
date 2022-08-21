@@ -75,6 +75,9 @@ def main():
                                     icons=["house-fill", "upc-scan", "ui-checks-grid", "graph-up"],
                                     styles={"container": {"background-color": "#ffffff"},
                                             "nav-link": {"--hover-color": "#e5e5e6"}})
+        # ##### Data File to Use
+        statistics_used = st.selectbox("Game Stats Data",
+                                       options=['Top Statistics', "All Statistics"])
 
     if analysis_menu == "Home":
         st.markdown(
@@ -118,9 +121,9 @@ def main():
                 "style='text-decoration: none; '>Tracking Stats</a></li>", unsafe_allow_html=True)
 
     elif analysis_menu == "Unsupervised Learning":
-        unsupervised_application()
+        unsupervised_application(data_file=statistics_used)
     elif analysis_menu == "Supervised Learning":
-        supervised_application()
+        supervised_application(data_file=statistics_used)
 
 
 if __name__ == '__main__':

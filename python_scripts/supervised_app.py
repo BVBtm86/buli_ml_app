@@ -6,10 +6,7 @@ from python_scripts.algo_page.classification_page import classification_applicat
 from python_scripts.algo_page.regression_page import regression_application
 
 
-def supervised_application():
-    # ##### Data File to Use
-    data_file = st.sidebar.selectbox(label="Statistics Used",
-                                     options=['Top Statistics', 'All Statistics'])
+def supervised_application(data_file):
     # ##### App Name
     title_col, image_col, _ = st.columns([7, 1, 1.5])
     with title_col:
@@ -224,3 +221,5 @@ def supervised_application():
                                dep_var=prediction_stat,
                                indep_var=regression_features,
                                data_file=data_file)
+
+        # print(df_regression['Team'].value_counts())
