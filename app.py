@@ -99,10 +99,16 @@ def main():
         * Tune different Hyperparameters depending on algorithm
         * Charts and Tables based on the analysis available for download
         """
-        st.markdown(
-            "<b><font color=#c3110f>Data</font></b>: is based on the <b><font color=#c3110f>Bundesliga</font></b> "
-            "<b><font color=#1e1e1e>2017-2022</font></b> Seasons Team Statistics.",
-            unsafe_allow_html=True)
+        if statistics_used == "Top Statistics":
+            st.markdown(
+                "<b><font color=#c3110f>Data</font></b>: is based on the <b><font color=#c3110f>Bundesliga</font></b> "
+                "<b><font color=#1e1e1e>2017-2023</font></b> Seasons Most Important Team Statistics.",
+                unsafe_allow_html=True)
+        else:
+            st.markdown(
+                "<b><font color=#c3110f>Data</font></b>: is based on the <b><font color=#c3110f>Bundesliga</font></b> "
+                "<b><font color=#1e1e1e>2017-2023</font></b> Seasons Team Statistics.",
+                unsafe_allow_html=True)
         # ##### Footer Page
         ref_col, fan_club_name, fan_club_logo = st.columns([10, 1, 1])
         with fan_club_name:

@@ -30,4 +30,4 @@ Data Reference:
 - https://fbref.com
 - https://www.bundesliga.com
 
-App: [Machine Learning App]("https://bvbtm86-ml-app-app-rdtb9r.streamlitapp.com")
+App: [Machine Learning App]("https://bvbtm86-buli-ml-app-app-5xooqu.streamlitapp.com")

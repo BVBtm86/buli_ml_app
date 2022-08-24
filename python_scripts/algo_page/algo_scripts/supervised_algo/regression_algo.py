@@ -53,6 +53,7 @@ def regression_all_models(data, data_type, features, predictor, progress, all_al
         final_reg_names.append(name_model)
         # ##### Data for Plot
         reg_df = pd.DataFrame(reg_scores, columns=["Score"])
+        reg_df.loc[reg_df['Score'] < reg_df['Score'].quantile(0.0001), 'Score'] = np.median(reg_df['Score'])
         reg_df['Algorithm'] = name_model
         final_reg_plot = pd.concat([final_reg_plot, reg_df], axis=0)
         current_run += 1
