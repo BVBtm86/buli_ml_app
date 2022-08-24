@@ -24,15 +24,10 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
                 else:
                     with st.expander(""):
                         analysis_stats = [col for col in all_features if st.checkbox(col, True)]
-                cluster_sample = data_app[(data_app[feature_filter] == feature_code)].shape[0]
-                if data_file == "All Statistics" and data_type == "PCA Data" and cluster_sample <= 60:
-                    run_cluster = False
-                else:
-                    run_cluster = True
-
+                run_cluster = True
             else:
                 cluster_sample = data_app[(data_app[feature_filter] == feature_code)].shape[0]
-                if data_file == "All Statistics" and data_type == "PCA Data" and cluster_sample <= 60:
+                if data_file == "All Statistics" and cluster_sample <= 60:
                     run_cluster = False
                 else:
                     run_cluster = True
@@ -116,14 +111,10 @@ def cluster_application(cluster_algo, data_app, data_raw, data_map,
                 else:
                     with st.expander(""):
                         analysis_stats = [col for col in all_features if st.checkbox(col, True)]
-                cluster_sample = data_app[(data_app[feature_filter] == feature_code)].shape[0]
-                if data_file == "All Statistics" and data_type == "PCA Data" and cluster_sample <= 60:
-                    run_cluster = False
-                else:
-                    run_cluster = True
+                run_cluster = True
             else:
                 cluster_sample = data_app[(data_app[feature_filter] == feature_code)].shape[0]
-                if data_file == "All Statistics" and data_type == "PCA Data" and cluster_sample <= 60:
+                if data_file == "All Statistics" and cluster_sample <= 60:
                     run_cluster = False
                 else:
                     run_cluster = True

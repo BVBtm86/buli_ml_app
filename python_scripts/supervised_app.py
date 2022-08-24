@@ -109,23 +109,35 @@ def supervised_application(data_file):
                 df_classification_type.loc[(df_classification_type[filter_var] == filter_code),
                                            final_class_features].reset_index(drop=True)
             classification_features = classification_features_raw.copy()
+            run_class = True
         else:
-            df_classification, classification_features = \
-                supervised_pca(data=df_classification_type,
-                               variables=classification_features_raw,
-                               var_filter=filter_var,
-                               code_filter=filter_code,
-                               dep_var='Result')
+            class_sample = df_classification_type[(df_classification_type[filter_var] == filter_code)].shape[0]
+            if data_file == "All Statistics" and class_sample <= 60:
+                run_class = False
+            else:
+                run_class = True
+            if run_class:
+                df_classification, classification_features = \
+                    supervised_pca(data=df_classification_type,
+                                   variables=classification_features_raw,
+                                   var_filter=filter_var,
+                                   code_filter=filter_code,
+                                   dep_var='Result')
+            else:
+                df_classification, classification_features = None, None
 
         # ##### Classification Page
-        classification_application(data=df_classification,
-                                   data_map=filter_map,
-                                   type_data=data_type,
-                                   game_prediction=prediction_type,
-                                   sample_filter=filter_stat,
-                                   dep_var=prediction_stat,
-                                   indep_var=classification_features,
-                                   data_file=data_file)
+        if run_class:
+            classification_application(data=df_classification,
+                                       data_map=filter_map,
+                                       type_data=data_type,
+                                       game_prediction=prediction_type,
+                                       sample_filter=filter_stat,
+                                       dep_var=prediction_stat,
+                                       indep_var=classification_features,
+                                       data_file=data_file)
+        else:
+            st.info("Not enough Games to run the analysis!")
 
     # ##### Regression Analysis
     elif supervised_algo == "Regression Analysis":
@@ -179,7 +191,8 @@ def supervised_application(data_file):
 
         # ##### Prediction Stat
         prediction_stat = st.sidebar.selectbox(label="Prediction Stat",
-                                               options=regression_features_raw)
+                                               options=regression_features_raw,
+                                               index=regression_features_raw.index('xGoal'))
         regression_features_type = [stat for stat in regression_features_raw if stat != prediction_stat]
 
         # ##### Data Type to Use
@@ -194,13 +207,22 @@ def supervised_application(data_file):
                 df_regression_type.loc[(df_regression_type[filter_var] == filter_code),
                                        final_reg_features].reset_index(drop=True)
             regression_features = regression_features_type.copy()
+            run_reg = True
         else:
-            df_regression, regression_features = \
-                supervised_pca(data=df_regression_type,
-                               variables=regression_features_type,
-                               var_filter=filter_var,
-                               code_filter=filter_code,
-                               dep_var=prediction_stat)
+            reg_sample = df_regression_type[(df_regression_type[filter_var] == filter_code)].shape[0]
+            if data_file == "All Statistics" and reg_sample <= 60:
+                run_reg = False
+            else:
+                run_reg = True
+            if run_reg:
+                df_regression, regression_features = \
+                    supervised_pca(data=df_regression_type,
+                                   variables=regression_features_type,
+                                   var_filter=filter_var,
+                                   code_filter=filter_code,
+                                   dep_var=prediction_stat)
+            else:
+                df_regression, regression_features = None, None
 
         if prediction_type == "All Games":
             st.markdown(f"<b><font color=#c3110f>Regression</font></b> Analysis: predict the <b>"
@@ -213,13 +235,14 @@ def supervised_application(data_file):
                         unsafe_allow_html=True)
 
         # ##### Regression Page
-        regression_application(data=df_regression,
-                               data_map=filter_map,
-                               type_data=data_type,
-                               game_prediction=prediction_type,
-                               sample_filter=filter_stat,
-                               dep_var=prediction_stat,
-                               indep_var=regression_features,
-                               data_file=data_file)
-
-        # print(df_regression['Team'].value_counts())
+        if run_reg:
+            regression_application(data=df_regression,
+                                   data_map=filter_map,
+                                   type_data=data_type,
+                                   game_prediction=prediction_type,
+                                   sample_filter=filter_stat,
+                                   dep_var=prediction_stat,
+                                   indep_var=regression_features,
+                                   data_file=data_file)
+        else:
+            st.info("Not enough Games to run the analysis!")
