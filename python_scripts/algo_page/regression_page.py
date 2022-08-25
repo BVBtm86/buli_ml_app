@@ -727,7 +727,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
             with description_col:
                 st.markdown(f"<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
                             f"<font color=#c3110f>Random Forest Tree </font></b> based on the Model the user created "
-                            f"and the <font color=#c3110f>Tree No</font></b> that was selected.",
+                            f"and the <b><font color=#c3110f>Tree No</font></b> that was selected.",
                             unsafe_allow_html=True)
 
             if show_tree:
@@ -879,7 +879,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 with description_col:
                     st.markdown(f"<b>Selecting</b> the <b>Show</b> Tree Option will display the Final <b>"
                                 f"<font color=#c3110f>XgBoost Tree </font></b> based on the Model the user created "
-                                f"and the <font color=#c3110f>Tree No</font></b> that was selected.",
+                                f"and the <b><font color=#c3110f>Tree No</font></b> that was selected.",
                                 unsafe_allow_html=True)
 
                 if show_tree:
