@@ -1,8 +1,8 @@
 import numpy as np
 import streamlit as st
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import reg_algo_options, \
-    reg_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear, \
-    svg_write, download_button_tree, display_tree, display_rf_tree, display_tree_xgb
+    reg_algo_name, plot_downloader, hyperparameters_linear, hyperparameters_nonlinear, svg_write, download_button_tree,\
+    display_tree, display_rf_tree, display_tree_xgb, plot_all_downloader, data_all_downloader
 from python_scripts.algo_page.algo_scripts.supervised_algo.regression_algo import regression_all_models, \
     linear_reg_application, svm_reg_application, knn_reg_application, tree_reg_application, rf_reg_application, \
     xgb_reg_application
@@ -81,17 +81,28 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                         f"<b><font color=#c3110f>{top_reg_algo[2]}</font></b>.", unsafe_allow_html=True)
 
                 with feature_col:
-                    download_plot_reg = plot_downloader(fig_reg_plot)
-                    st.download_button(
-                        label='📥 Download Plot Regression',
-                        data=download_plot_reg,
-                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot Regression.html",
-                        mime='text/html')
+                    download_plot_class = plot_all_downloader(fig=fig_reg_plot,
+                                                              filter_text=sample_filter,
+                                                              button_label='📥 Download Plot Regression',
+                                                              plot_type="Regression")
+                    st.markdown(download_plot_class, unsafe_allow_html=True)
+                    download_data_class = data_all_downloader(data=reg_scores_df,
+                                                              filter_text=sample_filter,
+                                                              button_label='📥 Download Data Regression',
+                                                              plot_type="Regression")
+                    st.markdown(download_data_class, unsafe_allow_html=True)
 
-                    df_scores_all = data_download(reg_scores_df, sample_filter.replace(': ', '_'))
-                    st.download_button(label='📥 Download Data Regression',
-                                       data=df_scores_all,
-                                       file_name=f"{sample_filter.replace(': ', '_')}_Data Results.xlsx")
+                    # download_plot_reg = plot_downloader(fig_reg_plot)
+                    # st.download_button(
+                    #     label='📥 Download Plot Regression',
+                    #     data=download_plot_reg,
+                    #     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot Regression.html",
+                    #     mime='text/html')
+                    #
+                    # df_scores_all = data_download(reg_scores_df, sample_filter.replace(': ', '_'))
+                    # st.download_button(label='📥 Download Data Regression',
+                    #                    data=df_scores_all,
+                    #                    file_name=f"{sample_filter.replace(': ', '_')}_Data Results.xlsx")
 
         # ##### ''' Linear Regression '''
         elif regression_algo == "Linear Regression":

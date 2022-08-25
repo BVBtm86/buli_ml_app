@@ -98,6 +98,81 @@ def data_download(df, sheet_name):
     return processed_data
 
 
+def plot_all_downloader(fig, filter_text, button_label, plot_type):
+    # ##### Create Plot Object
+    my_plot = StringIO()
+    fig.write_html(my_plot, include_plotlyjs='cdn')
+    my_plot = BytesIO(my_plot.getvalue().encode())
+    b64 = base64.b64encode(my_plot.read()).decode()
+    button_uuid = str(uuid.uuid4()).replace('-', '')
+    button_id = re.sub('\d+', '', button_uuid)
+
+    custom_css = f""" 
+            <style>
+                #{button_id} {{
+                    background-color: #ffffff;
+                    color: #1e1e1e;
+                    padding: 0.25em 0.38em;
+                    position: relative;
+                    text-decoration: none;
+                    border-radius: 4px;
+                    border-width: 1px;
+                    border-style: solid;
+                    border-color: #e5e5e6;
+                    border-image: initial;
+                }} 
+                #{button_id}:hover {{
+                    background-color: #ffffff;
+                    border-color: #c3110f;
+                    color: #c3110f;
+                }}
+            </style> """
+
+    button_text = button_label
+
+    download_filename = f"Supervised {plot_type} - {filter_text}.html"
+    dl_link = custom_css + f'<a download="{download_filename}" id="{button_id}" ' \
+                           f'href="data:text/html;charset=utf-8;base64,{b64}">{button_text}</a><br></br>'
+
+    return dl_link
+
+
+def data_all_downloader(data, filter_text, button_label, plot_type):
+    # ##### Create Data Object
+    csv_file = data.to_csv(index=False)
+    b64 = base64.b64encode(csv_file.encode()).decode()
+    button_uuid = str(uuid.uuid4()).replace('-', '')
+    button_id = re.sub('\d+', '', button_uuid)
+
+    custom_css = f""" 
+            <style>
+                #{button_id} {{
+                    background-color: #ffffff;
+                    color: #1e1e1e;
+                    padding: 0.25em 0.38em;
+                    position: relative;
+                    text-decoration: none;
+                    border-radius: 4px;
+                    border-width: 1px;
+                    border-style: solid;
+                    border-color: #e5e5e6;
+                    border-image: initial;
+                }} 
+                #{button_id}:hover {{
+                    background-color: #ffffff;
+                    border-color: #c3110f;
+                    color: #c3110f;
+                }}
+            </style> """
+
+    button_text = button_label
+    download_filename = f"Supervised {plot_type} - {filter_text}.csv"
+    dl_link = custom_css + f'<a download="{download_filename}" id="{button_id}" href="data:file/csv;base64,{b64}">' \
+                           f'{button_text}</a><br></br>'
+
+    return dl_link
+
+
 # ##### Data Processing
 def home_away_data(data, features, type_game):
     # ##### Filter Home vs Away Team

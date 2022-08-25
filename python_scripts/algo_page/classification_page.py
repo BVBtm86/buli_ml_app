@@ -1,8 +1,8 @@
 import streamlit as st
 import numpy as np
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import class_algo_options, \
-    class_algo_name, plot_downloader, data_download, hyperparameters_linear, hyperparameters_nonlinear, \
-    svg_write, download_button_tree, display_tree, display_rf_tree, display_tree_xgb
+    class_algo_name, plot_downloader, hyperparameters_linear, hyperparameters_nonlinear, svg_write, \
+    download_button_tree, display_tree, display_rf_tree, display_tree_xgb, plot_all_downloader, data_all_downloader
 from python_scripts.algo_page.algo_scripts.supervised_algo.classification_algo import classification_all_models, \
     linear_class_application, svm_class_application, knn_class_application, naive_class_application, \
     dt_class_application, rf_class_application, xgb_class_application
@@ -85,17 +85,16 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                                 unsafe_allow_html=True)
 
                 with feature_col:
-                    download_plot_class = plot_downloader(fig_class_plot)
-                    st.download_button(
-                        label='📥 Download Plot Classification',
-                        data=download_plot_class,
-                        file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot Classification.html",
-                        mime='text/html')
-
-                    df_scores_all = data_download(class_scores_df, sample_filter.replace(': ', '_'))
-                    st.download_button(label='📥 Download Data Classification',
-                                       data=df_scores_all,
-                                       file_name=f"{sample_filter.replace(': ', '_')}_Data Results.xlsx")
+                    download_plot_class = plot_all_downloader(fig=fig_class_plot,
+                                                              filter_text=sample_filter,
+                                                              button_label='📥 Download Plot Classification',
+                                                              plot_type="Classification")
+                    st.markdown(download_plot_class, unsafe_allow_html=True)
+                    download_data_class = data_all_downloader(data=class_scores_df,
+                                                              filter_text=sample_filter,
+                                                              button_label='📥 Download Data Classification',
+                                                              plot_type="Classification")
+                    st.markdown(download_data_class, unsafe_allow_html=True)
 
         # ##### ''' Logistic Regression '''
         elif classification_algo == "Logistic Regression":
