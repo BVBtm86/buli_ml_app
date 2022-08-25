@@ -140,6 +140,8 @@ def linear_class_application(data, data_type, team_map, hyperparams, features, p
         yaxis=dict(tickformat='.2f',
                    hoverformat=".3f"),
         height=plot_height)
+    if len(features) > 40:
+        linear_class_plot.update_layout(yaxis=dict(tickfont=dict(size=8)))
 
     # ##### Prediction Team Filter
     team_filter, team_names, feature_x_var, feature_y_var = filter_model_team_class(data=data,
@@ -239,6 +241,8 @@ def svm_class_application(data, data_type, team_map, hyperparams, features, pred
             yaxis=dict(tickformat='.2f',
                        hoverformat=".3f"),
             height=plot_height)
+        if len(features) > 40:
+            svm_class_plot.update_layout(yaxis=dict(tickfont=dict(size=8)))
     else:
         svm_class_plot = None
         final_coef_df = None
@@ -445,6 +449,8 @@ def dt_class_application(data, data_type, team_map, hyperparams, features, predi
                    hoverformat=".2%"),
         height=plot_height)
     dt_class_plot.update_traces(marker_color="#c3110f")
+    if len(features) > 40:
+        dt_class_plot.update_layout(yaxis=dict(tickfont=dict(size=8)))
 
     # ##### Prediction Team Filter
     team_filter, team_names, feature_x_var, feature_y_var = filter_model_team_class(data=data,
@@ -536,6 +542,8 @@ def rf_class_application(data, data_type, team_map, hyperparams, features, predi
                    hoverformat=".2%"),
         height=plot_height)
     rf_class_plot.update_traces(marker_color="#c3110f")
+    if len(features) > 40:
+        rf_class_plot.update_layout(yaxis=dict(tickfont=dict(size=8)))
 
     # ##### Prediction Team Filter
     team_filter, team_names, feature_x_var, feature_y_var = filter_model_team_class(data=data,
@@ -632,6 +640,8 @@ def xgb_class_application(data, data_type, team_map, hyperparams, features, pred
                    hoverformat=".2%"),
         height=plot_height)
     xgb_class_plot.update_traces(marker_color="#c3110f")
+    if len(features) > 40:
+        xgb_class_plot.update_layout(yaxis=dict(tickfont=dict(size=8)))
 
     # ##### Prediction Team Filter
     team_filter, team_names, feature_x_var, feature_y_var = filter_model_team_class(data=data,

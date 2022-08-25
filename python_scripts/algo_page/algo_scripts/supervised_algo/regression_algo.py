@@ -133,6 +133,8 @@ def linear_reg_application(data, data_type, team_map, hyperparams, features, pre
                    hoverformat=".3f"),
         height=plot_height)
     linear_reg_plot.update_traces(marker_color="#c3110f")
+    if len(features) > 40:
+        linear_reg_plot.update_layout(yaxis=dict(tickfont=dict(size=8)))
 
     # ##### Prediction Team Filter
     team_filter, team_names = filter_model_team_reg(data=data,
@@ -222,6 +224,8 @@ def svm_reg_application(data, data_type, team_map, hyperparams, features, predic
                        hoverformat=".3f"),
             height=plot_height)
         svm_reg_plot.update_traces(marker_color="#c3110f")
+        if len(features) > 40:
+            svm_reg_plot.update_layout(yaxis=dict(tickfont=dict(size=8)))
     else:
         svm_reg_plot = None
         model_coef = None
@@ -367,6 +371,8 @@ def tree_reg_application(data, data_type, team_map, hyperparams, features, predi
                    hoverformat=".2%"),
         height=plot_height)
     tree_reg_plot.update_traces(marker_color="#c3110f")
+    if len(features) > 40:
+        tree_reg_plot.update_layout(yaxis=dict(tickfont=dict(size=8)))
 
     # ##### Prediction Team Filter
     team_filter, team_names = filter_model_team_reg(data=data,
@@ -435,7 +441,7 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
     final_coef_df = final_coef_df.sort_values(by="Importance")
 
     # ##### Plot Coefficients
-    tree_reg_plot = px.bar(final_coef_df,
+    rf_reg_plot = px.bar(final_coef_df,
                            x="Importance",
                            y="Features",
                            orientation='h')
@@ -444,14 +450,16 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
         plot_height = 750
     else:
         plot_height = 500
-    tree_reg_plot.update_layout(
+    rf_reg_plot.update_layout(
         title=f"<b>{plot_name}</b> Games - Decision Tree Feature Importance by <b>{predictor}</b> by "
               f"<b>{prediction_type}</b>",
         plot_bgcolor='rgba(0,0,0,0)',
         xaxis=dict(tickformat='.0%',
                    hoverformat=".2%"),
         height=plot_height)
-    tree_reg_plot.update_traces(marker_color="#c3110f")
+    rf_reg_plot.update_traces(marker_color="#c3110f")
+    if len(features) > 40:
+        rf_reg_plot.update_layout(yaxis=dict(tickfont=dict(size=8)))
 
     # ##### Prediction Team Filter
     team_filter, team_names = filter_model_team_reg(data=data,
@@ -492,7 +500,7 @@ def rf_reg_application(data, data_type, team_map, hyperparams, features, predict
     # ##### Most important Feature
     coef_impact = final_coef_df.set_index('Features').nlargest(1, 'Importance').index.values[0]
 
-    return tree_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics, coef_impact
+    return rf_reg_plot, final_reg_metrics, plot_prediction, tree_params, team_filter, final_team_metrics, coef_impact
 
 
 def xgb_reg_application(data, data_type, team_map, hyperparams, features, predictor, train_sample, plot_name,
@@ -541,6 +549,8 @@ def xgb_reg_application(data, data_type, team_map, hyperparams, features, predic
                    hoverformat=".2%"),
         height=plot_height)
     xgb_reg_plot.update_traces(marker_color="#c3110f")
+    if len(features) > 40:
+        xgb_reg_plot.update_layout(yaxis=dict(tickfont=dict(size=8)))
 
     # ##### Prediction Team Filter
     team_filter, team_names = filter_model_team_reg(data=data,

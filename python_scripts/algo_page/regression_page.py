@@ -92,18 +92,6 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                                                               plot_type="Regression")
                     st.markdown(download_data_class, unsafe_allow_html=True)
 
-                    # download_plot_reg = plot_downloader(fig_reg_plot)
-                    # st.download_button(
-                    #     label='📥 Download Plot Regression',
-                    #     data=download_plot_reg,
-                    #     file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot Regression.html",
-                    #     mime='text/html')
-                    #
-                    # df_scores_all = data_download(reg_scores_df, sample_filter.replace(': ', '_'))
-                    # st.download_button(label='📥 Download Data Regression',
-                    #                    data=df_scores_all,
-                    #                    file_name=f"{sample_filter.replace(': ', '_')}_Data Results.xlsx")
-
         # ##### ''' Linear Regression '''
         elif regression_algo == "Linear Regression":
 
@@ -258,7 +246,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
                 # ##### Regression SVM Model
                 with result_col:
-                    with st.spinner("Running Model..."):
+                    with st.spinner("Running SVM Model (this may take a couple of minutes) ....."):
                         svm_plot, svm_metrics, svm_pred_plot, svm_team, svm_team_metrics, coef_impact = \
                             svm_reg_application(data=data,
                                                 data_type=type_data,

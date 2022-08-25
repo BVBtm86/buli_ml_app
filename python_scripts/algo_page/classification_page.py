@@ -260,7 +260,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 game_prediction += " Result"
 
             with result_col:
-                with st.spinner("Running Model..."):
+                with st.spinner("Running SVM Model (this may take a couple of minutes) ....."):
                     svm_plot, svm_metrics, svm_matrix, svm_pred_plot, svm_teams, coef_impact = \
                         svm_class_application(data=data,
                                               data_type=type_data,
