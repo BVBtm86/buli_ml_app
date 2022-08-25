@@ -567,7 +567,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                     team_logo = Image.open(f'images/Bundesliga.png')
                     st.image(team_logo, width=50)
 
-            ##### Displaying the Tree
+            # ##### Displaying the Tree
             st.subheader("Display Decision Tree")
             button_col, description_col = st.columns([1, 10])
             with button_col:
