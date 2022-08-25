@@ -98,7 +98,8 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size, std_data = hyperparameters_linear(model_type=type_data)
+                train_size, std_data = hyperparameters_linear(model_type=type_data,
+                                                              sample_size=len(data))
                 model_type = st.selectbox(label="Linear Model",
                                           options=["Linear", "Lasso", "Ridge"])
 
@@ -209,7 +210,8 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size, std_data = hyperparameters_linear(model_type=type_data)
+                train_size, std_data = hyperparameters_linear(model_type=type_data,
+                                                              sample_size=len(data))
                 svm_kernel = st.selectbox(label="Kernel",
                                           options=["rbf", "poly", 'linear', 'sigmoid'])
                 if svm_kernel == 'poly':
@@ -365,7 +367,8 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size, std_data = hyperparameters_linear(model_type=type_data)
+                train_size, std_data = hyperparameters_linear(model_type=type_data,
+                                                              sample_size=len(data))
                 knn_neighbors = st.slider("Neighbors", min_value=1, max_value=50, value=5)
                 knn_weights = st.selectbox(label="Weight", options=["uniform", "distance"])
                 knn_algorithm = st.selectbox(label="Algorithm",
@@ -454,7 +457,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size = hyperparameters_nonlinear()
+                train_size = hyperparameters_nonlinear(sample_size=len(data))
                 df_criterion = st.selectbox(label="Criterion",
                                             options=["squared_error", "friedman_mse", "absolute_error", "poisson"])
                 dt_max_depth = int(st.select_slider(label="Max Depth",
@@ -602,7 +605,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size = hyperparameters_nonlinear()
+                train_size = hyperparameters_nonlinear(sample_size=len(data))
                 rf_n_estimators = int(st.select_slider(label="No of Trees",
                                                        options=[10, 50, 100, 250, 500, 1000],
                                                        value=100))
@@ -757,7 +760,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
         elif regression_algo == "XgBoost":
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size = hyperparameters_nonlinear()
+                train_size = hyperparameters_nonlinear(sample_size=len(data))
                 xgb_n_estimators = int(st.select_slider(label="No of Trees",
                                                         options=[10, 50, 100, 250, 500, 1000],
                                                         value=100))

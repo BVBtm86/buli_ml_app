@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import math
 import streamlit as st
 from io import StringIO, BytesIO
 from sklearn.decomposition import PCA
@@ -123,6 +124,7 @@ def home_away_data(data, features, type_game):
             final_df[col] = final_df[f"Home {col}"] - final_df[f"Away {col}"]
             features_remove.append(f"Home {col}")
             features_remove.append(f"Away {col}")
+
     elif type_game == "Away Team":
         final_df.drop(columns=['Home Match Day', 'Home Total', 'Home Season', 'Home Season Stage', 'Home Venue',
                                'Home Result', 'Home Opponent', 'Away Opponent'],
@@ -182,11 +184,19 @@ def supervised_pca(data, variables, var_filter, code_filter, dep_var):
 
 
 # ##### Hyperparameters
-def hyperparameters_linear(model_type):
+def hyperparameters_linear(model_type, sample_size):
+    # ##### Min and Max Train Values
+    if sample_size <= 300:
+        min_games = math.ceil(30 / sample_size * 100)
+        max_games = math.floor((sample_size - 3) / sample_size * 100)
+    else:
+        min_games = 1
+        max_games = 99
+
     # ##### Hyperparameter Tuning
     train_sample = st.slider("% of Sample to use for Training",
-                             min_value=1,
-                             max_value=99,
+                             min_value=min_games,
+                             max_value=max_games,
                              value=80,
                              step=1,
                              format="%d%%")
@@ -199,15 +209,23 @@ def hyperparameters_linear(model_type):
     return train_sample, standardize_data
 
 
-def hyperparameters_nonlinear():
+def hyperparameters_nonlinear(sample_size):
+    # ##### Min and Max Train Values
+    if sample_size <= 300:
+        min_games = math.ceil(30 / sample_size * 100)
+        max_games = math.floor((sample_size - 3) / sample_size * 100)
+    else:
+        min_games = 1
+        max_games = 99
+
     # ##### Hyperparameter Tuning
     train_sample = st.slider("% of Sample to use for Training",
-                             min_value=1,
-                             max_value=99,
+                             min_value=min_games,
+                             max_value=max_games,
                              value=80,
                              step=1,
                              format="%d%%")
-
+    train_sample = np.round(train_sample / 100, 2)
     return train_sample
 
 
@@ -286,19 +304,30 @@ def conf_matrix(data, y, y_pred, pred_labels, filter_team, filter_name):
         data_metric = data_metric[data_metric['Team'] == filter_team].reset_index(drop=True)
 
     # ##### Count Matrix
+    raw_matrix_df = pd.DataFrame(np.zeros((3, 3)), index=pred_labels, columns=pred_labels)
     final_count_df = pd.DataFrame(confusion_matrix(y_true=data_metric['Observed'].values,
-                                                   y_pred=data_metric['Predicted'].values),
-                                  columns=pred_labels,
-                                  index=pred_labels)
+                                                   y_pred=data_metric['Predicted'].values),)
+    final_count_df.columns = final_count_df.columns.map(dict(zip([0, 1, 2], ["Defeat", "Draw", "Win"])))
+    final_count_df.index = final_count_df.index.map(dict(zip([0, 1, 2], ["Defeat", "Draw", "Win"])))
+    if 'Defeat' not in final_count_df.columns:
+        final_count_df['Defeat'] = 0
+    if 'Draw' not in final_count_df.columns:
+        final_count_df['Draw'] = 0
+    if 'Win' not in final_count_df.columns:
+        final_count_df['Win'] = 0
+    final_count_df = final_count_df + raw_matrix_df
+    final_count_df.fillna(0, inplace=True)
 
     # ##### Percentage Matrix
     final_perc_df = pd.DataFrame(confusion_matrix(y_true=data_metric['Observed'].values,
                                                   y_pred=data_metric['Predicted'].values,
-                                                  normalize='true'),
-                                 columns=pred_labels,
-                                 index=pred_labels)
+                                                  normalize='true'),)
+    final_perc_df.columns = final_perc_df.columns.map(dict(zip([0, 1, 2], ["Defeat", "Draw", "Win"])))
+    final_perc_df.index = final_perc_df.index.map(dict(zip([0, 1, 2], ["Defeat", "Draw", "Win"])))
+    final_perc_df = final_perc_df + raw_matrix_df
 
     # ##### Final Matrix
+    final_count_df[["Defeat", "Draw", "Win"]] = final_count_df[["Defeat", "Draw", "Win"]].astype(int)
     final_matrix_df = pd.merge(left=final_count_df,
                                right=final_perc_df,
                                left_index=True,

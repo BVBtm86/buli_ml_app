@@ -99,10 +99,11 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
         # ##### ''' Logistic Regression '''
         elif classification_algo == "Logistic Regression":
-
+            print(len(data))
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size, std_data = hyperparameters_linear(model_type=type_data)
+                train_size, std_data = hyperparameters_linear(model_type=type_data,
+                                                              sample_size=len(data))
                 solver_param = st.selectbox(label="Solver",
                                             options=["lbfgs", "newton-cg", "liblinear", "sag", "saga"])
                 if solver_param != 'liblinear':
@@ -220,7 +221,8 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size, std_data = hyperparameters_linear(model_type=type_data)
+                train_size, std_data = hyperparameters_linear(model_type=type_data,
+                                                              sample_size=len(data))
                 svm_kernel = st.selectbox(label="Kernel",
                                           options=['rbf', "poly", 'linear', 'sigmoid'])
                 if svm_kernel == 'poly':
@@ -371,7 +373,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size = hyperparameters_nonlinear()
+                train_size = hyperparameters_nonlinear(sample_size=len(data))
                 nb_smoothing = st.select_slider(label='Smoothing',
                                                 options=np.logspace(0, -9, num=10),
                                                 value=1.e-09)
@@ -454,7 +456,8 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size, std_data = hyperparameters_linear(model_type=type_data)
+                train_size, std_data = hyperparameters_linear(model_type=type_data,
+                                                              sample_size=len(data))
                 knn_neighbors = st.slider("Neighbors", min_value=1, max_value=50, value=5)
                 knn_weights = st.selectbox(label="Weight", options=["uniform", "distance"])
                 knn_algorithm = st.selectbox(label="Algorithm",
@@ -542,7 +545,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size = hyperparameters_nonlinear()
+                train_size = hyperparameters_nonlinear(sample_size=len(data))
                 df_criterion = st.selectbox(label="Criterion",
                                             options=["gini", "entropy", "log_loss"])
                 dt_max_depth = int(st.select_slider(label="Max Depth",
@@ -686,7 +689,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size = hyperparameters_nonlinear()
+                train_size = hyperparameters_nonlinear(sample_size=len(data))
                 rf_n_estimators = int(st.select_slider(label="No of Trees",
                                                        options=[10, 50, 100, 250, 500, 1000],
                                                        value=100))
@@ -837,7 +840,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
-                train_size = hyperparameters_nonlinear()
+                train_size = hyperparameters_nonlinear(sample_size=len(data))
                 xgb_n_estimators = int(st.select_slider(label="No of Trees",
                                                         options=[10, 50, 100, 250, 500, 1000],
                                                         value=100))
