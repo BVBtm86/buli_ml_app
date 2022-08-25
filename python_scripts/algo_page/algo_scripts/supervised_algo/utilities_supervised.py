@@ -304,30 +304,21 @@ def conf_matrix(data, y, y_pred, pred_labels, filter_team, filter_name):
         data_metric = data_metric[data_metric['Team'] == filter_team].reset_index(drop=True)
 
     # ##### Count Matrix
-    raw_matrix_df = pd.DataFrame(np.zeros((3, 3)), index=pred_labels, columns=pred_labels)
     final_count_df = pd.DataFrame(confusion_matrix(y_true=data_metric['Observed'].values,
-                                                   y_pred=data_metric['Predicted'].values),)
-    final_count_df.columns = final_count_df.columns.map(dict(zip([0, 1, 2], ["Defeat", "Draw", "Win"])))
-    final_count_df.index = final_count_df.index.map(dict(zip([0, 1, 2], ["Defeat", "Draw", "Win"])))
-    if 'Defeat' not in final_count_df.columns:
-        final_count_df['Defeat'] = 0
-    if 'Draw' not in final_count_df.columns:
-        final_count_df['Draw'] = 0
-    if 'Win' not in final_count_df.columns:
-        final_count_df['Win'] = 0
-    final_count_df = final_count_df + raw_matrix_df
-    final_count_df.fillna(0, inplace=True)
+                                                   y_pred=data_metric['Predicted'].values,
+                                                   labels=[0, 1, 2]))
+    final_count_df.columns = final_count_df.columns.map(dict(zip([0, 1, 2], pred_labels)))
+    final_count_df.index = final_count_df.index.map(dict(zip([0, 1, 2], pred_labels)))
 
     # ##### Percentage Matrix
     final_perc_df = pd.DataFrame(confusion_matrix(y_true=data_metric['Observed'].values,
                                                   y_pred=data_metric['Predicted'].values,
-                                                  normalize='true'),)
-    final_perc_df.columns = final_perc_df.columns.map(dict(zip([0, 1, 2], ["Defeat", "Draw", "Win"])))
-    final_perc_df.index = final_perc_df.index.map(dict(zip([0, 1, 2], ["Defeat", "Draw", "Win"])))
-    final_perc_df = final_perc_df + raw_matrix_df
+                                                  normalize='true',
+                                                  labels=[0, 1, 2]))
+    final_perc_df.columns = final_perc_df.columns.map(dict(zip([0, 1, 2], pred_labels)))
+    final_perc_df.index = final_perc_df.index.map(dict(zip([0, 1, 2], pred_labels)))
 
     # ##### Final Matrix
-    final_count_df[["Defeat", "Draw", "Win"]] = final_count_df[["Defeat", "Draw", "Win"]].astype(int)
     final_matrix_df = pd.merge(left=final_count_df,
                                right=final_perc_df,
                                left_index=True,

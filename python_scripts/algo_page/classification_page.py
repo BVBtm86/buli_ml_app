@@ -99,7 +99,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
 
         # ##### ''' Logistic Regression '''
         elif classification_algo == "Logistic Regression":
-            print(len(data))
+
             # ##### Hyperparameters
             with st.sidebar.expander(f"Hyperparameter Tuning"):
                 train_size, std_data = hyperparameters_linear(model_type=type_data,
