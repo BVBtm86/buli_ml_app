@@ -1,4 +1,5 @@
 import streamlit as st
+import math
 from streamlit_option_menu import option_menu
 from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import load_data_supervised, \
     home_away_data, supervised_pca
@@ -83,7 +84,12 @@ def supervised_application(data_file):
 
         # ##### Sample Size
         df_size = df_classification_type[(df_classification_type[filter_var] == filter_code)].shape[0]
-        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
+        if prediction_type == "Game Result":
+            app_games = math.ceil(df_size / 2)
+        else:
+            app_games = math.ceil(df_size)
+        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{app_games}</font></b>',
+                            unsafe_allow_html=True)
 
         if prediction_type == "All Games":
             st.markdown("<b><font color=#c3110f>Classification</font></b> Analysis: predict the <b>"
@@ -187,7 +193,12 @@ def supervised_application(data_file):
 
         # ##### Sample Size
         df_size = df_regression_type[(df_regression_type[filter_var] == filter_code)].shape[0]
-        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
+        if prediction_type == "Game":
+            app_games = math.ceil(df_size / 2)
+        else:
+            app_games = math.ceil(df_size)
+        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{app_games}</font></b>',
+                            unsafe_allow_html=True)
 
         # ##### Prediction Stat
         prediction_stat = st.sidebar.selectbox(label="Prediction Stat",

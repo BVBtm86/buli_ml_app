@@ -1,4 +1,5 @@
 import streamlit as st
+import math
 from streamlit_option_menu import option_menu
 from python_scripts.algo_page.pca_page import pca_application
 from python_scripts.algo_page.cluster_page import cluster_application
@@ -60,8 +61,12 @@ def unsupervised_application(data_file):
 
         # ##### Sample Size
         df_size = df_unsupervised[(df_unsupervised[filter_var] == filter_code)].shape[0]
-        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
-
+        if filter_main_stat != "Team" and filter_main_stat != "Result":
+            app_games = math.ceil(df_size / 2)
+        else:
+            app_games = math.ceil(df_size)
+        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{app_games}</font></b>',
+                            unsafe_allow_html=True)
         pca_application(data_app=df_unsupervised,
                         data_map=filter_map,
                         all_features=all_stats,
@@ -115,7 +120,12 @@ def unsupervised_application(data_file):
 
         # ##### Sample Size
         df_size = df_unsupervised[(df_unsupervised[filter_var] == filter_code)].shape[0]
-        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{df_size}</font></b>', unsafe_allow_html=True)
+        if filter_main_stat != "Team" and filter_main_stat != "Result":
+            app_games = math.ceil(df_size / 2)
+        else:
+            app_games = math.ceil(df_size)
+        st.sidebar.markdown(f'<b>No of Games</b>: <b><font color=#c3110f>{app_games}</font></b>',
+                            unsafe_allow_html=True)
 
         cluster_application(cluster_algo=cluster_option,
                             data_app=df_unsupervised,
