@@ -864,7 +864,7 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
             if game_prediction != "Game Result":
                 game_prediction += " Result"
             with result_col:
-                with st.spinner("Running XgB Model (this may take a couple of minutes) ....."):
+                with st.spinner("Running XgBoost Model (this may take a couple of minutes) ....."):
                     xgb_plot, xgb_metrics, xgb_matrix, xgb_pred_plot, xgb_teams, xgb_params, coef_impact = \
                         xgb_class_application(data=data,
                                               data_type=type_data,

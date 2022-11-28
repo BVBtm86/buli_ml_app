@@ -59,7 +59,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
         # ##### ''' All Regression Models '''
         if regression_algo == "All":
             with result_col:
-                with st.spinner("Running Regression Algorithms ....."):
+                with st.spinner("Running Regression Algorithms (this may take a couple of minutes) ....."):
                     progress_bar = st.progress(0)
                     fig_reg_plot, reg_scores_df, top_reg_algo = \
                         regression_all_models(data=data,
@@ -782,7 +782,7 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
 
             # ##### Regression XgBoosting Model
             with result_col:
-                with st.spinner("Running XgB Model (this may take a couple of minutes) ....."):
+                with st.spinner("Running XgBoost Model (this may take a couple of minutes) ....."):
                     xgb_plot, xgb_metrics, xgb_pred_plot, xgb_params, xgb_team, xgb_team_metrics, coef_impact = \
                         xgb_reg_application(data=data,
                                             data_type=type_data,
