@@ -860,41 +860,41 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 final_params = [xgb_n_estimators, xgb_booster, xgb_lr, xgb_max_depth, xgb_colsample, xgb_loss]
                 st.sidebar.subheader("Prediction Options")
 
-                # ##### Classification XgBoost Model
-                if game_prediction != "Game Result":
-                    game_prediction += " Result"
-                with st.spinner("Running XgB Model (this may take a couple of minutes) ....."):
-                    xgb_plot, xgb_metrics, xgb_matrix, xgb_pred_plot, xgb_teams, xgb_params, coef_impact = \
-                        xgb_class_application(data=data,
-                                              data_type=type_data,
-                                              team_map=data_map,
-                                              hyperparams=final_params,
-                                              features=analysis_stats,
-                                              predictor="Result",
-                                              predictor_map=data_map,
-                                              train_sample=train_size,
-                                              plot_name=sample_filter,
-                                              prediction_type=game_prediction)
+            # ##### Classification XgBoost Model
+            if game_prediction != "Game Result":
+                game_prediction += " Result"
+            with st.spinner("Running XgB Model (this may take a couple of minutes) ....."):
+                xgb_plot, xgb_metrics, xgb_matrix, xgb_pred_plot, xgb_teams, xgb_params, coef_impact = \
+                    xgb_class_application(data=data,
+                                          data_type=type_data,
+                                          team_map=data_map,
+                                          hyperparams=final_params,
+                                          features=analysis_stats,
+                                          predictor="Result",
+                                          predictor_map=data_map,
+                                          train_sample=train_size,
+                                          plot_name=sample_filter,
+                                          prediction_type=game_prediction)
 
-                with result_col:
-                    if len(analysis_stats) > 1:
-                        st.plotly_chart(xgb_plot,
-                                        config=config,
-                                        use_container_width=True)
+            with result_col:
+                if len(analysis_stats) > 1:
+                    st.plotly_chart(xgb_plot,
+                                    config=config,
+                                    use_container_width=True)
 
-                        with feature_col:
-                            st.markdown(
-                                f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
-                                f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
+                    with feature_col:
+                        st.markdown(
+                            f"<b><font color=#c3110f>{coef_impact}</font></b> has the biggest impact in predicting "
+                            f"<b><font color=#c3110f>{game_prediction}</font></b>.", unsafe_allow_html=True)
 
-                            download_plot_tree = plot_downloader(xgb_plot)
-                            st.download_button(
-                                label='📥 Download XgB Plot',
-                                data=download_plot_tree,
-                                file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot XgB.html",
-                                mime='text/html')
-                    else:
-                        st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
+                        download_plot_tree = plot_downloader(xgb_plot)
+                        st.download_button(
+                            label='📥 Download XgB Plot',
+                            data=download_plot_tree,
+                            file_name=f"{sample_filter.replace('_', '').replace(': ', '_')}_Plot XgB.html",
+                            mime='text/html')
+                else:
+                    st.info("At least 2 Game Stats are needed to create the Prediction Plot.")
 
             # ##### Classification Results
             title_col, logo_col = st.columns([10, 1])
