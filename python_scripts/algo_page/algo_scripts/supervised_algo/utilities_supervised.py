@@ -60,26 +60,6 @@ reg_algo_name = [
     "(GBDT) machine learning library. It provides parallel tree boosting."]
 
 
-# ##### Load Data
-@st.cache
-def load_data_supervised(data_file):
-    if data_file == "Top Statistics":
-        df_stats = pd.read_excel("./data/Bundesliga Top Statistics.xlsx", sheet_name=0)
-    else:
-        df_stats = pd.read_excel("./data/Bundesliga All Statistics.xlsx", sheet_name=0)
-
-    df_filter = pd.read_excel("./data/Bundesliga Filter Statistics.xlsx", sheet_name=0)
-    df_map = pd.read_excel("./data/Bundesliga Filter Statistics.xlsx", sheet_name=1)
-
-    # ##### Merge Data and File stats
-    main_stats = df_stats.columns.to_list()
-    final_df = pd.merge(df_stats, df_filter, left_index=True, right_index=True)
-    df_map['Option'] = df_map['Statistics'] + ": " + df_map['Label']
-    df_map.loc[0, 'Option'] = "Total"
-
-    return final_df, df_map, main_stats
-
-
 # ##### Plot and Data Download
 def plot_downloader(fig):
     buffer = StringIO()

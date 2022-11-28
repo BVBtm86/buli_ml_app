@@ -1,10 +1,10 @@
 import streamlit as st
 import math
 from streamlit_option_menu import option_menu
-from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import load_data_supervised, \
-    home_away_data, supervised_pca
+from python_scripts.algo_page.algo_scripts.supervised_algo.utilities_supervised import home_away_data, supervised_pca
 from python_scripts.algo_page.classification_page import classification_application
 from python_scripts.algo_page.regression_page import regression_application
+from python_scripts.algo_page.algo_scripts.utilities import filter_stats_query, load_data_supervised
 
 
 def supervised_application(data_file):
@@ -29,7 +29,9 @@ def supervised_application(data_file):
                                       "nav-link": {"--hover-color": "#ffffff"},
                                   })
     # ##### Load Data
-    df_supervised, filter_map, all_stats = load_data_supervised(data_file=data_file)
+    df_filter, filter_map = filter_stats_query()
+    df_supervised, all_stats = load_data_supervised(data_file=data_file,
+                                                    data_filter=df_filter)
 
     # ##### Analysis Options
     st.sidebar.header("Analysis Options")

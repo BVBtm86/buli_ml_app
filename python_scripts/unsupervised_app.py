@@ -3,7 +3,7 @@ import math
 from streamlit_option_menu import option_menu
 from python_scripts.algo_page.pca_page import pca_application
 from python_scripts.algo_page.cluster_page import cluster_application
-from python_scripts.algo_page.algo_scripts.unsupervised_algo.utilities_unsupervised import load_data_unsupervised
+from python_scripts.algo_page.algo_scripts.utilities import filter_stats_query, load_data_unsupervised
 
 
 # ##### Main Application
@@ -21,7 +21,9 @@ def unsupervised_application(data_file):
         unsafe_allow_html=True)
 
     # ##### Load Data
-    df_unsupervised, df_raw, filter_map, all_stats = load_data_unsupervised(data_file=data_file)
+    df_filter, filter_map = filter_stats_query()
+    df_unsupervised, df_raw, all_stats = load_data_unsupervised(data_file=data_file,
+                                                                data_filter=df_filter)
 
     # ##### Analysis Options
     st.sidebar.header("Analysis Options")

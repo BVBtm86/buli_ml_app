@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
-import streamlit as st
 from io import StringIO, BytesIO
-from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
 # ##### Info
@@ -24,32 +22,6 @@ metric_info = ["the distance between between two points in Euclidean space is th
                "and Manhattan distance"]
 
 sig_markers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
-
-
-# ##### Load Data
-@st.cache
-def load_data_unsupervised(data_file):
-    if data_file == "Top Statistics":
-        df_stats = pd.read_excel("./data/Bundesliga Top Statistics.xlsx", sheet_name=0)
-    else:
-        df_stats = pd.read_excel("./data/Bundesliga All Statistics.xlsx", sheet_name=0)
-
-    df_filter = pd.read_excel("./data/Bundesliga Filter Statistics.xlsx", sheet_name=0)
-    df_map = pd.read_excel("./data/Bundesliga Filter Statistics.xlsx", sheet_name=1)
-
-    # ##### Transform Data
-    sc = StandardScaler()
-    df_transformed = sc.fit_transform(df_stats)
-    df_transformed = pd.DataFrame(df_transformed, columns=df_stats.columns)
-
-    # ##### Merge Data and File stats
-    main_stats = df_stats.columns.to_list()
-    final_df = pd.merge(df_transformed, df_filter, left_index=True, right_index=True)
-    orig_df = pd.merge(df_stats, df_filter, left_index=True, right_index=True)
-    df_map['Option'] = df_map['Statistics'] + ": " + df_map['Label']
-    df_map.loc[0, 'Option'] = "Total"
-
-    return final_df, orig_df, df_map, main_stats
 
 
 # ##### Plot and Data Download
