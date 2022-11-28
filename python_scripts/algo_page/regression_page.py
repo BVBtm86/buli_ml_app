@@ -781,16 +781,17 @@ def regression_application(data, data_map, type_data, game_prediction, sample_fi
                 st.sidebar.subheader("Prediction Options")
 
                 # ##### Regression XgBoosting Model
-                xgb_plot, xgb_metrics, xgb_pred_plot, xgb_params, xgb_team, xgb_team_metrics, coef_impact = \
-                    xgb_reg_application(data=data,
-                                        data_type=type_data,
-                                        team_map=data_map,
-                                        hyperparams=final_params,
-                                        features=analysis_stats,
-                                        predictor=dep_var,
-                                        train_sample=train_size,
-                                        plot_name=sample_filter,
-                                        prediction_type=game_prediction)
+                with st.spinner("Running XgB Model (this may take a couple of minutes) ....."):
+                    xgb_plot, xgb_metrics, xgb_pred_plot, xgb_params, xgb_team, xgb_team_metrics, coef_impact = \
+                        xgb_reg_application(data=data,
+                                            data_type=type_data,
+                                            team_map=data_map,
+                                            hyperparams=final_params,
+                                            features=analysis_stats,
+                                            predictor=dep_var,
+                                            train_sample=train_size,
+                                            plot_name=sample_filter,
+                                            prediction_type=game_prediction)
 
                 with result_col:
                     if len(analysis_stats) > 1:

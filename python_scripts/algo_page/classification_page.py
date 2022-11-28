@@ -863,17 +863,18 @@ def classification_application(data, data_map, type_data, game_prediction, sampl
                 # ##### Classification XgBoost Model
                 if game_prediction != "Game Result":
                     game_prediction += " Result"
-                xgb_plot, xgb_metrics, xgb_matrix, xgb_pred_plot, xgb_teams, xgb_params, coef_impact = \
-                    xgb_class_application(data=data,
-                                          data_type=type_data,
-                                          team_map=data_map,
-                                          hyperparams=final_params,
-                                          features=analysis_stats,
-                                          predictor="Result",
-                                          predictor_map=data_map,
-                                          train_sample=train_size,
-                                          plot_name=sample_filter,
-                                          prediction_type=game_prediction)
+                with st.spinner("Running XgB Model (this may take a couple of minutes) ....."):
+                    xgb_plot, xgb_metrics, xgb_matrix, xgb_pred_plot, xgb_teams, xgb_params, coef_impact = \
+                        xgb_class_application(data=data,
+                                              data_type=type_data,
+                                              team_map=data_map,
+                                              hyperparams=final_params,
+                                              features=analysis_stats,
+                                              predictor="Result",
+                                              predictor_map=data_map,
+                                              train_sample=train_size,
+                                              plot_name=sample_filter,
+                                              prediction_type=game_prediction)
 
                 with result_col:
                     if len(analysis_stats) > 1:
