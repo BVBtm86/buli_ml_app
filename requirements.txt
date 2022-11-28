@@ -12,3 +12,4 @@ scipy==1.9.3
 factor_analyzer==0.4.1
 xgboost==1.7.1
 dtreeviz==1.4.1
+statsmodels==0.13.5
