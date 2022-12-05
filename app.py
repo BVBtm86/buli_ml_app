@@ -102,15 +102,29 @@ def main():
         if statistics_used == "Top Statistics":
             st.markdown(
                 "<b><font color=#c3110f>Data</font></b>: is based on the <b><font color=#c3110f>Bundesliga</font></b> "
-                "<b><font color=#1e1e1e>2017-2023</font></b> Seasons Most Important Team Statistics.",
-                unsafe_allow_html=True)
+                "<b><font color=#1e1e1e>2017-2023</font></b> Seasons </b> <b><font color=#c3110f>15</font></b> "
+                "Most Important Team Statistics.", unsafe_allow_html=True)
         else:
             st.markdown(
                 "<b><font color=#c3110f>Data</font></b>: is based on the <b><font color=#c3110f>Bundesliga</font></b> "
-                "<b><font color=#1e1e1e>2017-2023</font></b> Seasons Team Statistics.",
-                unsafe_allow_html=True)
+                "<b><font color=#1e1e1e>2017-2023</font></b> Seasons <b><font color=#c3110f>60</font></b> Team "
+                "Statistics.", unsafe_allow_html=True)
+
+        # ##### App Description
+        st.markdown(
+            f"<b><font color=#c3110f>Data Reference:</font></b><ul><li><a href='https://fbref.com' "
+            "style='text-decoration: none; '>Team Stats</a></li><li><a href='https://www.bundesliga.com' "
+            "style='text-decoration: none; '>Tracking Stats</a></li>", unsafe_allow_html=True)
+
+        st.markdown(
+                f"<b><font color=#d20614>App Development</font></b><ul><li><a href='https://supabase.com' "
+                "style='text-decoration: none; '>Database Storage</a></li><li><a href='https://streamlit.io' "
+                "style='text-decoration: none; '>UI Framework</a></li><li>"
+                "<a href='https://github.com/BVBtm86/buli_ml_app' style='text-decoration: none; '>"
+                "Code Repo</a></li>", unsafe_allow_html=True)
+
         # ##### Footer Page
-        ref_col, fan_club_name, fan_club_logo = st.columns([10, 1, 1])
+        _, fan_club_name, fan_club_logo = st.columns([10, 1, 1])
         with fan_club_name:
             st.markdown(f"<p style='text-align: left;'p>", unsafe_allow_html=True)
             st.markdown(f"<p style='text-align: right;'p>Created By: ", unsafe_allow_html=True)
@@ -120,11 +134,6 @@ def main():
             st.markdown("@ <b><font color = #d20614 style='text-align: center;'>"
                         "<a href='mailto:omescu.mario.lucian@gmail.com' style='text-decoration: none; '>"
                         "Mario Omescu</a></font></b>", unsafe_allow_html=True)
-        with ref_col:
-            st.markdown(
-                f"<b><font color=#c3110f>Data Reference:</font></b><ul><li><a href='https://fbref.com' "
-                "style='text-decoration: none; '>Team Stats</a></li><li><a href='https://www.bundesliga.com' "
-                "style='text-decoration: none; '>Tracking Stats</a></li>", unsafe_allow_html=True)
 
     elif analysis_menu == "Unsupervised Learning":
         unsupervised_application(data_file=statistics_used)
