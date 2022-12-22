@@ -86,7 +86,7 @@ def main():
             "analysis thru different <b><font color=#c3110f>Supervised</font></b> algorithms and to learn hidden "
             "patterns from data thru different <b><font color=#c3110f>Unsupervised</font></b> algorithms based on "
             "the <b><font color=#c3110f>Bundesliga</font></b> data. "
-            "<br> <br> <b>App Features</b>",
+            "<br> <br> <font color=#d20614><b>App Features</b></font>",
             unsafe_allow_html=True)
         """
         * Able to run different types of algorithms
@@ -112,7 +112,7 @@ def main():
 
         # ##### App Description
         st.markdown(
-            f"<b><font color=#c3110f>Data Reference:</font></b><ul><li><a href='https://fbref.com' "
+            f"<b><font color=#c3110f>Data Reference</font></b><ul><li><a href='https://fbref.com' "
             "style='text-decoration: none; '>Team Stats</a></li><li><a href='https://www.bundesliga.com' "
             "style='text-decoration: none; '>Tracking Stats</a></li>", unsafe_allow_html=True)
 
