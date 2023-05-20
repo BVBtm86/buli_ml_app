@@ -37,7 +37,7 @@ def data_download(df, sheet_name):
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     df.reset_index(inplace=True)
     df.to_excel(writer, index=False, sheet_name=sheet_name)
-    writer.save()
+    writer.close()
     processed_data = output.getvalue()
     return processed_data
 
